@@ -2,7 +2,7 @@
 This is an ongoing effort to create a visualization to ham radio cluster<br>
 <br>
 # Installation 🛠
-1. create virtual environment (https://docs.python.org/3/library/venv.html) ☁️
+1. create virtual environment (https://docs.python.org/3/library/venv.html) ☁️<br>
    python -m venv venv_HolyCluster<br>
 3. activate the venv (Scripts\activate.bat) 🌬️
 4. copy this project's files to the venv directory 📑
