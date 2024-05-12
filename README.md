@@ -1,10 +1,12 @@
 # HolyCluster 🌐
 This is an ongoing effort to create a visualization to ham radio cluster<br>
 <br>
-# installation 🛠️<br>
-download the projects files to your computer
-create a virtual env: python -m venv venv_holycluster<br>
-activate the venv and install the requirements: pip install -r requirements.txt<br>
+# Installation 🛠
+1. create virtual environment (https://docs.python.org/3/library/venv.html) ☁️
+   python -m venv venv_HolyCluster<br>
+3. activate the venv (Scripts\activate.bat) 🌬️
+4. copy this project's files to the venv directory 📑
+5. install the requirements (pip install -r requirements.txt) 🧰
 <br>
 # usage 🪩<br>
 for now, the best way to run the application is simply by activating the venv and execute: python holy_cluster.py<br>
