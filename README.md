@@ -1,7 +1,6 @@
 # HolyCluster 🌐
 This is an ongoing effort to create a visualization to the ham radio cluster<br>
 ![image](https://github.com/4Z1KD/HolyCluster/assets/24712835/e50cbdb7-22a5-4142-a200-1548b975a692)
-
 <br>
 # Installation 🛠
 1. create virtual environment (https://docs.python.org/3/library/venv.html) ☁️<br>
