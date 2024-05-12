@@ -9,11 +9,11 @@ This is an ongoing effort to create a visualization to ham radio cluster<br>
 5. install the requirements (pip install -r requirements.txt) 🧰
 <br>
 
-# usage
+# usage 💾
 for now, the best way to run the application is simply by activating the venv and execute:<br>
 python holy_cluster.py<br>
 in the future it will be compiled into an executable 💾<br>
 <br>
 
-# progress
+# progress 📈
 since this is a work in progress, please expect poor performance, bugs, runtime issues and more.<br>
