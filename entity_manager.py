@@ -344,7 +344,7 @@ class EntityManager:
         ("ZS8","KE83"),
         ("(K|W|N|A[A-K])","DM57")]
 
-    def resolve_grid(self, callsign):
+    def resolve_grid(self, callsign:str):
         callsign=callsign.upper()
         for regex, locator in self.entities:
             if re.match(regex+".*", callsign):

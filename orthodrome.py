@@ -1,4 +1,5 @@
 import math
+from position import *
 
 class orthodrome:
 
@@ -49,7 +50,7 @@ class orthodrome:
         #add initial point
         lats.append(orthodrome.rad2deg(lat1))
         lons.append(orthodrome.rad2deg(lon1))
-        points.append((orthodrome.rad2deg(lat1),orthodrome.rad2deg(lon1)))
+        points.append(Position(orthodrome.rad2deg(lat1),orthodrome.rad2deg(lon1)))
 
         # Calculate points
         for i in range(1, n + 1):
@@ -68,16 +69,16 @@ class orthodrome:
 
             lats.append(lat_mid)
             lons.append(lon_mid)
-            points.append((lat_mid, lon_mid))
+            points.append(Position(lat_mid,lon_mid))
 
         lats.append(orthodrome.rad2deg(lat2))
         lons.append(orthodrome.rad2deg(lon2))
-        points.append((orthodrome.rad2deg(lat2),orthodrome.rad2deg(lon2)))
+        points.append(Position(orthodrome.rad2deg(lat2),orthodrome.rad2deg(lon2)))
         #return lats,lons
         return points
 
     @staticmethod
-    def grid2latlng(qth_locator):
+    def grid2position(qth_locator):
         # Many thanks to Dmitry (4X5DM) for the algorithm
 
         # Constants
@@ -132,7 +133,7 @@ class orthodrome:
         lon += 0.5 / 60 * lon_ext_sq
         lat += 0.25 / 60 * lat_ext_sq
 
-        return (float(int(lat*10000))/10000, float(int(lon*10000))/10000)
+        return Position(float(int(lat*10000))/10000, float(int(lon*10000))/10000)
 
 if __name__ == "__main__":
     ##################################################################
