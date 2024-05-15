@@ -31,6 +31,9 @@ MANIFEST
 # config files
 *.config
 
+#test files
+_test.py
+
 # venv
 venv_HolyCluster/
 
