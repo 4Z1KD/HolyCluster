@@ -28,7 +28,8 @@ class cluster:
                 time = spot["Date"] + " " + spot["Time"]
                 spotter_call = spot["Spotter"]
                 dx_call = spot["DXCall"]
-                dx_locator = spot["DXLocator"]
+                dx_locator_resolved = em.resolve_grid(dx_call)
+                dx_locator = spot.get("DXLocator", dx_locator_resolved) #spot["DXLocator"]
                 #print(f"Time: {time}, Spotter: {spotter}, DX: {dx}, Frequency: {frequency}")
                 spotter = HamRadioOperator(spotter_call)
                 spotter.grid = em.resolve_grid(spotter.callsign)
@@ -61,6 +62,6 @@ class cluster:
         return [s]
 
 if __name__ == "__main__":
-    spots = cluster.get_spots(band=20, limit=15)
+    spots = cluster.get_spots(band=12, limit=15)
     #for spot in spots: print(f'time: {spot["time"]}, spotter: {spot["spotter_call"]}, dx: {spot["dx_call"]}, dx_locator: {spot["dx_locator"]}, band: {spot["band"]}')
     for spot in spots: print(spot)
