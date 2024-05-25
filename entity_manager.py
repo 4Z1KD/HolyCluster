@@ -227,6 +227,7 @@ class EntityManager:
         ("P[P-Y]0","HI36"),
         ("P[P-Y]0","HJ50"),
         ("P[P-Y]0","HG49"),
+        ("ZW","JO11"),
         ("PZ","GJ04"),
         ("R1FJ","LQ59"),
         ("S0","IL10"),
