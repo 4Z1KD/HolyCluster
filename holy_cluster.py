@@ -106,40 +106,25 @@ class HolyCluster:
         plt.tight_layout()  # Adjust layout to prevent cropping
         plt.show()
 
-if __name__ == '__main__':
+    def populate_spots(self, band):
+        some_spots = cluster.get_spots(band=band, limit=5)
+        [spot.calculate_orthodrome() for spot in some_spots]
+        [self.raw_spots.append(s) for s in some_spots]
+    
+def main():
     my_qth = orthodrome.grid2position("KM73tv")  # Center coordinates
     holyC = HolyCluster(my_qth)
 
-    some_spots = cluster.get_spots(band=10, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=12, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=15, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=17, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=20, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=40, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=80, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
-    
-    some_spots = cluster.get_spots(band=160, limit=5)
-    [spot.calculate_orthodrome() for spot in some_spots]
-    [holyC.raw_spots.append(s) for s in some_spots]
+    holyC.populate_spots(10)
+    holyC.populate_spots(12)
+    holyC.populate_spots(15)
+    holyC.populate_spots(17)
+    holyC.populate_spots(20)
+    holyC.populate_spots(40)
+    holyC.populate_spots(80)
+    holyC.populate_spots(160)    
 
     holyC.show()
+
+if __name__ == '__main__':
+    main()
