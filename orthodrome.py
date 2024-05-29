@@ -1,5 +1,5 @@
 import math
-from position import *
+from position import Position
 
 class orthodrome:
 
