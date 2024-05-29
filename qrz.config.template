@@ -1,5 +1,6 @@
 [credentials]
-# Replace 'your_username', 'your_password', and 'your_api_key' with your actual credentials for qrz.com
+# Replace 'CALLSIGN', 'PASSWORD', and 'API_KEY_FROM_QRZ_COM' with your actual credentials for qrz.com
+# Change the file name to qrz.config
 username = CALLSIGN
 password = PASSWORD
-api_key = API_KEY_FROM_QRZ_XOM
+api_key = API_KEY_FROM_QRZ_COM
