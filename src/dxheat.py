@@ -1,5 +1,8 @@
-import requests
 import json
+import asyncio
+from loguru import logger
+import httpx
+import requests
 from position import Position
 from ham_radio_operator import HamRadioOperator
 from spot import Spot
@@ -8,7 +11,8 @@ from entity_manager import EntityManager
 class cluster:
     
     @staticmethod
-    def get_spots(band, limit=30)->list[Spot]:
+    async def get_spots(band, limit=30)->list[Spot]:
+        logger.debug(f"band={band}   limit={limit}")
         assert isinstance(band, int)
         assert isinstance(limit, int)
         limit = min(50,limit)
@@ -16,7 +20,11 @@ class cluster:
         url = f"https://dxheat.com/source/spots/?a={limit}&b={band}&cdx=EU&cdx=NA&cdx=SA&cdx=AS&cdx=AF&cdx=OC&cdx=AN&cde=EU&cde=NA&cde=SA&cde=AS&cde=AF&cde=OC&cde=AN&m=CW&m=PHONE&valid=1&spam=0"
 
         # Fetch the XML data from the URL
-        response = requests.get(url)
+        # response = requests.get(url)
+        # print(f"response: {response.content}")
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+        logger.debug(f"{response.content}")
 
         em = EntityManager()
 
