@@ -1,3 +1,8 @@
+from time import time
+import copy
+import os
+import asyncio
+from loguru import logger
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
@@ -7,8 +12,6 @@ from entity_manager import EntityManager
 from qrz import qrz
 from position import Position
 from spot import Spot
-import copy
-import os
 
 
 class HolyCluster:
@@ -107,25 +110,27 @@ class HolyCluster:
         plt.tight_layout()  # Adjust layout to prevent cropping
         plt.show()
 
-    def populate_spots(self, band):
-        some_spots = cluster.get_spots(band=band, limit=5)
+    async def populate_spots(self, band):
+        logger.debug(f"populate spots {band}")
+        some_spots =  await cluster.get_spots(band=band, limit=5)
         [spot.calculate_orthodrome() for spot in some_spots]
         [self.raw_spots.append(s) for s in some_spots]
     
-def main():
+async def main():
     my_qth = orthodrome.grid2position("KM73tv")  # Center coordinates
     holyC = HolyCluster(my_qth)
 
-    holyC.populate_spots(10)
-    holyC.populate_spots(12)
-    holyC.populate_spots(15)
-    holyC.populate_spots(17)
-    holyC.populate_spots(20)
-    holyC.populate_spots(40)
-    holyC.populate_spots(80)
-    holyC.populate_spots(160)    
+    bands = [10, 12, 15, 17, 20, 40, 80, 160]
+    start =time()
+    tasks = []
+    for band in bands:
+        task = asyncio.create_task(holyC.populate_spots(band))
+        tasks.append(task)
+    await asyncio.gather(*tasks)
+    end =time()
+    print(f"elasped time: {end - start}")
 
     holyC.show()
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
