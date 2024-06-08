@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="./style.css">
+     <meta charset="utf8">
 </head>
 <body>
     <div id="menu">
@@ -10,22 +11,6 @@
         <div class="slider item">
             <div class="label">scale (<span class="value">120</span>)</div>
             <div><span class="low">0</span> <input type="range" name="scale" min="0" max="400" value="120"> <span>400</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">center (lon) (<span class="value">0</span>)</div>
-            <div><span class="low">-180</span> <input type="range" name="centerLon" min="-180" max="180" value="0"> <span>180</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">center (lat) (<span class="value">0</span>)</div>
-            <div><span class="low">-90</span> <input type="range" name="centerLat" min="-90" max="90" value="0"> <span>90</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">translate (x) (<span class="value">480</span>)</div>
-            <div><span class="low">0</span> <input type="range" name="translateX" min="0" max="960" value="480"> <span>960</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">translate (y) (<span class="value">250</span>)</div>
-            <div><span class="low">0</span> <input type="range" name="translateY" min="0" max="500" value="250"> <span>500</span></div>
         </div>
         <div class="slider item">
             <div class="label">rotate (λ) (<span class="value">0</span>)</div>
@@ -43,12 +28,11 @@
 
     <svg width="900px" height="500px">
         <g class="graticule"><path></path></g>
-        <g class="circles"></g>
         <g class="map"></g>
         <circle class="projection-center" r="4"></circle>
     </svg>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src=" https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
-    <script type="module" src = "./main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
