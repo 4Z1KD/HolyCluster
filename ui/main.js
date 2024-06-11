@@ -74,7 +74,9 @@ function update() {
         .attr("d", geo_generator)
 }
 
-const geojson_url = "https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json"
+// The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
+// That I switched in order manually. This is most likly a bug in the rewind function.
+const geojson_url = "./dxcc.geojson"
 d3.json(geojson_url).then(data => {
     geojson = rewind(data, true)
     init_menu()
