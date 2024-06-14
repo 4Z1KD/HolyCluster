@@ -57,7 +57,7 @@ svg {
     stroke: #eee;
 }
 
-.circles path {
+.lines path {
     fill: none;
-    stroke: #aaa;
+    stroke: red;
 }

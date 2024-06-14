@@ -7,6 +7,12 @@ const projection_types = [
   "Equirectangular",
 ]
 
+const lines = [
+    {type: "LineString", coordinates: [[0.1278, 51.5074], [-74.0059, 40.7128]]},
+    {type: "LineString", coordinates: [[34.851612, 31.046051], [24.6727135, -28.4792625]]},
+    {type: "LineString", coordinates: [[34.851612, 31.046051],[144.948693002555, -37.854759842877925] ]}
+]
+
 let projection
 const geo_generator = d3.geoPath().projection(projection)
 
@@ -56,6 +62,15 @@ function update() {
     let u = d3.select("g.map")
         .selectAll("path")
         .data(geojson.features)
+
+    u.enter()
+        .append("path")
+        .merge(u)
+        .attr("d", geo_generator)
+
+    u = d3.select("g.lines")
+        .selectAll("path")
+        .data(lines)
 
     u.enter()
         .append("path")
