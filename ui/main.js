@@ -49,7 +49,8 @@ function init_menu() {
 
     d3.select("#menu .reset")
         .on("click", function (_) {
-            Object.assign(state, initial_state)
+            state.scale = 120
+            projection.rotate([0, 0, 0])
             update()
         })
         .selectAll("input[type=range]")
