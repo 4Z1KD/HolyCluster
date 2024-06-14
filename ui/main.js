@@ -13,7 +13,7 @@ const lines = [
     {type: "LineString", coordinates: [[34.851612, 31.046051],[144.948693002555, -37.854759842877925] ]}
 ]
 
-let projection
+let projection = d3.geoAzimuthalEquidistant()
 const geo_generator = d3.geoPath().projection(projection)
 
 const graticule = d3.geoGraticule()
@@ -21,9 +21,6 @@ const graticule = d3.geoGraticule()
 const state = {
     type: "AzimuthalEqualArea",
     scale: 120,
-    rotateLambda: 0.1,
-    rotatePhi: 0,
-    rotateGamma: 0
 }
 
 function init_menu() {
@@ -39,24 +36,32 @@ function init_menu() {
     d3.select("#menu .projection-type select")
         .on("change", function (_) {
             state.type = this.options[this.selectedIndex].value
+            projection = d3["geo" + state.type]()
+            geo_generator.projection(projection)
             update()
         })
-        .selectAll("option")
+        .selectAll("#menu .projection-type select option")
         .data(projection_types)
         .enter()
         .append("option")
         .attr("value", function (d) { return d })
         .text(function (d) { return d })
+
+    d3.select("#menu .reset")
+        .on("click", function (_) {
+            Object.assign(state, initial_state)
+            update()
+        })
+        .selectAll("input[type=range]")
+        .data(state)
+        .attr("value", function(d) { constole.log("aaaa"); return d })
 }
 
 function update() {
     // Update projection
-    projection = d3["geo" + state.type]()
-    geo_generator.projection(projection)
-
     projection
         .scale(state.scale)
-        .rotate([state.rotateLambda, state.rotatePhi, state.rotateGamma])
+        .translate([600, 300])
 
     // Update world map
     let u = d3.select("g.map")
@@ -88,6 +93,29 @@ function update() {
         .datum(graticule())
         .attr("d", geo_generator)
 }
+
+let q0, v0, r0
+function drag_started(event) {
+    v0 = versor.cartesian(projection.invert([event.x, event.y]))
+    r0 = projection.rotate()
+    q0 = versor(r0)
+}
+
+function dragged(event) {
+    const v1 = versor.cartesian(projection.rotate(r0).invert([event.x, event.y]))
+    const q1 = versor.multiply(q0, versor.delta(v0, v1))
+    const r1 = versor.rotation(q1)
+    projection.rotate(r1)
+    update()
+}
+
+const drag = d3
+    .drag()
+    .on("start", drag_started)
+    .on("drag", dragged)
+
+d3.select("svg").call(drag)
+
 
 // The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
 // That I switched in order manually. This is most likly a bug in the rewind function.

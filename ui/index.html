@@ -12,18 +12,6 @@
             <div class="label">scale (<span class="value">120</span>)</div>
             <div><span class="low">0</span> <input type="range" name="scale" min="0" max="400" value="120"> <span>400</span></div>
         </div>
-        <div class="slider item">
-            <div class="label">rotate (λ) (<span class="value">0</span>)</div>
-            <div><span class="low">-180</span> <input type="range" name="rotateLambda" min="-180" max="180" value="0"> <span>180</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">rotate (φ) (<span class="value">0</span>)</div>
-            <div><span class="low">-180</span> <input type="range" name="rotatePhi" min="-180" max="180" value="0"> <span>180</span></div>
-        </div>
-        <div class="slider item">
-            <div class="label">rotate (γ) (<span class="value">0</span>)</div>
-            <div><span class="low">-180</span> <input type="range" name="rotateGamma" min="-180" max="180" value="0"> <span>180</span></div>
-        </div>
     </div>
 
     <svg>
@@ -33,6 +21,7 @@
         <circle class="projection-center" r="4"></circle>
     </svg>
 
+    <script src=" https://cdn.jsdelivr.net/npm/versor@0.2.0/dist/versor.min.js "></script>
     <script src="https://cdn.jsdelivr.net/npm/@mapbox/geojson-rewind@0.5.2/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
