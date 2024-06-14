@@ -1,10 +1,11 @@
 class HolyMap {
     static projection_types = [
-        "AzimuthalEqualArea",
         "AzimuthalEquidistant",
+        "AzimuthalEqualArea",
         "Orthographic",
         "Equirectangular",
     ]
+    static default_projection = "AzimuthalEquidistant"
 
     constructor(map_data, lines) {
         // This fixes the order of polygon points for d3 compatability
@@ -14,59 +15,37 @@ class HolyMap {
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
         this.state = {
-            type: "AzimuthalEqualArea",
+            type: HolyMap.default_projection,
             scale: 120,
+            // Rotation-by-dragging parameters
             q0: null,
             v0: null,
             r0: null
         }
-    }
 
-    attach() {
-        this.init_menu()
         const drag = d3
             .drag()
             .on("start", event => this.drag_started(event))
             .on("drag", event => this.dragged(event))
 
         d3.select("svg").call(drag)
-        this.update()
+        this.render()
     }
 
-    init_menu() {
-        d3.select("#menu")
-            .selectAll(".slider.item input")
-            .on("input", element => {
-                this.state.scale = element.target.value
-                this.update()
-            })
-
-        d3.select("#menu .projection-type select")
-            .on("change", event => {
-                this.state.type = event.target.options[event.target.selectedIndex].value
-                this.projection = d3["geo" + this.state.type]()
-                this.geo_generator.projection(this.projection)
-                this.update()
-            })
-            .selectAll("#menu .projection-type select option")
-            .data(HolyMap.projection_types)
-            .enter()
-            .append("option")
-            .attr("value", function (d) { return d })
-            .text(function (d) { return d })
-
-        d3.select("#menu .reset")
-            .on("click", _ => {
-                this.state.scale = 120
-                this.projection.rotate([0, 0, 0])
-                this.update()
-            })
-            .selectAll("input[type=range]")
-            .data(this.state)
-            .attr("value", function(d) { return d })
+    set projection_type(projection_type) {
+        this.state.type = projection_type
+        this.projection = d3["geo" + this.state.type]()
+        this.geo_generator.projection(this.projection)
+        this.render()
     }
 
-    update() {
+    reset_view() {
+        this.state.scale = 120
+        this.projection.rotate([0, 0, 0])
+        this.render()
+    }
+
+    render() {
         // Update projection
         this.projection
             .scale(this.state.scale)
@@ -115,7 +94,7 @@ class HolyMap {
         const q1 = versor.multiply(this.state.q0, versor.delta(this.state.v0, v1))
         const r1 = versor.rotation(q1)
         this.projection.rotate(r1)
-        this.update()
+        this.render()
     }
 }
 
@@ -129,5 +108,25 @@ const lines = [
 // That I switched in order manually. This is most likly a bug in the rewind function.
 d3.json("./dxcc.geojson").then(data => {
     const holy_map = new HolyMap(data, lines)
-    holy_map.attach()
+
+    d3.select("#menu")
+        .selectAll(".slider.item input")
+        .on("input", element => {
+            holy_map.state.scale = element.target.value
+            holy_map.render()
+        })
+
+    d3.select("#menu .projection-type select")
+        .on("change", event => {
+            holy_map.projection_type = event.target.options[event.target.selectedIndex].value
+        })
+        .selectAll("#menu .projection-type select option")
+        .data(HolyMap.projection_types)
+        .enter()
+        .append("option")
+        .attr("value", d => d)
+        .text(d => d)
+
+    d3.select("#menu .reset")
+        .on("click", _ => holy_map.reset_view())
 })
