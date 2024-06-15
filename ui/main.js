@@ -5,12 +5,19 @@ class HolyMap {
         "Orthographic",
         "Equirectangular",
     ]
+
+    static band_colors = {
+        20: "red",
+        15: "blue",
+        10: "orange",
+    }
+
     static default_projection = "AzimuthalEquidistant"
 
-    constructor(map_data, lines) {
+    constructor(map_data) {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = rewind(map_data, true)
-        this.lines = lines
+        this.lines = []
         this.projection = d3.geoAzimuthalEquidistant()
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
@@ -69,6 +76,11 @@ class HolyMap {
             .append("path")
             .merge(u)
             .attr("d", this.geo_generator)
+            .style("fill", "none")
+            .style("stroke", d => {
+                console.log(d)
+                return HolyMap.band_colors[d.properties.band]
+            })
 
         // Update projection center
         const projectedCenter = this.projection([0, 0])
@@ -96,18 +108,27 @@ class HolyMap {
         this.projection.rotate(r1)
         this.render()
     }
-}
 
-const lines = [
-    {type: "LineString", coordinates: [[0.1278, 51.5074], [-74.0059, 40.7128]]},
-    {type: "LineString", coordinates: [[34.851612, 31.046051], [24.6727135, -28.4792625]]},
-    {type: "LineString", coordinates: [[34.851612, 31.046051],[144.948693002555, -37.854759842877925] ]}
-]
+    add_spot(spot_data) {
+        this.lines.push(
+            {
+                type: "LineString",
+                coordinates: [
+                    spot_data.spotter_loc,
+                    spot_data.dx_loc,
+                ],
+                properties: {
+                    band: spot_data.Band
+                }
+            }
+        )
+    }
+}
 
 // The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
 // That I switched in order manually. This is most likly a bug in the rewind function.
 d3.json("./dxcc.geojson").then(data => {
-    const holy_map = new HolyMap(data, lines)
+    const holy_map = new HolyMap(data)
 
     d3.select("#menu")
         .selectAll(".slider.item input")
@@ -129,4 +150,14 @@ d3.json("./dxcc.geojson").then(data => {
 
     d3.select("#menu .reset")
         .on("click", _ => holy_map.reset_view())
+
+    return holy_map
+}).then(holy_map => {
+
+    d3.json("./spots.json").then(data => {
+        for (const spot of data) {
+            holy_map.add_spot(spot)
+        }
+        holy_map.render()
+    })
 })
