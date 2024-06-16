@@ -1,3 +1,11 @@
+function debounce(func, timeout) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+}
+
 class HolyMap {
     static projection_types = [
         "AzimuthalEquidistant",
@@ -22,7 +30,6 @@ class HolyMap {
         this.graticule = d3.geoGraticule()
         this.state = {
             type: HolyMap.default_projection,
-            scale: 120,
             // Rotation-by-dragging parameters
             q0: null,
             v0: null,
@@ -34,7 +41,13 @@ class HolyMap {
             .on("start", event => this.drag_started(event))
             .on("drag", event => this.dragged(event))
 
-        d3.select("svg").call(drag)
+        const zoom = d3.zoom().on("zoom", debounce(event => {
+            const scale = Math.min(Math.max(event.transform.k * 150, 100), 400)
+            this.projection.scale(scale)
+            this.render()
+        }, 0.1))
+
+        d3.select("svg").call(drag).call(zoom)
 
         this.projection_type = "AzimuthalEquidistant"
         this.render()
@@ -48,17 +61,11 @@ class HolyMap {
     }
 
     reset_view() {
-        this.state.scale = 120
-        this.projection.rotate([0, 0, 0])
+        this.projection.rotate([0, 0, 0]).scale(100)
         this.render()
     }
 
     render() {
-        // Update projection
-        this.projection
-            .scale(this.state.scale)
-            .translate([600, 300])
-
         // Update world map
         let u = d3.select("g.map")
             .selectAll("path")
@@ -127,13 +134,6 @@ class HolyMap {
 // That I switched in order manually. This is most likly a bug in the rewind function.
 d3.json("./dxcc.geojson").then(data => {
     const holy_map = new HolyMap(data)
-
-    d3.select("#menu")
-        .selectAll(".slider.item input")
-        .on("input", element => {
-            holy_map.state.scale = element.target.value
-            holy_map.render()
-        })
 
     d3.select("#menu .projection-type select")
         .on("change", event => {
