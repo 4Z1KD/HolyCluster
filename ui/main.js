@@ -18,7 +18,6 @@ class HolyMap {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = rewind(map_data, true)
         this.lines = []
-        this.projection = d3.geoAzimuthalEquidistant()
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
         this.state = {
@@ -36,12 +35,14 @@ class HolyMap {
             .on("drag", event => this.dragged(event))
 
         d3.select("svg").call(drag)
+
+        this.projection_type = "AzimuthalEquidistant"
         this.render()
     }
 
     set projection_type(projection_type) {
-        this.state.type = projection_type
-        this.projection = d3["geo" + this.state.type]()
+        this.projection = d3["geo" + projection_type]()
+        this.projection.precision(0.1)
         this.geo_generator.projection(this.projection)
         this.render()
     }
@@ -77,10 +78,7 @@ class HolyMap {
             .merge(u)
             .attr("d", this.geo_generator)
             .style("fill", "none")
-            .style("stroke", d => {
-                console.log(d)
-                return HolyMap.band_colors[d.properties.band]
-            })
+            .style("stroke", d => HolyMap.band_colors[d.properties.band])
 
         // Update projection center
         const projectedCenter = this.projection([0, 0])
