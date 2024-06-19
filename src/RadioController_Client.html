@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>WebSocket Client</title>
+        <style>
+            .status {
+                width: 100px;
+                height: 100px;
+                margin-top: 10px;
+            }
+            .status.green {
+                background-color: green;
+            }
+            .status.red {
+                background-color: red;
+            }
+        </style>
+    </head>
+<body>
+    <h1>Web Remote Preset</h1>
+    <button id="button1">7.130Mhz LSB</button>
+    <button id="button2">14.220Mhz USB</button>
+    <button id="button3">18.100Mhz FT8</button>
+    <button id="button4">21.038Mhz CW</button>
+    <div id="messages"></div>
+    <div id="status" class="status"></div>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:1111');
+
+        ws.onopen = () => {
+            console.log('Connected to the server');
+        };
+
+        ws.onmessage = (event) => {
+            
+            //const messagesDiv = document.getElementById('messages');
+            //const message = document.createElement('div');
+            //message.textContent = `Received: ${event.data}`;
+            //messagesDiv.appendChild(message);
+            
+
+            const statusDiv = document.getElementById('status');
+            const data = JSON.parse(event.data);
+            if (data.status === 1) {
+                statusDiv.className = 'status green';
+            } else if (data.status === 0) {
+                statusDiv.className = 'status red';
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Disconnected from the server');
+        };
+
+        document.getElementById('button1').addEventListener('click', () => {
+            const message = { mode: 'LSB', freq: 'k7130000' };
+            ws.send(JSON.stringify(message));
+            console.log(`Sent message: ${JSON.stringify(message)}`);
+        });
+
+        document.getElementById('button2').addEventListener('click', () => {
+            const message = { mode: 'USB', freq: 14220000 };
+            ws.send(JSON.stringify(message));
+            console.log(`Sent message: ${JSON.stringify(message)}`);
+        });
+
+        document.getElementById('button3').addEventListener('click', () => {
+            const message = { mode: 'FT8', freq: 18100000 };
+            ws.send(JSON.stringify(message));
+            console.log(`Sent message: ${JSON.stringify(message)}`);
+        });
+
+        document.getElementById('button4').addEventListener('click', () => {
+            const message = { mode: 'CW', freq: 21038000 };
+            ws.send(JSON.stringify(message));
+            console.log(`Sent message: ${JSON.stringify(message)}`);
+        });
+    </script>
+</body>
+</html>
