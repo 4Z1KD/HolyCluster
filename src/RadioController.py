@@ -1,9 +1,18 @@
 import logging
-import omnipyrig
 import asyncio
 import websockets
 import json
 import random
+import sys
+import traceback
+
+
+class DummyOmniClient:
+    def setMode(self, mode):
+        print(f"Setting mode: {mode}")
+
+    def setFrequency(self, slot, freq):
+        print(f"Setting frequency: {freq} in slot {slot}")
 
 
 class RadioController:
@@ -16,6 +25,7 @@ class RadioController:
     
     def __init_radio__(self):
         '''initialize an omnipyrig instance and set active rig'''
+        import omnipyrig
         self.OmniClient = omnipyrig.OmniRigWrapper()        
         #set the active rig to 1 (as defined in OmniRig GUI)
         self.OmniClient.setActiveRig(1)
@@ -30,6 +40,7 @@ class RadioController:
            message format is { mode: 'LSB', freq: 7130000 }
         '''
         async for message in websocket:
+            response = None
             try:
                 data = json.loads(message)
                 mode=RadioController.convertMode(data['mode'])
@@ -40,8 +51,8 @@ class RadioController:
                 self.OmniClient.setMode(mode)
                 self.OmniClient.setFrequency("A",freq)
                 response = json.dumps({"status": 1})
-            except:
-                print("error")
+            except Exception as e:
+                traceback.print_exc(e)
                 response = json.dumps({"status": 0})
             finally:
                 await websocket.send(response)
@@ -57,8 +68,11 @@ class RadioController:
         asyncio.get_event_loop().run_until_complete(self.server)
         asyncio.get_event_loop().run_forever()
     
-    def run(self):
-        self.__init_radio__()
+    def run(self, dummy_mode=False):
+        if dummy_mode:
+            self.OmniClient = DummyOmniClient()
+        else:
+            self.__init_radio__()
         self.__start_server__()
         self.__run_listener__()
 
@@ -76,5 +90,7 @@ class RadioController:
 
 
 if __name__ == "__main__":
+    dummy_mode = len(sys.argv) > 1 and sys.argv[1] == "dummy"
+
     rc = RadioController(1111)
-    rc.run()
+    rc.run(dummy_mode=dummy_mode)
