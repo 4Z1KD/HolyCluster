@@ -3,6 +3,8 @@ import logging
 
 class DummyRadioController:
     def init_radio(self):
+        self.rig_type = "dummy"
+        self.status_string = "I am a dummy"
         print("Initializing radio")
 
     def set_mode(self, mode):

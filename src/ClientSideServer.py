@@ -16,10 +16,11 @@ UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui")
 
 
 class ClientSideServer:
-    def __init__(self, radio_controller, host="localhost", port=1111):
+    def __init__(self, radio_controller, host="localhost", http_port=8000, websocket_port=1111):
         self.host = host
         self.radio_controller = radio_controller
-        self.port = port
+        self.websocket_port = websocket_port
+        self.http_port = http_port
 
         self.server = None
         self.log_level = logging.DEBUG
@@ -35,13 +36,12 @@ class ClientSideServer:
         app = aiohttp.web.Application()
         app.router.add_route("GET", "/{path:.+}", self.handle_http_request)
 
-        port = 8000
         runner = aiohttp.web.AppRunner(app)
         await runner.setup()
-        site = aiohttp.web.TCPSite(runner, "localhost", port)
+        site = aiohttp.web.TCPSite(runner, "localhost", self.http_port)
         await site.start()
 
-        print(f"HTTP server started on http://localhost:{port}")
+        print(f"HTTP server started on http://localhost:{self.http_port}")
 
     async def data_handler(self, websocket):
         '''reads data from a websocket connection, parses the data and executes.
@@ -67,9 +67,9 @@ class ClientSideServer:
     def run(self, dummy_mode=False):
         self.radio_controller.init_radio()
 
-        self.server = websockets.serve(self.data_handler, self.host, self.port)
+        self.server = websockets.serve(self.data_handler, self.host, self.websocket_port)
         if self.log_level <= logging.INFO:
-            print(f"Server started at ws://{self.host}:{self.port}")
+            print(f"Server started at ws://{self.host}:{self.websocket_port}")
 
         asyncio.get_event_loop().run_until_complete(self.server)
         asyncio.get_event_loop().run_until_complete(self.start_http_server())
