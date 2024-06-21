@@ -127,7 +127,10 @@ class HolyMap {
                     spot_data.dx_loc,
                 ],
                 properties: {
-                    band: spot_data.Band
+                    // Just temporary until we have proper API
+                    band: spot_data.Band,
+                    freq: Number(spot_data.Frequency) * 1000,
+                    mode: spot_data.Mode
                 }
             }
         )
