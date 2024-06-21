@@ -1,4 +1,8 @@
-const radio_socket = socket = new WebSocket("ws://localhost:1111")
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm'
+
+import HolyMap from "./holy_map.js"
+
+const radio_socket = new WebSocket("ws://localhost:1111")
 function line_click_callback(spot_data) {
     console.log(spot_data)
     radio_socket.send(JSON.stringify(spot_data))

@@ -1,3 +1,7 @@
+import versor from "https://cdn.jsdelivr.net/npm/versor@0.2.0/+esm"
+import geojsonRewind from 'https://cdn.jsdelivr.net/npm/geojson-rewind@0.3.1/+esm'
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm'
+
 function debounce(func, timeout) {
     let timer;
     return (...args) => {
@@ -6,7 +10,7 @@ function debounce(func, timeout) {
     };
 }
 
-class HolyMap {
+export default class HolyMap {
     static projection_types = [
         "AzimuthalEquidistant",
         "AzimuthalEqualArea",
@@ -24,7 +28,7 @@ class HolyMap {
 
     constructor(map_data, callbacks) {
         // This fixes the order of polygon points for d3 compatability
-        this.geojson = rewind(map_data, true)
+        this.geojson = geojsonRewind(map_data, true)
         this.callbacks = callbacks
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
@@ -136,4 +140,3 @@ class HolyMap {
         )
     }
 }
-
