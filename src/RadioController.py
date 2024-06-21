@@ -1,9 +1,21 @@
 import logging
-import omnipyrig
 import asyncio
+import aiohttp
+from aiohttp import web
 import websockets
 import json
 import random
+import sys
+import traceback
+import os
+
+
+class DummyOmniClient:
+    def setMode(self, mode):
+        print(f"Setting mode: {mode}")
+
+    def setFrequency(self, slot, freq):
+        print(f"Setting frequency: {freq} in slot {slot}")
 
 
 class RadioController:
@@ -16,6 +28,7 @@ class RadioController:
     
     def __init_radio__(self):
         '''initialize an omnipyrig instance and set active rig'''
+        import omnipyrig
         self.OmniClient = omnipyrig.OmniRigWrapper()        
         #set the active rig to 1 (as defined in OmniRig GUI)
         self.OmniClient.setActiveRig(1)
@@ -30,6 +43,7 @@ class RadioController:
            message format is { mode: 'LSB', freq: 7130000 }
         '''
         async for message in websocket:
+            response = None
             try:
                 data = json.loads(message)
                 mode=RadioController.convertMode(data['mode'])
@@ -40,8 +54,8 @@ class RadioController:
                 self.OmniClient.setMode(mode)
                 self.OmniClient.setFrequency("A",freq)
                 response = json.dumps({"status": 1})
-            except:
-                print("error")
+            except Exception as e:
+                traceback.print_exc(e)
                 response = json.dumps({"status": 0})
             finally:
                 await websocket.send(response)
@@ -57,8 +71,11 @@ class RadioController:
         asyncio.get_event_loop().run_until_complete(self.server)
         asyncio.get_event_loop().run_forever()
     
-    def run(self):
-        self.__init_radio__()
+    def run(self, dummy_mode=False):
+        if dummy_mode:
+            self.OmniClient = DummyOmniClient()
+        else:
+            self.__init_radio__()
         self.__start_server__()
         self.__run_listener__()
 
@@ -72,9 +89,35 @@ class RadioController:
             return 12
         if mode == 'CW':
             return 3
-    
+
+
+UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui")
+
+async def handle_http_request(request):
+    filepath = UI_DIR + request.path
+    if os.path.exists(filepath) and os.path.isfile(filepath):
+        return web.FileResponse(filepath)
+    else:
+        return web.Response(text=f"File not found: {request.path}", status=404)
+
+
+async def start_http_server():
+    app = aiohttp.web.Application()
+    app.router.add_route("GET", "/{path:.+}", handle_http_request)
+
+    port = 8000
+    runner = aiohttp.web.AppRunner(app)
+    await runner.setup()
+    site = aiohttp.web.TCPSite(runner, "localhost", port)
+    await site.start()
+
+    print(f"HTTP server started on http://localhost:{port}")
 
 
 if __name__ == "__main__":
+    dummy_mode = len(sys.argv) > 1 and sys.argv[1] == "dummy"
+
+    asyncio.get_event_loop().run_until_complete(start_http_server())
+
     rc = RadioController(1111)
-    rc.run()
+    rc.run(dummy_mode=dummy_mode)

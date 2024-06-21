@@ -1,5 +1,7 @@
-function line_click_callback(line_data) {
-    console.log(line_data)
+const radio_socket = socket = new WebSocket("ws://localhost:1111")
+function line_click_callback(spot_data) {
+    console.log(spot_data)
+    radio_socket.send(JSON.stringify(spot_data))
 }
 
 // The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
