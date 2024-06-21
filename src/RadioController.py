@@ -1,10 +1,13 @@
 import logging
 import asyncio
+import aiohttp
+from aiohttp import web
 import websockets
 import json
 import random
 import sys
 import traceback
+import os
 
 
 class DummyOmniClient:
@@ -86,11 +89,35 @@ class RadioController:
             return 12
         if mode == 'CW':
             return 3
-    
+
+
+UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui")
+
+async def handle_http_request(request):
+    filepath = UI_DIR + request.path
+    if os.path.exists(filepath) and os.path.isfile(filepath):
+        return web.FileResponse(filepath)
+    else:
+        return web.Response(text=f"File not found: {request.path}", status=404)
+
+
+async def start_http_server():
+    app = aiohttp.web.Application()
+    app.router.add_route("GET", "/{path:.+}", handle_http_request)
+
+    port = 8000
+    runner = aiohttp.web.AppRunner(app)
+    await runner.setup()
+    site = aiohttp.web.TCPSite(runner, "localhost", port)
+    await site.start()
+
+    print(f"HTTP server started on http://localhost:{port}")
 
 
 if __name__ == "__main__":
     dummy_mode = len(sys.argv) > 1 and sys.argv[1] == "dummy"
+
+    asyncio.get_event_loop().run_until_complete(start_http_server())
 
     rc = RadioController(1111)
     rc.run(dummy_mode=dummy_mode)
