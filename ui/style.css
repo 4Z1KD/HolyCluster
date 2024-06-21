@@ -30,13 +30,6 @@ svg {
     stroke: #777;
 }
 
-.projection-center {
-    fill: red;
-}
-.dots circle {
-    fill: green;
-}
-
 .graticule path {
     fill: none;
     stroke: #eee;
