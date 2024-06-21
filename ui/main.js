@@ -22,9 +22,10 @@ class HolyMap {
 
     static default_projection = "AzimuthalEquidistant"
 
-    constructor(map_data) {
+    constructor(map_data, callbacks) {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = rewind(map_data, true)
+        this.callbacks = callbacks
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
@@ -86,6 +87,9 @@ class HolyMap {
             .attr("d", this.geo_generator)
             .style("fill", "none")
             .style("stroke", d => HolyMap.band_colors[d.properties.band])
+            .on("click", d => {
+                this.callbacks.line_click(d.target.__data__.properties)
+            })
 
         // Update projection center
         const projectedCenter = this.projection([0, 0])
@@ -130,10 +134,17 @@ class HolyMap {
     }
 }
 
+function line_click_callback(line_data) {
+    console.log(line_data)
+}
+
 // The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
 // That I switched in order manually. This is most likly a bug in the rewind function.
 d3.json("./dxcc.geojson").then(data => {
-    const holy_map = new HolyMap(data)
+    const holy_map = new HolyMap(
+        data,
+        {line_click: line_click_callback}
+    )
 
     d3.select("#menu .projection-type select")
         .on("change", event => {
