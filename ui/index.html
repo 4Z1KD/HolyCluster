@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="./style.css">
+     <meta charset="utf8">
+</head>
+<body>
+    <div id="menu">
+        <div class="projection-type item">
+            <div><select name="type" value="150"></select></div>
+        </div>
+        <div>
+            <button class="reset">Reset</button>
+        </div>
+    </div>
+
+    <svg>
+        <g class="graticule"><path></path></g>
+        <g class="map"></g>
+        <g class="lines"></g>
+    </svg>
+
+    <script src="https://cdn.jsdelivr.net/npm/versor@0.2.0/dist/versor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mapbox/geojson-rewind@0.5.2/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
+    <script src="./holy_map.js"></script>
+    <script src="./main.js"></script>
+</body>

@@ -1,0 +1,44 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 12px;
+    color: #333;
+    margin: 0;
+}
+
+#menu {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+}
+
+#menu .item {
+    margin-bottom: 12px;
+}
+
+#menu select {
+    margin-top: 4px;
+}
+
+svg {
+    width: 100%;
+    margin: 0;
+    height: 900px;
+}
+
+.map path {
+    fill: #def7cf;
+    stroke: #777;
+}
+
+.graticule path {
+    fill: none;
+    stroke: #eee;
+}
+
+.lines path {
+    stroke-width: 2px;
+}
+.lines path:hover {
+    filter: brightness(150%);
+    stroke-width: 3px;
+}
