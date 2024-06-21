@@ -25,11 +25,11 @@ class RadioController:
         self.OmniClient = None
         self.port = port
         self.log_level = log_level
-    
+
     def __init_radio__(self):
         '''initialize an omnipyrig instance and set active rig'''
         import omnipyrig
-        self.OmniClient = omnipyrig.OmniRigWrapper()        
+        self.OmniClient = omnipyrig.OmniRigWrapper()
         #set the active rig to 1 (as defined in OmniRig GUI)
         self.OmniClient.setActiveRig(1)
         RigType = self.OmniClient.getParam("RigType")
@@ -37,7 +37,7 @@ class RadioController:
         if self.log_level <= logging.INFO:
             print(f"RigType: {RigType}")
             print(f"StatusStr: {StatusStr}")
-    
+
     async def __data_handler__(self, websocket):
         '''reads data from a websocket connection, parses the data and executes.
            message format is { mode: 'LSB', freq: 7130000 }
@@ -59,18 +59,18 @@ class RadioController:
                 response = json.dumps({"status": 0})
             finally:
                 await websocket.send(response)
-    
+
     def __start_server__(self):
         '''serving the websocket'''
         self.server = websockets.serve(self.__data_handler__, "localhost", self.port)
         if self.log_level <= logging.INFO:
                 print(f"Server started at ws://localhost:{self.port}")
-    
+
     def __run_listener__(self):
         '''executes the server loop'''
         asyncio.get_event_loop().run_until_complete(self.server)
         asyncio.get_event_loop().run_forever()
-    
+
     def run(self, dummy_mode=False):
         if dummy_mode:
             self.OmniClient = DummyOmniClient()
