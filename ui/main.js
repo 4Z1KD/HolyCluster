@@ -15,9 +15,9 @@ class HolyMap {
     ]
 
     static band_colors = {
-        20: "red",
-        15: "blue",
-        10: "orange",
+        20: "#ff006e",
+        15: "#8338ec",
+        10: "#fb5607",
     }
 
     static default_projection = "AzimuthalEquidistant"
