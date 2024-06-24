@@ -20,9 +20,8 @@ body {
 }
 
 svg {
-    width: 100%;
-    margin: 0;
-    height: 900px;
+    margin: 3rem;
+    border: 1px solid black;
 }
 
 .map path {

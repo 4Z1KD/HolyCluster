@@ -13,6 +13,7 @@ function line_click_callback(spot_data) {
 d3.json("./dxcc.geojson").then(data => {
     const holy_map = new HolyMap(
         data,
+        600, 600,
         {line_click: line_click_callback}
     )
 

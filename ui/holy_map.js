@@ -26,10 +26,13 @@ export default class HolyMap {
 
     static default_projection = "AzimuthalEquidistant"
 
-    constructor(map_data, callbacks) {
+    constructor(map_data, width, height, callbacks) {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = geojsonRewind(map_data, true)
+        this.width = width
+        this.height = height
         this.callbacks = callbacks
+
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
@@ -40,6 +43,8 @@ export default class HolyMap {
             v0: null,
             r0: null
         }
+
+        this.build_ui(this.width, this.height)
 
         const drag = d3
             .drag()
@@ -58,16 +63,32 @@ export default class HolyMap {
         this.render()
     }
 
+    fit_map() {
+        this.projection.fitSize([this.width, this.height], this.geojson)
+        this.projection.translate([(this.height + 60) / 2, (this.width + 60) / 2])
+    }
+
     set projection_type(projection_type) {
         this.projection = d3["geo" + projection_type]()
         this.projection.precision(0.1)
         this.geo_generator.projection(this.projection)
+
+        this.fit_map()
         this.render()
     }
 
     reset_view() {
-        this.projection.rotate([0, 0, 0]).scale(100)
+        this.projection.rotate([0, 0, 0])
         this.render()
+    }
+
+    build_ui(width, height) {
+        const svg = d3.select("svg")
+            .attr("width", width + 60)
+            .attr("height", height + 60)
+        svg.append("g").classed("graticule", true).append("path")
+        svg.append("g").classed("map", true)
+        svg.append("g").classed("lines", true)
     }
 
     render() {
