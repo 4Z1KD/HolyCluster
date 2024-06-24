@@ -9,7 +9,7 @@ function line_click_callback(spot_data) {
 }
 
 // The agalega and st brandon dxcc is a multi polygon that is made of 2 ring,
-// That I switched in order manually. This is most likly a bug in the rewind function.
+// That I switched in order manually. This is most likely a bug in the rewind function.
 d3.json("./dxcc.geojson").then(data => {
     const holy_map = new HolyMap(
         data,

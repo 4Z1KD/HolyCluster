@@ -36,8 +36,7 @@ export default class HolyMap {
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
-        this.state = {
-            type: HolyMap.default_projection,
+        this.rotation_params = {
             // Rotation-by-dragging parameters
             q0: null,
             v0: null,
@@ -59,7 +58,7 @@ export default class HolyMap {
 
         d3.select("svg").call(drag).call(zoom)
 
-        this.projection_type = "AzimuthalEquidistant"
+        this.projection_type = HolyMap.default_projection
         this.render()
     }
 
@@ -116,12 +115,6 @@ export default class HolyMap {
                 this.callbacks.line_click(d.target.__data__.properties)
             })
 
-        // Update projection center
-        const projectedCenter = this.projection([0, 0])
-        d3.select(".projection-center")
-            .attr("cx", projectedCenter[0])
-            .attr("cy", projectedCenter[1])
-
         // Update graticule
         d3.select(".graticule path")
             .datum(this.graticule())
@@ -129,15 +122,15 @@ export default class HolyMap {
     }
 
     drag_started(event) {
-        this.state.v0 = versor.cartesian(this.projection.invert([event.x, event.y]))
-        this.state.r0 = this.projection.rotate()
-        this.state.q0 = versor(this.state.r0)
+        this.rotation_params.v0 = versor.cartesian(this.projection.invert([event.x, event.y]))
+        this.rotation_params.r0 = this.projection.rotate()
+        this.rotation_params.q0 = versor(this.rotation_params.r0)
     }
 
     dragged(event) {
-        const coordinates = this.projection.rotate(this.state.r0).invert([event.x, event.y])
+        const coordinates = this.projection.rotate(this.rotation_params.r0).invert([event.x, event.y])
         const v1 = versor.cartesian(coordinates)
-        const q1 = versor.multiply(this.state.q0, versor.delta(this.state.v0, v1))
+        const q1 = versor.multiply(this.rotation_params.q0, versor.delta(this.rotation_params.v0, v1))
         const r1 = versor.rotation(q1)
         this.projection.rotate(r1)
         this.render()
