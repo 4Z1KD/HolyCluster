@@ -50,11 +50,15 @@ export default class HolyMap {
             .on("start", event => this.drag_started(event))
             .on("drag", event => this.dragged(event))
 
-        const zoom = d3.zoom().on("zoom", debounce(event => {
-            const scale = Math.min(Math.max(event.transform.k * 150, 100), 400)
-            this.projection.scale(scale)
-            this.render()
-        }, 0.1))
+        const zoom = d3
+            .zoom()
+            .scaleExtent([0.1, 0.9])
+            .on("zoom", debounce(event => {
+                console.log(event.transform.k)
+                this.projection.clipAngle(179 * (1 - event.transform.k))
+                this.fit_map()
+                this.render()
+            }, 0.1))
 
         d3.select("svg").call(drag).call(zoom)
 
