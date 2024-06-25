@@ -17,19 +17,28 @@ d3.json("./dxcc.geojson").then(data => {
         {line_click: line_click_callback}
     )
 
-    d3.select("#menu .projection-type select")
+    d3.select("#projection-select")
         .on("change", event => {
             holy_map.projection_type = event.target.options[event.target.selectedIndex].value
         })
-        .selectAll("#menu .projection-type select option")
+        .selectAll("#projection-select option")
         .data(HolyMap.projection_types)
         .enter()
         .append("option")
         .attr("value", d => d)
         .text(d => d)
 
-    d3.select("#menu .reset")
-        .on("click", _ => holy_map.reset_view())
+    d3.select("#prjection-reset").on("click", _ => holy_map.reset_view())
+
+    let band_elements = d3.selectAll(".bands")
+        .selectAll(".bands .band")
+        .data([160, 80, 40, 30, 20, 17, 15, 12, 10, 6])
+        .enter()
+        .append("div")
+        .classed("band", true)
+
+    band_elements.append("div").text(d => d)
+    band_elements.append("input").attr("type", "checkbox")
 
     return holy_map
 }).then(holy_map => {

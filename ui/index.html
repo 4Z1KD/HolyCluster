@@ -4,16 +4,21 @@
      <meta charset="utf8">
 </head>
 <body>
-    <div id="menu">
-        <div class="projection-type item">
-            <div><select name="type" value="150"></select></div>
+    <div id="main-container">
+        <div id="map">
+            <div class="bands">
+            </div>
+            <svg height="600" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet"></svg>
+            <div id="map-controls">
+                <select id="projection-select" name="type" value="150"></select>
+                <button id="prjection-reset" class="reset">Reset</button>
+            </div>
         </div>
-        <div>
-            <button class="reset">Reset</button>
+        <div id="alerts">
+            <div class="bands">
+            </div>
         </div>
     </div>
-
-    <svg></svg>
 
     <script type="module" src="./holy_map.js"></script>
     <script type="module" src="./main.js"></script>
