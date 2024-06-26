@@ -1,5 +1,6 @@
 import versor from "https://cdn.jsdelivr.net/npm/versor@0.2.0/+esm"
 import geojsonRewind from 'https://cdn.jsdelivr.net/npm/geojson-rewind@0.3.1/+esm'
+import { century, equationOfTime, declination } from 'https://cdn.jsdelivr.net/npm/solar-calculator@0.3.0/+esm'
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm'
 
 function debounce(func, timeout) {
@@ -54,7 +55,6 @@ export default class HolyMap {
             .zoom()
             .scaleExtent([0.1, 0.9])
             .on("zoom", debounce(event => {
-                console.log(event.transform.k)
                 this.projection.clipAngle(179 * (1 - event.transform.k))
                 this.fit_map()
                 this.render()
@@ -87,11 +87,16 @@ export default class HolyMap {
 
     build_ui(width, height) {
         const svg = d3.select("svg")
-            .attr("width", width + 60)
-            .attr("height", height + 60)
-        svg.append("g").classed("graticule", true).append("path")
+            .attr("width", width)
+            .attr("height", height)
+        svg.append("g")
+            .classed("graticule", true)
+            .append("path")
         svg.append("g").classed("map", true)
         svg.append("g").classed("lines", true)
+        svg.append("path")
+            .classed("night", true)
+            .style("pointer-events", "none")
     }
 
     render() {
@@ -118,6 +123,11 @@ export default class HolyMap {
             .on("click", d => {
                 this.callbacks.line_click(d.target.__data__.properties)
             })
+
+        d3.select("path.night")
+            .datum(this.get_night_circle())
+            .style("fill", "rgba(0,0,128,0.2)")
+            .attr("d", this.geo_generator)
 
         // Update graticule
         d3.select(".graticule path")
@@ -156,5 +166,20 @@ export default class HolyMap {
                 }
             }
         )
+    }
+
+    get_sun_coordinates() {
+        const now = new Date
+        const day = new Date(+now).setUTCHours(0, 0, 0, 0)
+        const t = century(now)
+        const longitude = (day - now) / 864e5 * 360 - 180
+        return [longitude - equationOfTime(t) / 4, declination(t)]
+    }
+
+    get_night_circle() {
+        const antipode = ([longitude, latitude]) => [longitude + 180, -latitude]
+        return d3.geoCircle()
+            .radius(90)
+            .center(antipode(this.get_sun_coordinates()))()
     }
 }

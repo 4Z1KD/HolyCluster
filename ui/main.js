@@ -30,7 +30,7 @@ d3.json("./dxcc.geojson").then(data => {
 
     d3.select("#prjection-reset").on("click", _ => holy_map.reset_view())
 
-    let band_elements = d3.selectAll(".bands")
+    const band_elements = d3.selectAll(".bands")
         .selectAll(".bands .band")
         .data([160, 80, 40, 30, 20, 17, 15, 12, 10, 6])
         .enter()
