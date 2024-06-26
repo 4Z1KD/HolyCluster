@@ -30,6 +30,10 @@ d3.json("./dxcc.geojson").then(data => {
 
     d3.select("#prjection-reset").on("click", _ => holy_map.reset_view())
 
+    d3.select("#night").on("change", function() {
+        holy_map.night_enabled = this.checked
+    })
+
     const band_elements = d3.selectAll(".bands")
         .selectAll(".bands .band")
         .data([160, 80, 40, 30, 20, 17, 15, 12, 10, 6])

@@ -33,6 +33,7 @@ export default class HolyMap {
         this.width = width
         this.height = height
         this.callbacks = callbacks
+        this.is_night_enabled = false
 
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
@@ -80,6 +81,20 @@ export default class HolyMap {
         this.render()
     }
 
+    set night_enabled(is_enabled) {
+        this.is_night_enabled = is_enabled
+
+        if (is_enabled) {
+            d3.select("g.night")
+                .append("path")
+                .style("pointer-events", "none")
+                .style("fill", "rgba(0,0,128,0.2)")
+        } else {
+            d3.select("g.night path").remove()
+        }
+        this.render()
+    }
+
     reset_view() {
         this.projection.rotate([0, 0, 0])
         this.render()
@@ -94,9 +109,7 @@ export default class HolyMap {
             .append("path")
         svg.append("g").classed("map", true)
         svg.append("g").classed("lines", true)
-        svg.append("path")
-            .classed("night", true)
-            .style("pointer-events", "none")
+        svg.append("g").classed("night", true)
     }
 
     render() {
@@ -124,10 +137,11 @@ export default class HolyMap {
                 this.callbacks.line_click(d.target.__data__.properties)
             })
 
-        d3.select("path.night")
-            .datum(this.get_night_circle())
-            .style("fill", "rgba(0,0,128,0.2)")
-            .attr("d", this.geo_generator)
+        if (this.is_night_enabled) {
+            d3.select("g.night path")
+                .datum(this.get_night_circle())
+                .attr("d", this.geo_generator)
+        }
 
         // Update graticule
         d3.select(".graticule path")
