@@ -81,9 +81,9 @@ svg {
 }
 
 .lines path {
-    stroke-width: 2px;
+    stroke-width: 3px;
 }
 .lines path:hover {
-    filter: brightness(150%);
-    stroke-width: 3px;
+    filter: brightness(110%);
+    stroke-width: 5px;
 }

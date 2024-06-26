@@ -19,17 +19,12 @@ export default class HolyMap {
         "Equirectangular",
     ]
 
-    static band_colors = {
-        20: "#ff006e",
-        15: "#8338ec",
-        10: "#fb5607",
-    }
-
     static default_projection = "AzimuthalEquidistant"
 
-    constructor(map_data, width, height, callbacks) {
+    constructor(map_data, band_colors, width, height, callbacks) {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = geojsonRewind(map_data, true)
+        this.band_colors = band_colors
         this.width = width
         this.height = height
         this.callbacks = callbacks
@@ -132,7 +127,7 @@ export default class HolyMap {
             .merge(u)
             .attr("d", this.geo_generator)
             .style("fill", "none")
-            .style("stroke", d => HolyMap.band_colors[d.properties.band])
+            .style("stroke", d => this.band_colors[d.properties.band])
             .on("click", d => {
                 this.callbacks.line_click(d.target.__data__.properties)
             })
