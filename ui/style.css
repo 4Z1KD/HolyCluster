@@ -5,15 +5,17 @@ body {
     margin: 0;
 }
 
+#title {
+    font-size: 70px;
+    text-align: center;
+    margin: 1rem;
+}
+
 #main-container {
     display: flex;
     width: 80%;
     height: 90%;
-    margin-top: 5%;
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-bottom: 5%;
-
+    margin: 2% 10% 5% 10%;
     border: black solid 1px;
 }
 
