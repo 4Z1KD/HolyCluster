@@ -5,40 +5,77 @@ body {
     margin: 0;
 }
 
-#menu {
-    position: absolute;
-    top: 20px;
-    left: 30px;
+#title {
+    font-size: 70px;
+    text-align: center;
+    margin: 1rem;
 }
 
-#menu .item {
-    margin-bottom: 12px;
+#main-container {
+    display: flex;
+    width: 80%;
+    height: 90%;
+    margin: 2% 10% 5% 10%;
+    border: black solid 1px;
 }
 
-#menu select {
-    margin-top: 4px;
+.bands {
+    display: flex;
+    justify-content: center;
+    border-bottom: black solid 1px;
+}
+
+.band {
+    width: 3rem;
+    height: 100%;
+    border-left: black solid 1px;
+    border-right: black solid 1px;
+    margin: 0.2px 0.5rem 0.2px 0.5rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+
+.band * {
+    text-align: center;
+}
+
+#map {
+    flex: 50%;
+    width: 100%;
+    border-right: black solid 1px;
+}
+
+#alerts {
+    flex: 50%;
+    width: 100%;
+}
+
+#map-controls {
+    height: 3rem;
+    border-top: black solid 1px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#map-controls * {
+    margin-right: 1rem;
+    height: 1.5rem;
 }
 
 svg {
     width: 100%;
-    margin: 0;
-    height: 900px;
-}
-
-.map path {
-    fill: #def7cf;
-    stroke: #777;
-}
-
-.graticule path {
-    fill: none;
-    stroke: #eee;
 }
 
 .lines path {
-    stroke-width: 2px;
+    stroke-width: 3px;
 }
 .lines path:hover {
-    filter: brightness(150%);
-    stroke-width: 3px;
+    filter: brightness(110%);
+    stroke-width: 5px;
 }

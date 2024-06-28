@@ -4,25 +4,24 @@
      <meta charset="utf8">
 </head>
 <body>
-    <div id="menu">
-        <div class="projection-type item">
-            <div><select name="type" value="150"></select></div>
+    <h1 id="title">The Holy Cluster!</h1>
+    <div id="main-container">
+        <div id="map">
+            <div class="bands">
+            </div>
+            <svg></svg>
+            <div id="map-controls">
+                <select id="projection-select" name="type" value="150"></select>
+                <button id="prjection-reset" class="reset">Reset</button>
+                <input id="night" type="checkbox" autocomplete="off"><label>Show night</label>
+            </div>
         </div>
-        <div>
-            <button class="reset">Reset</button>
+        <div id="alerts">
+            <div class="bands">
+            </div>
         </div>
     </div>
 
-    <svg>
-        <g class="graticule"><path></path></g>
-        <g class="map"></g>
-        <g class="lines"></g>
-    </svg>
-
-    <script src="https://cdn.jsdelivr.net/npm/versor@0.2.0/dist/versor.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mapbox/geojson-rewind@0.5.2/index.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
-    <script src="./holy_map.js"></script>
-    <script src="./main.js"></script>
+    <script type="module" src="./holy_map.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
