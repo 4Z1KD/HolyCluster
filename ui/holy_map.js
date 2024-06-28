@@ -137,6 +137,8 @@ export default class HolyMap {
         let u = d3.select("g.map")
             .selectAll("path")
             .data(this.geojson.features)
+            .style("fill", "#def7cf")
+            .style("stroke", "#777")
 
         u.enter()
             .append("path")
@@ -167,6 +169,8 @@ export default class HolyMap {
         d3.select(".graticule path")
             .datum(this.graticule())
             .attr("d", this.geo_generator)
+            .style("fill", "none")
+            .style("stroke", "#eee")
     }
 
     drag_started(event) {

@@ -72,16 +72,6 @@ svg {
     width: 100%;
 }
 
-.map path {
-    fill: #def7cf;
-    stroke: #777;
-}
-
-.graticule path {
-    fill: none;
-    stroke: #eee;
-}
-
 .lines path {
     stroke-width: 3px;
 }
