@@ -49,10 +49,9 @@ export default class HolyMap {
 
         const zoom = d3
             .zoom()
-            .scaleExtent([0.1, 0.9])
+            .scaleExtent([100, 600])
             .on("zoom", debounce(event => {
-                this.projection.clipAngle(179 * (1 - event.transform.k))
-                this.fit_map()
+                this.projection.scale(event.transform.k)
                 this.render()
             }, 0.1))
 
@@ -64,7 +63,7 @@ export default class HolyMap {
 
     fit_map() {
         this.projection.fitSize([this.width, this.height], this.geojson)
-        this.projection.translate([(this.height + 60) / 2, (this.width + 60) / 2])
+        this.projection.translate([this.height / 2, this.width / 2])
     }
 
     set projection_type(projection_type) {
@@ -99,12 +98,38 @@ export default class HolyMap {
         const svg = d3.select("svg")
             .attr("width", width)
             .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`)
+
+        svg
+            .append("defs")
+            .append("clipPath")
+            .attr("id", "map-clip")
+            .append("circle")
+            .attr("r", Math.min(width / 2, height / 2))
+            .attr("cx", width / 2)
+            .attr("cy", height / 2)
+
+        svg
+            .append("circle")
+            .attr("r", Math.min(width / 2, height / 2))
+            .attr("cx", width / 2)
+            .attr("cy", height / 2)
+            .style("fill", "none")
+            .style("stroke", "black")
+
         svg.append("g")
             .classed("graticule", true)
+            .attr("clip-path", "url(#map-clip)")
             .append("path")
-        svg.append("g").classed("map", true)
-        svg.append("g").classed("lines", true)
-        svg.append("g").classed("night", true)
+        svg.append("g")
+            .attr("clip-path", "url(#map-clip)")
+            .classed("map", true)
+        svg.append("g")
+            .attr("clip-path", "url(#map-clip)")
+            .classed("lines", true)
+        svg.append("g")
+            .attr("clip-path", "url(#map-clip)")
+            .classed("night", true)
     }
 
     render() {
