@@ -16,7 +16,8 @@ export default class HolyMap {
         "AzimuthalEquidistant",
         "AzimuthalEqualArea",
         "Orthographic",
-        "Equirectangular",
+        // Equirectangular projection is currently broken due to zoom and drag bhaviours
+        // "Equirectangular",
     ]
 
     static default_projection = "AzimuthalEquidistant"
