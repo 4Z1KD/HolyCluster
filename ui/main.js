@@ -2,9 +2,16 @@ import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm'
 
 import HolyMap from "./holy_map.js"
 
-const radio_socket = new WebSocket("ws://localhost:1111")
+const loc = window.location
+let new_uri
+if (loc.protocol === "https:") {
+    new_uri = "wss:";
+} else {
+    new_uri = "ws:";
+}
+new_uri += "//" + loc.host + "/radio";
+const radio_socket = new WebSocket(new_uri)
 function line_click_callback(spot_data) {
-    console.log(spot_data)
     radio_socket.send(JSON.stringify(spot_data))
 }
 
