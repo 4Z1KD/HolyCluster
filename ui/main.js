@@ -57,7 +57,12 @@ d3.json("./dxcc.geojson").then(data => {
         .style("background-color", d => d[1])
 
     band_elements.append("div").text(d => d[0]).style("font-weight", "bold")
-    band_elements.append("input").attr("type", "checkbox")
+    band_elements.append("input")
+        .attr("type", "checkbox")
+        .attr("checked", true)
+        .on("click", (event, data) => {
+            holy_map.set_band_state(data[0], event.target.checked)
+        })
 
     return holy_map
 }).then(holy_map => {

@@ -26,6 +26,9 @@ export default class HolyMap {
         // This fixes the order of polygon points for d3 compatability
         this.geojson = geojsonRewind(map_data, true)
         this.band_colors = band_colors
+        this.bands_state = Object.fromEntries(
+            Object.entries(band_colors).map(([band, _]) => [band, true])
+        )
         this.width = width
         this.height = height
         this.callbacks = callbacks
@@ -76,6 +79,11 @@ export default class HolyMap {
         this.render()
     }
 
+    set_band_state(band, is_enabled) {
+        this.bands_state[band] = is_enabled
+        this.render()
+    }
+
     set night_enabled(is_enabled) {
         this.is_night_enabled = is_enabled
 
@@ -101,8 +109,7 @@ export default class HolyMap {
             .attr("height", height)
             .attr("viewBox", `0 0 ${width} ${height}`)
 
-        svg
-            .append("defs")
+        svg.append("defs")
             .append("clipPath")
             .attr("id", "map-clip")
             .append("circle")
@@ -110,8 +117,7 @@ export default class HolyMap {
             .attr("cx", width / 2)
             .attr("cy", height / 2)
 
-        svg
-            .append("circle")
+        svg.append("circle")
             .attr("r", Math.min(width / 2, height / 2))
             .attr("cx", width / 2)
             .attr("cy", height / 2)
@@ -148,7 +154,9 @@ export default class HolyMap {
 
         u = d3.select("g.lines")
             .selectAll("path")
-            .data(this.lines)
+            .data(this.lines.filter(line => this.bands_state[line.properties.band]))
+
+        u.exit().remove()
 
         u.enter()
             .append("path")
