@@ -2,8 +2,12 @@ import os
 
 import fastapi
 from fastapi.staticfiles import StaticFiles
+import mimetypes
 
 import RadioController
+
+mimetypes.init()
+mimetypes.add_type("text/javascript", ".js")
 
 UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui")
 
