@@ -1,0 +1,8 @@
+[project]
+name = "HolyCluster"
+requires-python = ">= 3.8"
+version = "0.1.0"
+dependencies = [
+    "websockets",
+    "fastapi",
+]
