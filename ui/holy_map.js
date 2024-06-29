@@ -160,18 +160,11 @@ export default class HolyMap {
             .style("fill", "none")
             .style("stroke", "black")
 
-        svg.append("g")
-            .classed("graticule", true)
-            .attr("clip-path", "url(#map-clip)")
-            .append("path")
-        svg.append("g")
-            .attr("clip-path", "url(#map-clip)")
-            .classed("map", true)
-        svg.append("g")
-            .attr("clip-path", "url(#map-clip)")
-            .classed("lines", true)
-
-        this.night.build(svg)
+        const clipped_group = svg.append("g").attr("clip-path", "url(#map-clip)")
+        clipped_group.append("g").classed("graticule", true).append("path")
+        clipped_group.append("g").classed("map", true)
+        clipped_group.append("g").classed("lines", true)
+        this.night.build(clipped_group)
     }
 
     render() {
@@ -214,9 +207,11 @@ export default class HolyMap {
     }
 
     drag_started(event) {
-        this.rotation_params.v0 = versor.cartesian(this.projection.invert([event.x, event.y]))
-        this.rotation_params.r0 = this.projection.rotate()
-        this.rotation_params.q0 = versor(this.rotation_params.r0)
+        this.rotation_params = {
+            v0: versor.cartesian(this.projection.invert([event.x, event.y])),
+            r0: this.projection.rotate(),
+            q0: versor(this.projection.rotate())
+        }
     }
 
     dragged(event) {
