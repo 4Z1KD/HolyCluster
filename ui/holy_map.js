@@ -11,6 +11,56 @@ function debounce(func, timeout) {
     };
 }
 
+class Night {
+    constructor(geo_generator) {
+        this._enabled = false
+        this.geo_generator = geo_generator
+    }
+
+    set enabled(is_enabled) {
+        this._enabled = is_enabled
+
+        if (is_enabled) {
+            d3.select("g.night")
+                .append("path")
+                .style("pointer-events", "none")
+                .style("fill", "rgba(0,0,128,0.2)")
+        } else {
+            d3.select("g.night path").remove()
+        }
+        this.render()
+    }
+
+    build(root) {
+        root.append("g")
+            .attr("clip-path", "url(#map-clip)")
+            .classed("night", true)
+    }
+
+    render() {
+        if (this._enabled) {
+            d3.select("g.night path")
+                .datum(this.get_night_circle())
+                .attr("d", this.geo_generator)
+        }
+    }
+
+    get_sun_coordinates() {
+        const now = new Date
+        const day = new Date(+now).setUTCHours(0, 0, 0, 0)
+        const t = century(now)
+        const longitude = (day - now) / 864e5 * 360 - 180
+        return [longitude - equationOfTime(t) / 4, declination(t)]
+    }
+
+    get_night_circle() {
+        const antipode = ([longitude, latitude]) => [longitude + 180, -latitude]
+        return d3.geoCircle()
+            .radius(90)
+            .center(antipode(this.get_sun_coordinates()))()
+    }
+}
+
 export default class HolyMap {
     static projection_types = [
         "AzimuthalEquidistant",
@@ -32,11 +82,11 @@ export default class HolyMap {
         this.width = width
         this.height = height
         this.callbacks = callbacks
-        this.is_night_enabled = false
 
         this.lines = []
         this.geo_generator = d3.geoPath().projection(this.projection)
         this.graticule = d3.geoGraticule()
+        this.night = new Night(this.geo_generator)
         this.rotation_params = {
             // Rotation-by-dragging parameters
             q0: null,
@@ -84,20 +134,6 @@ export default class HolyMap {
         this.render()
     }
 
-    set night_enabled(is_enabled) {
-        this.is_night_enabled = is_enabled
-
-        if (is_enabled) {
-            d3.select("g.night")
-                .append("path")
-                .style("pointer-events", "none")
-                .style("fill", "rgba(0,0,128,0.2)")
-        } else {
-            d3.select("g.night path").remove()
-        }
-        this.render()
-    }
-
     reset_view() {
         this.projection.rotate([0, 0, 0])
         this.render()
@@ -134,9 +170,8 @@ export default class HolyMap {
         svg.append("g")
             .attr("clip-path", "url(#map-clip)")
             .classed("lines", true)
-        svg.append("g")
-            .attr("clip-path", "url(#map-clip)")
-            .classed("night", true)
+
+        this.night.build(svg)
     }
 
     render() {
@@ -168,11 +203,7 @@ export default class HolyMap {
                 this.callbacks.line_click(d.target.__data__.properties)
             })
 
-        if (this.is_night_enabled) {
-            d3.select("g.night path")
-                .datum(this.get_night_circle())
-                .attr("d", this.geo_generator)
-        }
+        this.night.render()
 
         // Update graticule
         d3.select(".graticule path")
@@ -213,20 +244,5 @@ export default class HolyMap {
                 }
             }
         )
-    }
-
-    get_sun_coordinates() {
-        const now = new Date
-        const day = new Date(+now).setUTCHours(0, 0, 0, 0)
-        const t = century(now)
-        const longitude = (day - now) / 864e5 * 360 - 180
-        return [longitude - equationOfTime(t) / 4, declination(t)]
-    }
-
-    get_night_circle() {
-        const antipode = ([longitude, latitude]) => [longitude + 180, -latitude]
-        return d3.geoCircle()
-            .radius(90)
-            .center(antipode(this.get_sun_coordinates()))()
     }
 }

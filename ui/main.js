@@ -45,7 +45,7 @@ d3.json("./dxcc.geojson").then(data => {
     d3.select("#prjection-reset").on("click", _ => holy_map.reset_view())
 
     d3.select("#night").on("change", function() {
-        holy_map.night_enabled = this.checked
+        holy_map.night.enabled = this.checked
     })
 
     const band_elements = d3.selectAll(".bands")
