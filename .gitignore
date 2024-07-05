@@ -18,6 +18,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+node_modules/
 parts/
 sdist/
 var/
@@ -27,6 +28,10 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+src/api/Include
+src/api/Scripts
+src/api/*.cfg
+
 
 # config files
 *.config
