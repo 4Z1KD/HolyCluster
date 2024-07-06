@@ -30,18 +30,27 @@ function MainContainer() {
     const [night_enabled, set_night] = useState(false);
     const [spots, _] = useState(spots_data);
 
+    const [enabled_bands, set_enabled_bands] = useState(
+        Object.fromEntries(Object.keys(band_colors).map(band => [band, true]))
+    )
+
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
             <div className="p-0 w-full mx-auto rounded-t-2xl border-b-solid border-b-sky border-b-2">
-                <Bands band_colors={band_colors}/>
+                <Bands
+                    band_colors={band_colors}
+                    set_enabled_bands={set_enabled_bands}
+                    enabled_bands={enabled_bands}
+                />
             </div>
             <div className="flex divide-x divide-slate-300">
-                <div className={`${main_squares_classes} flex-wrap`}>
+                <div className={`${main_squares_classes} flex-wrap divide-y divide-slate-300`}>
                     <Map
                         spots={spots}
                         band_colors={band_colors}
                         projection_type={projection_type}
                         night_enabled={night_enabled}
+                        enabled_bands={enabled_bands}
                     />
                     <MapControls
                         set_projection_type={set_projection_type}

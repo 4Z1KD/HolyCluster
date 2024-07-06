@@ -25,6 +25,7 @@ function Map({
     height = 700,
     spots = [],
     band_colors = {},
+    enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
@@ -35,7 +36,9 @@ function Map({
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
 
-    const lines = spots.map(spot => {
+    const lines = spots
+        .filter(spot => enabled_bands[spot.Band])
+        .map(spot => {
         return {
             type: "LineString",
             coordinates: [
@@ -107,7 +110,7 @@ function Map({
                         }}
                         strokeWidth="3px"
                         d={path_generator(line)}
-                    ></path>
+                    ></path>;
                 })}
             </g>
             <g className="night">{

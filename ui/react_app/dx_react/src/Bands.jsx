@@ -1,5 +1,7 @@
-function MainContainer({
+function Bands({
     band_colors = {},
+    enabled_bands = {},
+    set_enabled_bands,
 }) {
     const center_content_classes = [
         "flex",
@@ -21,14 +23,24 @@ function MainContainer({
         <div className="flex justify-around h-16 p-2">
             {Object.entries(band_colors).map(([band, color]) => {
                 return <div
+                    key={band}
                     className={`${center_content_classes} ${style_classes}`}
                     style={{ backgroundColor: color }}
                 >
-                    <span>{band}</span><input type="checkbox"/>
+                    <span>{band}</span>
+                    <input
+                        type="checkbox"
+                        onChange={_ => set_enabled_bands(previous_state => {
+                            const state = structuredClone(previous_state);
+                            state[band] = !state[band];
+                            return state;
+                        })}
+                        defaultChecked={enabled_bands[band]}
+                    />
                 </div>
             })}
         </div>
     );
 }
 
-export default MainContainer;
+export default Bands;
