@@ -20,6 +20,23 @@ function get_night_circle() {
         .center(antipode(get_sun_coordinates()))()
 }
 
+function calculate_distance([lat1, lon1], [lat2, lon2]) {
+    const earth_radius = 6371;
+    const diff_lat = to_radian(lat2 - lat1);
+    const diff_lon = to_radian(lon2 - lon1);
+    const a =
+        Math.sin(diff_lat / 2) * Math.sin(diff_lat / 2) +
+        Math.cos(to_radian(lat1)) * Math.cos(to_radian(lat2)) *
+        Math.sin(diff_lon / 2) * Math.sin(diff_lon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = earth_radius * c;
+    return d;
+}
+
+function to_radian(deg) {
+  return deg * (Math.PI / 180)
+}
+
 function Map({
     width = 700,
     height = 700,
@@ -35,6 +52,11 @@ function Map({
         .translate([height / 2, width / 2]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
+
+    const displayed_radius = calculate_distance(
+        projection.invert([width / 2, height / 2]),
+        projection.invert([0, height / 2]),
+    );
 
     const lines = spots
         .filter(spot => enabled_bands[spot.Band])
@@ -70,6 +92,8 @@ function Map({
             cy={height / 2}
             style={{fill: "none", stroke: "black"}}
         />
+
+        <text x="0" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
 
         <g clipPath="url(#map-clip)">
             <g>
