@@ -72,29 +72,23 @@ function Map({
         />
 
         <g clipPath="url(#map-clip)">
-            <g className="graticule">
-                <path
-                    fill="none"
-                    stroke="#eee"
-                    d={path_generator(graticule)}
-                ></path>
+            <g>
+                <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
             </g>
-            <g className="map">
-                {
-                    dxcc_map.features.map(shape => {
-                        return (
-                            <path
-                                fill="#def7cf"
-                                stroke="#777"
-                                key={shape.properties.dxcc_name}
-                                d={path_generator(shape)}>
-                                <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
-                            </path>
-                        )
-                    })
-                }
-            </g>
-            <g className="lines">
+            <g>{
+                dxcc_map.features.map(shape => {
+                    return (
+                        <path
+                            fill="#def7cf"
+                            stroke="#777"
+                            key={shape.properties.dxcc_name}
+                            d={path_generator(shape)}>
+                            <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
+                        </path>
+                    )
+                })
+            }</g>
+            <g>
                 {lines.map((line, index) => {
                     return <path
                         key={index}
@@ -113,7 +107,7 @@ function Map({
                     ></path>;
                 })}
             </g>
-            <g className="night">{
+            <g>{
                 night_enabled ?
                     <path
                         style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
