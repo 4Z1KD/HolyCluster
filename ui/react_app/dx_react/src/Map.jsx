@@ -39,7 +39,11 @@ function Map({
             <g className="map">
                 {
                     dxcc_map.features.map(shape => {
-                        return <path fill="#def7cf" stroke="#777" d={path_generator(shape)}/>
+                        return (
+                            <path fill="#def7cf" stroke="#777" d={path_generator(shape)}>
+                                <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
+                            </path>
+                        )
                     })
                 }
             </g>
