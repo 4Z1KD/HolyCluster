@@ -28,11 +28,16 @@ function Map({
 }) {
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
-        .fitSize([width, height], dxcc_map);
+        .fitSize([width, height], dxcc_map)
+        .translate([height / 2, width / 2]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
 
-    return <svg className="aspect-square w-full" width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    return <svg
+        className="aspect-square w-full self-center"
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}>
         <defs>
             <clipPath id="map-clip">
                 <circle r={Math.min(width / 2, height / 2)} cx={width / 2} cy={height / 2}/>

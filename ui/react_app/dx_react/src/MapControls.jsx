@@ -16,7 +16,7 @@ function MapControls({
     }
 
     return (
-        <div className="relative bottom-0 p-3 space-x-4">
+        <div className="relative w-full bottom-0 p-3 space-x-4 self-end">
             <select className="rounded-lg px-4 py-2" onChange={on_projection_change}>
                 {projection_types.map(type => <option key={type} value={type}>{type}</option>)}
             </select>

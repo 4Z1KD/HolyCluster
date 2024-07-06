@@ -5,8 +5,8 @@ import { useState } from "react";
 function MainContainer() {
     const main_squares_classes = [
         "w-full",
-        "flex-auto",
-        "p-5",
+        "flex",
+        "p-0",
         "aspect-square",
         "text-center",
     ].join(" ");
@@ -20,7 +20,7 @@ function MainContainer() {
             Band list
             </div>
             <div className="flex divide-x divide-slate-300">
-                <div className={main_squares_classes}>
+                <div className={`${main_squares_classes} flex-wrap`}>
                     <Map projection_type={projection_type} night_enabled={night_enabled}/>
                     <MapControls
                         set_projection_type={set_projection_type}
