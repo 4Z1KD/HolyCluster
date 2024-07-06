@@ -23,6 +23,8 @@ function get_night_circle() {
 function Map({
     width = 700,
     height = 700,
+    spots = [],
+    band_colors = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
@@ -32,6 +34,22 @@ function Map({
         .translate([height / 2, width / 2]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
+
+    const lines = spots.map(spot => {
+        return {
+            type: "LineString",
+            coordinates: [
+                spot.spotter_loc,
+                spot.dx_loc,
+            ],
+            properties: {
+                // Just temporary until we have proper API
+                band: spot.Band,
+                freq: Number(spot.Frequency) * 1000,
+                mode: spot.Mode
+            }
+        }
+    });
 
     return <svg
         className="aspect-square w-full self-center"
@@ -73,7 +91,25 @@ function Map({
                     })
                 }
             </g>
-            <g className="lines"></g>
+            <g className="lines">
+                {lines.map((line, index) => {
+                    return <path
+                        key={index}
+                        fill="none"
+                        stroke={band_colors[line.properties.band]}
+                        onMouseOver={event => {
+                            event.target.style["stroke-width"] = "5px"
+                            event.target.style.filter = "brightness(110%)"
+                        }}
+                        onMouseLeave={event => {
+                            event.target.style["stroke-width"] = ""
+                            event.target.style.filter = ""
+                        }}
+                        strokeWidth="3px"
+                        d={path_generator(line)}
+                    ></path>
+                })}
+            </g>
             <g className="night">{
                 night_enabled ?
                     <path
