@@ -12,6 +12,7 @@ function MainContainer() {
     ].join(" ");
 
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
+    const [night_enabled, set_night] = useState(false);
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
@@ -20,8 +21,11 @@ function MainContainer() {
             </div>
             <div className="flex divide-x divide-slate-300">
                 <div className={main_squares_classes}>
-                    <Map projection_type={projection_type}/>
-                    <MapControls set_projection_type={set_projection_type}/>
+                    <Map projection_type={projection_type} night_enabled={night_enabled}/>
+                    <MapControls
+                        set_projection_type={set_projection_type}
+                        set_night={set_night}
+                    />
                 </div>
                 <div className={main_squares_classes}>Spots</div>
             </div>

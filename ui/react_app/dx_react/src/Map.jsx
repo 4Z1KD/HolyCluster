@@ -1,12 +1,29 @@
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
+import { century, equationOfTime, declination } from "solar-calculator";
 import dxcc_map_raw from "./dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
+function get_sun_coordinates() {
+    const now = new Date
+    const day = new Date(+now).setUTCHours(0, 0, 0, 0)
+    const t = century(now)
+    const longitude = (day - now) / 864e5 * 360 - 180
+    return [longitude - equationOfTime(t) / 4, declination(t)]
+}
+
+function get_night_circle() {
+    const antipode = ([longitude, latitude]) => [longitude + 180, -latitude]
+    return d3.geoCircle()
+        .radius(90)
+        .center(antipode(get_sun_coordinates()))()
+}
+
 function Map({
     width = 700,
     height = 700,
+    night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
     const projection = d3["geo" + projection_type]()
@@ -40,7 +57,11 @@ function Map({
                 {
                     dxcc_map.features.map(shape => {
                         return (
-                            <path fill="#def7cf" stroke="#777" d={path_generator(shape)}>
+                            <path
+                                fill="#def7cf"
+                                stroke="#777"
+                                key={shape.properties.dxcc_name}
+                                d={path_generator(shape)}>
                                 <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
                             </path>
                         )
@@ -48,6 +69,13 @@ function Map({
                 }
             </g>
             <g className="lines"></g>
+            <g className="night">{
+                night_enabled ?
+                    <path
+                        style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
+                        d={path_generator(get_night_circle())}
+                    /> : ""
+            }</g>
         </g>
     </svg>;
 }
