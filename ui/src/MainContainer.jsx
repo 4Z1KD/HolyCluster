@@ -1,6 +1,7 @@
 import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
 import Bands from "./Bands.jsx";
+import BandSpots from "./BandSpots.jsx";
 import { useState } from "react";
 import spots_data from "./spots.json";
 
@@ -21,7 +22,6 @@ function MainContainer() {
     const main_squares_classes = [
         "w-full",
         "flex",
-        "p-0",
         "aspect-square",
         "text-center",
     ].join(" ");
@@ -36,7 +36,7 @@ function MainContainer() {
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
-            <div className="p-0 w-full mx-auto rounded-t-2xl border-b-solid border-b-sky border-b-2">
+            <div className="p-0 w-full rounded-t-2xl border-b-solid border-b-sky border-b-2">
                 <Bands
                     band_colors={band_colors}
                     set_enabled_bands={set_enabled_bands}
@@ -57,7 +57,17 @@ function MainContainer() {
                         set_night={set_night}
                     />
                 </div>
-                <div className={main_squares_classes}>Spots</div>
+                <div className={`${main_squares_classes} flex content-start flex-wrap gap-2 p-4`}>
+                    {Object.entries(band_colors).map(([band, color]) => {
+                        return <BandSpots
+                            key={band}
+                            band={band}
+                            color={color}
+                            spots={spots}
+                            enabled={enabled_bands[band]}
+                        />;
+                    })}
+                </div>
             </div>
         </div>
     );
