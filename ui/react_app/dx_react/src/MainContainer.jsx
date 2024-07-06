@@ -1,5 +1,6 @@
 import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
+import Bands from "./Bands.jsx";
 import { useState } from "react";
 import spots_data from "./spots.json";
 
@@ -31,8 +32,8 @@ function MainContainer() {
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
-            <div className="p-5 w-full mx-auto rounded-t-2xl border-b-solid border-b-sky border-b-2">
-            Band list
+            <div className="p-0 w-full mx-auto rounded-t-2xl border-b-solid border-b-sky border-b-2">
+                <Bands band_colors={band_colors}/>
             </div>
             <div className="flex divide-x divide-slate-300">
                 <div className={`${main_squares_classes} flex-wrap`}>
