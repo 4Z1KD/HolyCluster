@@ -105,6 +105,7 @@ function Map({
                         spot={spot}
                         color={band_colors[spot.Band]}
                         path_generator={path_generator}
+                        projection={projection}
                     ></Spot>;
                 })}
             </g>
