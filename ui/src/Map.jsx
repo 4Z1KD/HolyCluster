@@ -3,6 +3,8 @@ import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 import dxcc_map_raw from "./dxcc_map.json";
 
+import Spot from "./Spot.jsx";
+
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
 function get_sun_coordinates() {
@@ -58,24 +60,6 @@ function Map({
         projection.invert([0, height / 2]),
     );
 
-    const lines = spots
-        .filter(spot => enabled_bands[spot.Band])
-        .map(spot => {
-        return {
-            type: "LineString",
-            coordinates: [
-                spot.spotter_loc,
-                spot.dx_loc,
-            ],
-            properties: {
-                // Just temporary until we have proper API
-                band: spot.Band,
-                freq: Number(spot.Frequency) * 1000,
-                mode: spot.Mode
-            }
-        }
-    });
-
     return <svg
         className="aspect-square w-full self-center"
         width={width}
@@ -113,22 +97,15 @@ function Map({
                 })
             }</g>
             <g>
-                {lines.map((line, index) => {
-                    return <path
+                {spots
+                    .filter(spot => enabled_bands[spot.Band])
+                    .map((spot, index) => {
+                    return <Spot
                         key={index}
-                        fill="none"
-                        stroke={band_colors[line.properties.band]}
-                        onMouseOver={event => {
-                            event.target.style["stroke-width"] = "5px"
-                            event.target.style.filter = "brightness(110%)"
-                        }}
-                        onMouseLeave={event => {
-                            event.target.style["stroke-width"] = ""
-                            event.target.style.filter = ""
-                        }}
-                        strokeWidth="3px"
-                        d={path_generator(line)}
-                    ></path>;
+                        spot={spot}
+                        color={band_colors[spot.Band]}
+                        path_generator={path_generator}
+                    ></Spot>;
                 })}
             </g>
             <g>{
