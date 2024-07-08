@@ -90,45 +90,38 @@ function Map({
         </defs>
         <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
-        <text x="0" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
+        <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
 
         <g clipPath="url(#map-clip)">
-            <g>
-                <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
-            </g>
-            <g>{
-                dxcc_map.features.map(shape => {
-                    return (
-                        <path
-                            fill="#def7cf"
-                            stroke="#777"
-                            key={shape.properties.dxcc_name}
-                            d={path_generator(shape)}>
-                            <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
-                        </path>
-                    )
-                })
-            }</g>
-            <g>
-                {spots
-                    .filter(spot => enabled_bands[spot.Band])
-                    .map((spot, index) => {
-                    return <Spot
-                        key={index}
-                        spot={spot}
-                        color={band_colors[spot.Band]}
-                        path_generator={path_generator}
-                        projection={projection}
-                    ></Spot>;
-                })}
-            </g>
-            <g>{
-                night_enabled ?
+            <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
+            {dxcc_map.features.map(shape => {
+                return (
                     <path
-                        style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
-                        d={path_generator(get_night_circle())}
-                    /> : ""
-            }</g>
+                        fill="#def7cf"
+                        stroke="#777"
+                        key={shape.properties.dxcc_name}
+                        d={path_generator(shape)}>
+                        <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
+                    </path>
+                )
+            })}
+            {spots
+                .filter(spot => enabled_bands[spot.Band])
+                .map((spot, index) => {
+                return <Spot
+                    key={index}
+                    spot={spot}
+                    color={band_colors[spot.Band]}
+                    path_generator={path_generator}
+                    projection={projection}
+                ></Spot>;
+            })}
+            {night_enabled ?
+                <path
+                    style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
+                    d={path_generator(get_night_circle())}
+                /> : ""
+            }
         </g>
     </svg>;
 }
