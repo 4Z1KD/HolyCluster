@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 import dxcc_map_raw from "./dxcc_map.json";
+import { useRef, useState, useEffect } from "react";
 
 import Spot from "./Spot.jsx";
 
@@ -40,42 +41,54 @@ function to_radian(deg) {
 }
 
 function Map({
-    width = 700,
-    height = 700,
     spots = [],
     band_colors = {},
     enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
+    const svg_ref = useRef(null);
+    const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+
+    const center_x = dimensions.width / 2;
+    const center_y = dimensions.height / 2;
+    const radius = Math.min(center_x, center_y) - 50;
+
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
-        .fitSize([width, height], dxcc_map)
-        .translate([height / 2, width / 2]);
+        .fitSize([dimensions.width, dimensions.height], dxcc_map)
+        .translate([dimensions.height / 2, dimensions.width / 2]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
 
     const displayed_radius = calculate_distance(
-        projection.invert([width / 2, height / 2]),
-        projection.invert([0, height / 2]),
+        projection.invert([dimensions.width / 2, dimensions.height / 2]),
+        projection.invert([0, dimensions.height / 2]),
     );
 
-    return <svg
-        className="aspect-square w-full self-center"
-        width={width}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}>
+    // Auto resize effect hook that updates the dimensions state
+    useEffect(() => {
+    const resize = () => {
+        const { width, height } = svg_ref.current.getBoundingClientRect();
+        set_dimensions({ width, height });
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
+    }, []);
+
+
+    return <svg ref={svg_ref} className="aspect-square w-full self-center">
         <defs>
             <clipPath id="map-clip">
-                <circle r={Math.min(width / 2, height / 2)} cx={width / 2} cy={height / 2}/>
+                <circle r={radius} cx={center_x} cy={center_y}/>
             </clipPath>
         </defs>
-        <circle
-            r={Math.min(width / 2, height / 2)}
-            cx={width / 2}
-            cy={height / 2}
-            style={{fill: "none", stroke: "black"}}
-        />
+        <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
         <text x="0" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
 
