@@ -54,6 +54,21 @@ function Map({
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - 50;
 
+    const angles_radius = radius + 25;
+    const degrees_diff = 15;
+    const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
+        .map(x => {
+            const angle_degrees = x * degrees_diff;
+            const angle_radians = to_radian(angle_degrees - 90);
+            return [
+                angle_degrees,
+                [
+                    Math.cos(angle_radians) * angles_radius + center_x,
+                    Math.sin(angle_radians) * angles_radius + center_y,
+                ],
+            ]
+        })
+
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
         .fitSize([dimensions.width, dimensions.height], dxcc_map)
@@ -91,6 +106,14 @@ function Map({
         <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
         <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
+
+        {angle_labels.map(([label, [x, y]]) => <text
+            dominant-baseline="middle"
+            textAnchor="middle"
+            x={x}
+            y={y}
+            fontSize="14px"
+        >{label}°</text>)}
 
         <g clipPath="url(#map-clip)">
             <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
