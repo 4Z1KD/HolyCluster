@@ -14,11 +14,9 @@ function MapControls({
 }) {
     const [locator, set_locator] = useState("");
 
-    function on_projection_change(event) {
-        set_projection_type(event.target.value);
-    }
-    function on_night_change() {
-        set_night(previous_state => !previous_state)
+    function reset_map() {
+        set_locator("");
+        set_station(new Maidenhead(0, 0));
     }
 
     return (
@@ -36,17 +34,24 @@ function MapControls({
                         new_maidenhead.locator = new_value;
                         set_station(new_maidenhead);
                     } else if (new_value.length == 0) {
-                        set_station(new Maidenhead(0, 0));
+                        reset_map()
                     }
                 }
             }/>
-            <select className="rounded-lg px-4 py-2" onChange={on_projection_change}>
+            <select className="rounded-lg px-4 py-2" onChange={() => set_projection_type(event.target.value)}>
                 {projection_types.map(type => <option key={type} value={type}>{type}</option>)}
             </select>
-            <button className="text-white bg-blue-600 active:bg-blue-800 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2">
+            <button
+                className="text-white bg-blue-600 active:bg-blue-800 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
+                onClick={reset_map}
+            >
                 Reset
             </button>
-            <input type="checkbox" autoComplete="off" onChange={on_night_change}></input>
+            <input
+                type="checkbox"
+                autoComplete="off"
+                onChange={() => set_night(previous_state => !previous_state)}
+            ></input>
             <label className="text-slate-700">Show night</label>
         </div>
     );
