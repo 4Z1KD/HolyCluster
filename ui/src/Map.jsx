@@ -50,11 +50,12 @@ function Map({
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
 
+    const inner_padding = 50;
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
-    const radius = Math.min(center_x, center_y) - 50;
+    const radius = Math.min(center_x, center_y) - inner_padding;
 
-    const angles_radius = radius + 25;
+    const angles_radius = radius + inner_padding / 2;
     const degrees_diff = 15;
     const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
         .map(x => {
@@ -71,14 +72,17 @@ function Map({
 
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
-        .fitSize([dimensions.width, dimensions.height], dxcc_map)
-        .translate([dimensions.height / 2, dimensions.width / 2]);
+        .fitSize(
+            [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
+            dxcc_map
+        )
+        .translate([center_x, center_y]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
 
     const displayed_radius = calculate_distance(
-        projection.invert([dimensions.width / 2, dimensions.height / 2]),
-        projection.invert([0, dimensions.height / 2]),
+        projection.invert([center_x, center_y]),
+        projection.invert([center_x + radius, center_y]),
     );
 
     // Auto resize effect hook that updates the dimensions state
