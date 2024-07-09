@@ -46,6 +46,7 @@ function Map({
     enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
+    center = [0, 0],
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -70,12 +71,14 @@ function Map({
             ]
         })
 
+    const [center_lat, center_lon] = center;
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
             dxcc_map
         )
+        .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
     const path_generator = d3.geoPath().projection(projection);
     const graticule = d3.geoGraticule10();
@@ -112,7 +115,8 @@ function Map({
         <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
 
         {angle_labels.map(([label, [x, y]]) => <text
-            dominant-baseline="middle"
+            key={label}
+            dominantBaseline="middle"
             textAnchor="middle"
             x={x}
             y={y}
