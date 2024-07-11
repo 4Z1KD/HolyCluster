@@ -4,7 +4,7 @@ import os
 
 import fastapi
 from fastapi.staticfiles import StaticFiles
-import mimetypes
+from starlette.websockets import WebSocketDisconnect
 
 import RadioController
 
@@ -51,10 +51,13 @@ async def startup_event():
 async def websocket_endpoint(websocket: fastapi.WebSocket):
     await websocket.accept()
     while True:
-        data = await websocket.receive_json()
-        app.state.radio_controller.set_mode(data["mode"])
-        app.state.radio_controller.set_frequency("A", data["freq"])
-        await websocket.send_json({"status": 1})
+        try:
+            data = await websocket.receive_json()
+            app.state.radio_controller.set_mode(data["mode"])
+            app.state.radio_controller.set_frequency("A", data["freq"])
+            await websocket.send_json({"status": 1})
+        except WebSocketDisconnect:
+            break
 
 
 app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
