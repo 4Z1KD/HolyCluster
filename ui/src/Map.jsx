@@ -3,6 +3,7 @@ import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 import dxcc_map_raw from "./dxcc_map.json";
 import { useRef, useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 import Spot from "./Spot.jsx";
 
@@ -104,6 +105,20 @@ function Map({
     }, []);
 
 
+    const host = window.location.host;
+    const protocol = window.location.protocol;
+    const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
+
+    const { sendJsonMessage, readyState } = useWebSocket(
+        websocket_url,
+        { share: false, shouldReconnect: () => true },
+    )
+    function on_spot_click(spot) {
+        if (readyState == ReadyState.OPEN) {
+            sendJsonMessage({mode: spot.Mode, freq: spot.Frequency})
+        }
+    }
+
     return <svg ref={svg_ref} className="aspect-square w-full self-center">
         <defs>
             <clipPath id="map-clip">
@@ -145,6 +160,7 @@ function Map({
                     color={band_colors[spot.Band]}
                     path_generator={path_generator}
                     projection={projection}
+                    on_spot_click={on_spot_click}
                 ></Spot>;
             })}
             {night_enabled ?
