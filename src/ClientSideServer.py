@@ -6,10 +6,11 @@ import mimetypes
 
 import RadioController
 
+# This is a work around for a bug of mimetypes in the windows registry
 mimetypes.init()
 mimetypes.add_type("text/javascript", ".js")
 
-UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui")
+UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui/dist")
 
 app = fastapi.FastAPI()
 
