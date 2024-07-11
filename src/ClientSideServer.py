@@ -34,4 +34,4 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
         await websocket.send_json({"status": 1})
 
 
-app.mount("/", StaticFiles(directory=UI_DIR), name="static")
+app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
