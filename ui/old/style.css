@@ -15,22 +15,24 @@ body {
     display: flex;
     width: 80%;
     height: 90%;
-    margin: 2% 10% 5% 10%;
+    margin: 0 10% 5% 10%;
     border: black solid 1px;
+    border-radius: 20px;
 }
 
 .bands {
     display: flex;
     justify-content: center;
     border-bottom: black solid 1px;
+    padding: 0.5rem;
 }
 
 .band {
     width: 3rem;
     height: 100%;
-    border-left: black solid 1px;
-    border-right: black solid 1px;
+    border: black solid 1px;
     margin: 0.2px 0.5rem 0.2px 0.5rem;
+    border-radius: 5px;
 
     display: flex;
     flex-wrap: wrap;
@@ -47,6 +49,10 @@ body {
     flex: 50%;
     width: 100%;
     border-right: black solid 1px;
+}
+
+#map-container {
+    padding: 2rem;
 }
 
 #alerts {

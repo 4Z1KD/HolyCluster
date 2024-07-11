@@ -52,7 +52,7 @@ d3.json("./dxcc.geojson").then(data => {
     d3.select("#prjection-reset").on("click", _ => holy_map.reset_view())
 
     d3.select("#night").on("change", function() {
-        holy_map.night_enabled = this.checked
+        holy_map.night.enabled = this.checked
     })
 
     const band_elements = d3.selectAll(".bands")
@@ -64,7 +64,12 @@ d3.json("./dxcc.geojson").then(data => {
         .style("background-color", d => d[1])
 
     band_elements.append("div").text(d => d[0]).style("font-weight", "bold")
-    band_elements.append("input").attr("type", "checkbox")
+    band_elements.append("input")
+        .attr("type", "checkbox")
+        .attr("checked", true)
+        .on("click", (event, data) => {
+            holy_map.set_band_state(data[0], event.target.checked)
+        })
 
     return holy_map
 }).then(holy_map => {
