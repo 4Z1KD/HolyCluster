@@ -1,4 +1,4 @@
-function Bands({
+function Filters({
     band_colors = {},
     enabled_bands = {},
     set_enabled_bands,
@@ -43,4 +43,4 @@ function Bands({
     );
 }
 
-export default Bands;
+export default Filters;

@@ -1,6 +1,6 @@
 import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
-import Bands from "./Bands.jsx";
+import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
 
 import { useState } from "react";
@@ -41,7 +41,7 @@ function MainContainer() {
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
             <div className="p-0 w-full rounded-t-2xl border-b-solid border-b-sky border-b-2">
-                <Bands
+                <Filters
                     band_colors={band_colors}
                     set_enabled_bands={set_enabled_bands}
                     enabled_bands={enabled_bands}
