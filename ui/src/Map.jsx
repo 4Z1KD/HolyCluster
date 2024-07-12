@@ -1,9 +1,11 @@
 import * as d3 from "d3";
+import { useRef, useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import Maidenhead from "maidenhead";
+
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 import dxcc_map_raw from "./dxcc_map.json";
-import { useRef, useState, useEffect } from "react";
-import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 import Spot from "./Spot.jsx";
 
@@ -48,6 +50,7 @@ function Map({
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
     center = [0, 0],
+    set_station,
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -116,7 +119,20 @@ function Map({
         }
     }
 
-    return <svg ref={svg_ref} className="aspect-square w-full self-center">
+    return <svg
+        ref={svg_ref}
+        className="aspect-square w-full self-center"
+        onClick={event => {
+            const dims = svg_ref.current.getBoundingClientRect();
+            const x = event.clientX - dims.left;
+            const y = event.clientY - dims.top;
+            const distance_from_center = Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+            if (event.detail == 2 && distance_from_center <= radius) {
+                const [lon, lat] = projection.invert([x, y]);
+                set_station(new Maidenhead(lat, lon));
+            }
+        }}
+    >
         <defs>
             <clipPath id="map-clip">
                 <circle r={radius} cx={center_x} cy={center_y}/>
@@ -126,24 +142,28 @@ function Map({
 
         <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
 
-        {angle_labels.map(([label, [x, y]]) => <text
-            key={label}
-            dominantBaseline="middle"
-            textAnchor="middle"
-            x={x}
-            y={y}
-            fontSize="14px"
-        >{label}°</text>)}
+        <g>
+            {angle_labels.map(([label, [x, y]]) => <text
+                key={label}
+                dominantBaseline="middle"
+                textAnchor="middle"
+                x={x}
+                y={y}
+                fontSize="14px"
+            >{label}°</text>)}
+        </g>
 
         <g clipPath="url(#map-clip)">
-            <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
+            <path fill="none" stroke="#eee" pointerEvents="none" d={path_generator(graticule)}></path>
             {dxcc_map.features.map(shape => {
                 return (
                     <path
                         fill="#def7cf"
                         stroke="#777"
+                        pointerEvents="none"
                         key={shape.properties.dxcc_name}
-                        d={path_generator(shape)}>
+                        d={path_generator(shape)}
+                    >
                         <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
                     </path>
                 )

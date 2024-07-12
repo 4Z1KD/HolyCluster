@@ -63,6 +63,7 @@ function MainContainer() {
                         night_enabled={night_enabled}
                         enabled_bands={enabled_bands}
                         center={Maidenhead.toLatLon(station.locator)}
+                        set_station={set_station}
                     />
                     <MapControls
                         set_projection_type={set_projection_type}
