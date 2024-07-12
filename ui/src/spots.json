@@ -61,7 +61,7 @@
     "Comment": "LO26",
     "Flag": "ru",
     "Band": 15.0,
-    "Mode": "USB",
+    "Mode": "SSB",
     "Continent_dx": "AS",
     "Continent_spotter": "EU",
     "DXLocator": "KO91OP"
@@ -107,7 +107,7 @@
     "Comment": "USB",
     "Flag": "ro",
     "Band": 15.0,
-    "Mode": "USB",
+    "Mode": "SSB",
     "Continent_dx": "EU",
     "Continent_spotter": "EU",
     "DXLocator": "KN34BJ"

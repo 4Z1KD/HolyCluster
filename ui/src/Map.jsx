@@ -109,10 +109,7 @@ function Map({
     const protocol = window.location.protocol;
     const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
 
-    const { sendJsonMessage, readyState } = useWebSocket(
-        websocket_url,
-        { share: false, shouldReconnect: () => true },
-    )
+    const { sendJsonMessage, readyState } = useWebSocket(websocket_url);
     function on_spot_click(spot) {
         if (readyState == ReadyState.OPEN) {
             sendJsonMessage({mode: spot.Mode, freq: spot.Frequency})

@@ -19,7 +19,9 @@ const band_colors = {
     12: "#5daad8",
     10: "#8187c7",
     6: "#c56bba",
-}
+};
+
+const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
 
 function MainContainer() {
     const main_squares_classes = [
@@ -37,14 +39,19 @@ function MainContainer() {
     const [enabled_bands, set_enabled_bands] = useState(
         Object.fromEntries(Object.keys(band_colors).map(band => [band, true]))
     )
+    const [enabled_modes, set_enabled_modes] = useState(
+        Object.fromEntries(modes.map(mode => [mode, true]))
+    )
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
             <div className="p-0 w-full rounded-t-2xl border-b-solid border-b-sky border-b-2">
                 <Filters
                     band_colors={band_colors}
-                    set_enabled_bands={set_enabled_bands}
                     enabled_bands={enabled_bands}
+                    set_enabled_bands={set_enabled_bands}
+                    enabled_modes={enabled_modes}
+                    set_enabled_modes={set_enabled_modes}
                 />
             </div>
             <div className="flex divide-x divide-slate-300">
@@ -71,6 +78,7 @@ function MainContainer() {
                             color={color}
                             spots={spots}
                             enabled={enabled_bands[band]}
+                            enabled_modes={enabled_modes}
                         />;
                     })}
                 </div>
