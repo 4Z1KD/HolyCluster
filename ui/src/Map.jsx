@@ -127,6 +127,7 @@ function Map({
             const x = event.clientX - dims.left;
             const y = event.clientY - dims.top;
             const distance_from_center = Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+
             if (event.detail == 2 && distance_from_center <= radius) {
                 const [lon, lat] = projection.invert([x, y]);
                 const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
@@ -144,7 +145,12 @@ function Map({
         </defs>
         <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
-        <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
+        <text
+            x="30"
+            y="30"
+            style={{font: "bold 20px sans-serif", userSelect: "none"}}>
+            Radius: {Math.round(displayed_radius)} KM
+        </text>
 
         <g>
             {angle_labels.map(([label, [x, y]]) => <text
