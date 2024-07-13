@@ -10,13 +10,11 @@ const projection_types = [
 function MapControls({
     set_projection_type,
     set_night,
-    set_station
+    location,
+    set_location,
 }) {
-    const [locator, set_locator] = useState("");
-
     function reset_map() {
-        set_locator("");
-        set_station(new Maidenhead(0, 0));
+        set_location({displayed_locator: "", location: [0, 0]})
     }
 
     return (
@@ -25,16 +23,20 @@ function MapControls({
             <input
                 className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                value={locator}
+                value={location.displayed_locator}
                 onChange={event => {
                     const new_value = event.target.value;
-                    set_locator(new_value);
                     if (Maidenhead.valid(new_value)) {
-                        const new_maidenhead = new Maidenhead();
-                        new_maidenhead.locator = new_value;
-                        set_station(new_maidenhead);
+                        const [lat, lon] = Maidenhead.toLatLon(new_value);
+                        set_location({displayed_locator: new_value, location: [lon, lat]})
                     } else if (new_value.length == 0) {
                         reset_map()
+                    } else {
+                        set_location(old_location => {
+                            const new_location = structuredClone(old_location);
+                            new_location.displayed_locator = new_value;
+                            return new_location;
+                        })
                     }
                 }
             }/>

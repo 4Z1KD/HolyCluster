@@ -44,13 +44,13 @@ function to_radian(deg) {
 }
 
 function Map({
+    location,
+    set_location,
     spots = [],
     band_colors = {},
     enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
-    center = [0, 0],
-    set_station,
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -75,7 +75,7 @@ function Map({
             ]
         })
 
-    const [center_lat, center_lon] = center;
+    const [center_lon, center_lat] = location.location;
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
         .fitSize(
@@ -129,7 +129,11 @@ function Map({
             const distance_from_center = Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
             if (event.detail == 2 && distance_from_center <= radius) {
                 const [lon, lat] = projection.invert([x, y]);
-                set_station(new Maidenhead(lat, lon));
+                const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
+                set_location({
+                    displayed_locator: displayed_locator,
+                    location: [ lon, lat ],
+                });
             }
         }}
     >

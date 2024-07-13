@@ -34,7 +34,12 @@ function MainContainer() {
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
     const [night_enabled, set_night] = useState(false);
     const [spots, _] = useState(spots_data);
-    const [station, set_station] = useState(new Maidenhead(0, 0));
+
+    const [location, set_location] = useState({
+        displayed_locator: "",
+        // Longitude, latitude
+        location: [0, 0]
+    });
 
     const [enabled_bands, set_enabled_bands] = useState(
         Object.fromEntries(Object.keys(band_colors).map(band => [band, true]))
@@ -62,13 +67,14 @@ function MainContainer() {
                         projection_type={projection_type}
                         night_enabled={night_enabled}
                         enabled_bands={enabled_bands}
-                        center={Maidenhead.toLatLon(station.locator)}
-                        set_station={set_station}
+                        location={location}
+                        set_location={set_location}
                     />
                     <MapControls
                         set_projection_type={set_projection_type}
                         set_night={set_night}
-                        set_station={set_station}
+                        location={location}
+                        set_location={set_location}
                     />
                 </div>
                 <div className={`${main_squares_classes} flex content-start flex-wrap gap-2 p-4`}>
