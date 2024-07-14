@@ -5,6 +5,9 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
+import MapAngles from "./MapAngles.jsx";
+
+import { to_radian } from "../utils.js";
 import dxcc_map_raw from "../assets/dxcc_map.json";
 import Spot from "./Spot.jsx";
 
@@ -38,10 +41,6 @@ function calculate_distance([lat1, lon1], [lat2, lon2]) {
     return d;
 }
 
-function to_radian(deg) {
-  return deg * (Math.PI / 180)
-}
-
 function Map({
     location,
     set_location,
@@ -58,21 +57,6 @@ function Map({
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
-
-    const angles_radius = radius + inner_padding / 2;
-    const degrees_diff = 15;
-    const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
-        .map(x => {
-            const angle_degrees = x * degrees_diff;
-            const angle_radians = to_radian(angle_degrees - 90);
-            return [
-                angle_degrees,
-                [
-                    Math.cos(angle_radians) * angles_radius + center_x,
-                    Math.sin(angle_radians) * angles_radius + center_y,
-                ],
-            ]
-        })
 
     const [center_lon, center_lat] = location.location;
     const projection = d3["geo" + projection_type]()
@@ -151,16 +135,11 @@ function Map({
             Radius: {Math.round(displayed_radius)} KM
         </text>
 
-        <g>
-            {angle_labels.map(([label, [x, y]]) => <text
-                key={label}
-                dominantBaseline="middle"
-                textAnchor="middle"
-                x={x}
-                y={y}
-                fontSize="14px"
-            >{label}°</text>)}
-        </g>
+        <MapAngles
+            center_x={center_x}
+            center_y={center_y}
+            radius={radius + inner_padding / 2}
+        />
 
         <g clipPath="url(#map-clip)">
             <path fill="none" stroke="#eee" pointerEvents="none" d={path_generator(graticule)}></path>
