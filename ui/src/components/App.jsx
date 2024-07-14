@@ -5,7 +5,7 @@ function App() {
     return (
         <>
         <div className="flex flex-row items-center mx-20 my-2 gap-x-6">
-            <h1 className="w-34 text-5xl font-bold text-slate-600">The holly cluster</h1>
+            <h1 className="w-34 text-5xl font-bold text-slate-600">The holy cluster</h1>
             <img
                 src={holy_cluster_icon}
                 className="w-20"
