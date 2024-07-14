@@ -2,11 +2,10 @@ import * as d3 from "d3";
 import { useRef, useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import Maidenhead from "maidenhead";
-
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
-import dxcc_map_raw from "./dxcc_map.json";
 
+import dxcc_map_raw from "../assets/dxcc_map.json";
 import Spot from "./Spot.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);

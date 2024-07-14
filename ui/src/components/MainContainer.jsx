@@ -6,7 +6,8 @@ import BandSpots from "./BandSpots.jsx";
 import { useState } from "react";
 import Maidenhead from "maidenhead";
 
-import spots_data from "./spots.json";
+// This is temporary mock data
+import spots_data from "../assets/spots.json";
 
 const band_colors = {
     160: "#f65356",
