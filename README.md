@@ -24,7 +24,7 @@
 pip install -e .
 ```
 
-# usage 💾
+# Usage 💾
 For now, the best way to run the application is to start the client side server:
 ```bash
 uvicorn --reload ClientSideServer:app
@@ -38,6 +38,6 @@ Then, go to The main page at <http://localhost:8000/index.html>.
 
 in the future it will be compiled into an executable 💾
 
-# progress 📈
+# Progress 📈
 
 since this is a work in progress, please expect poor performance, bugs, runtime issues and more.
