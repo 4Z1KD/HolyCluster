@@ -1,4 +1,8 @@
+<div align="center">
+
 ![icon](https://github.com/4Z1KD/HolyCluster/assets/24712835/9f4846ae-ac57-4169-9c6f-2c2b506707ab)
+
+</div>
 
 # HolyCluster 🌐
 This is an ongoing effort to create a visualization of the ham radio cluster<br>
