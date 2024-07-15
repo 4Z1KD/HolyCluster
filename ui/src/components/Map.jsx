@@ -52,13 +52,15 @@ function Map({
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+    const max_radius = 20000;
+    const [radius_in_km, set_radius_in_km] = useState(max_radius);
 
     const inner_padding = 50;
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
-
     const [center_lon, center_lat] = location.location;
+
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
         .fitSize(
@@ -67,28 +69,36 @@ function Map({
         )
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
-    const path_generator = d3.geoPath().projection(projection);
-    const graticule = d3.geoGraticule10();
 
-    const displayed_radius = calculate_distance(
-        projection.invert([center_x, center_y]),
-        projection.invert([center_x + radius, center_y]),
-    );
+    projection.scale(max_radius / radius_in_km * projection.scale());
+
+    const path_generator = d3.geoPath().projection(projection);
 
     // Auto resize effect hook that updates the dimensions state
     useEffect(() => {
-    const resize = () => {
-        const { width, height } = svg_ref.current.getBoundingClientRect();
-        set_dimensions({ width, height });
-    };
+        const resize = () => {
+            const { width, height } = svg_ref.current.getBoundingClientRect();
+            set_dimensions({ width, height });
+        };
 
-    resize();
-    window.addEventListener("resize", resize);
+        resize();
+        window.addEventListener("resize", resize);
 
-    return () => {
-      window.removeEventListener("resize", resize);
-    };
-    }, []);
+        return () => {
+          window.removeEventListener("resize", resize);
+        };
+    }, [svg_ref]);
+
+    useEffect(() => {
+        const svg = d3.select(svg_ref.current);
+        const zoom = d3.zoom()
+            .scaleExtent([1, 20])
+            .on("zoom", event => {
+                const radius_in_km = (21 - Math.round( event.transform.k)) * 1000;
+                set_radius_in_km(radius_in_km);
+            })
+        svg.call(zoom);
+    }, [radius_in_km])
 
 
     const host = window.location.host;
@@ -132,7 +142,7 @@ function Map({
             x="30"
             y="30"
             style={{font: "bold 20px sans-serif", userSelect: "none"}}>
-            Radius: {Math.round(displayed_radius)} KM
+            Radius: {Math.round(radius_in_km)} KM
         </text>
 
         <MapAngles
@@ -142,7 +152,12 @@ function Map({
         />
 
         <g clipPath="url(#map-clip)">
-            <path fill="none" stroke="#eee" pointerEvents="none" d={path_generator(graticule)}></path>
+            <path
+                fill="none"
+                stroke="#eee"
+                pointerEvents="none"
+                d={path_generator(d3.geoGraticule10())}
+            ></path>
             {dxcc_map.features.map(shape => {
                 return (
                     <path
