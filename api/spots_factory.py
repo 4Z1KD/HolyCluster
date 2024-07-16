@@ -3,35 +3,35 @@ import datetime
 import re
 
 class MockFactory():
-    
+
     @staticmethod
     def generate_random_callsign():
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         digits = "0123456789"
-        
+
         first_letter = random.choice(letters)
         digit = random.choice(digits)
         remaining_letters = ''.join(random.choices(letters, k=random.randint(1, 3)))
-        
+
         callsign = f"{first_letter}{digit}{remaining_letters}"
-        
+
         # Ensure the generated callsign matches the regex pattern
         if re.match(r"^[A-Z][0-9][A-Z]{1,3}$", callsign):
             return callsign
         else:
             return MockFactory.generate_random_callsign()
-    
+
     @staticmethod
     def generate_random_grid_locator():
         letters = "ABCDEFGHIJKLMNOPQRSTUVWX"
         digits = "0123456789"
-        
+
         first_pair = ''.join(random.choices(letters[:18], k=2))  # Choose from A to R
         digit_pair = ''.join(random.choices(digits, k=2))
         second_pair = ''.join(random.choices(letters, k=2))      # Choose from A to X
-        
+
         grid_locator = f"{first_pair}{digit_pair}{second_pair}"
-        
+
         # Ensure the generated grid locator matches the regex pattern
         if re.match(r"^[A-R]{2}[0-9]{2}[A-X]{2}$", grid_locator):
             return grid_locator
@@ -58,7 +58,7 @@ class MockFactory():
             "23cm": (1240000, 1300000),
             "13cm": (2300000, 2450000)
         }
-        
+
         for band, (low, high) in bands.items():
             if low <= frequency_khz <= high:
                 return band
@@ -92,7 +92,7 @@ class MockFactory():
             "Continent_spotter": random.choice(["AS", "NA", "EU", "AF", "SA", "OC"]),
             "DXLocator": MockFactory.generate_random_grid_locator()
         }
-    
+
     @staticmethod
     def generate_random_spots(n):
         return [MockFactory.generate_random_spot() for _ in range(n)]
