@@ -51,15 +51,13 @@ function MainContainer() {
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
-            <div className="p-0 w-full rounded-t-2xl border-b-solid border-b-sky border-b-2">
-                <Filters
-                    band_colors={band_colors}
-                    enabled_bands={enabled_bands}
-                    set_enabled_bands={set_enabled_bands}
-                    enabled_modes={enabled_modes}
-                    set_enabled_modes={set_enabled_modes}
-                />
-            </div>
+            <Filters
+                band_colors={band_colors}
+                enabled_bands={enabled_bands}
+                set_enabled_bands={set_enabled_bands}
+                enabled_modes={enabled_modes}
+                set_enabled_modes={set_enabled_modes}
+            />
             <div className="flex divide-x divide-slate-300">
                 <div className={`${main_squares_classes} flex-wrap divide-y divide-slate-300`}>
                     <Map

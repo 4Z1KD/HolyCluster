@@ -5,37 +5,39 @@ function Filters({
     enabled_modes,
     set_enabled_modes,
 }) {
-    const center_content_classes = [
-        "flex",
-        "justify-around",
-        "px-2",
-        "items-center",
-    ].join(" ");
     const box_container_style = [
         "flex",
+        "flex-wrap",
         "justify-start",
         "h-full",
-        "p-2",
+        "p-1",
         "w-1/2",
+        "inline-block",
     ].join(" ");
     const box_style = [
-        "h-full",
-        "w-20",
+        // Related to the layout of the box itself
+        "flex-grow",
+        "max-w-16",
+        "m-1",
         "rounded-xl",
-        "mx-2",
-        "border-solid",
-        "border-slate-500",
+        "border-slate-400",
         "border-2",
+
+        // Related to the content of each box
+        "flex",
+        "justify-around",
+        "items-center",
+        "p-2",
     ].join(" ");
 
 
     return (
-        <div className="flex flex-row w-full h-16 ">
+        <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
                 {Object.entries(band_colors).map(([band, color]) => {
                     return <div
                         key={band}
-                        className={`${center_content_classes} ${box_style}`}
+                        className={box_style}
                         style={{ backgroundColor: color }}
                     >
                         <span>{band}</span>
@@ -53,7 +55,7 @@ function Filters({
             </div>
             <div className={box_container_style}>
                 {Object.keys(enabled_modes).map(mode => {
-                    return <div key={mode} className={`${center_content_classes} ${box_style}`}>
+                    return <div key={mode} className={box_style}>
                         <span>{mode}</span>
                         <input
                             type="checkbox"
