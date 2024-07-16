@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-function Spot({ spot, color, path_generator, projection }) {
+function Spot({
+    spot,
+    color,
+    path_generator,
+    projection,
+    on_spot_click,
+}) {
     const line = {
         type: "LineString",
         coordinates: [
@@ -34,6 +40,7 @@ function Spot({ spot, color, path_generator, projection }) {
             event.target.style["stroke-width"] = ""
             event.target.style.filter = ""
         }}
+        onClick={() => on_spot_click(spot)}
         strokeWidth="3px"
         d={path_generator(line)}></path>
         <circle
@@ -44,6 +51,7 @@ function Spot({ spot, color, path_generator, projection }) {
             style={{ filter: "brightness(120%)" }}
             onMouseOver={() => set_spotter_hovered(true)}
             onMouseLeave={() => set_spotter_hovered(false)}
+            onClick={() => on_spot_click(spot)}
         >
         <title>Callsign: {spot.Spotter}</title>
         </circle>
@@ -56,6 +64,7 @@ function Spot({ spot, color, path_generator, projection }) {
             style={{ filter: "brightness(120%)" }}
             onMouseOver={() => set_dx_hovered(true)}
             onMouseLeave={() => set_dx_hovered(false)}
+            onClick={() => on_spot_click(spot)}
         >
             <title>
                 Callsign: {spot.DXCall}{'\n'}

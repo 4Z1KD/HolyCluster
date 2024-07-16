@@ -1,12 +1,13 @@
 import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
-import Bands from "./Bands.jsx";
+import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
 
 import { useState } from "react";
 import Maidenhead from "maidenhead";
 
-import spots_data from "./spots.json";
+// This is temporary mock data
+import spots_data from "../assets/spots.json";
 
 const band_colors = {
     160: "#f65356",
@@ -19,7 +20,9 @@ const band_colors = {
     12: "#5daad8",
     10: "#8187c7",
     6: "#c56bba",
-}
+};
+
+const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
 
 function MainContainer() {
     const main_squares_classes = [
@@ -32,19 +35,29 @@ function MainContainer() {
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
     const [night_enabled, set_night] = useState(false);
     const [spots, _] = useState(spots_data);
-    const [station, set_station] = useState(new Maidenhead(0, 0));
+
+    const [location, set_location] = useState({
+        displayed_locator: "",
+        // Longitude, latitude
+        location: [0, 0]
+    });
 
     const [enabled_bands, set_enabled_bands] = useState(
         Object.fromEntries(Object.keys(band_colors).map(band => [band, true]))
+    )
+    const [enabled_modes, set_enabled_modes] = useState(
+        Object.fromEntries(modes.map(mode => [mode, true]))
     )
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
             <div className="p-0 w-full rounded-t-2xl border-b-solid border-b-sky border-b-2">
-                <Bands
+                <Filters
                     band_colors={band_colors}
-                    set_enabled_bands={set_enabled_bands}
                     enabled_bands={enabled_bands}
+                    set_enabled_bands={set_enabled_bands}
+                    enabled_modes={enabled_modes}
+                    set_enabled_modes={set_enabled_modes}
                 />
             </div>
             <div className="flex divide-x divide-slate-300">
@@ -55,12 +68,14 @@ function MainContainer() {
                         projection_type={projection_type}
                         night_enabled={night_enabled}
                         enabled_bands={enabled_bands}
-                        center={Maidenhead.toLatLon(station.locator)}
+                        location={location}
+                        set_location={set_location}
                     />
                     <MapControls
                         set_projection_type={set_projection_type}
                         set_night={set_night}
-                        set_station={set_station}
+                        location={location}
+                        set_location={set_location}
                     />
                 </div>
                 <div className={`${main_squares_classes} flex content-start flex-wrap gap-2 p-4`}>
@@ -71,6 +86,7 @@ function MainContainer() {
                             color={color}
                             spots={spots}
                             enabled={enabled_bands[band]}
+                            enabled_modes={enabled_modes}
                         />;
                     })}
                 </div>

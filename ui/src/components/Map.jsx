@@ -1,9 +1,14 @@
 import * as d3 from "d3";
+import { useRef, useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
-import dxcc_map_raw from "./dxcc_map.json";
-import { useRef, useState, useEffect } from "react";
 
+import MapAngles from "./MapAngles.jsx";
+
+import { to_radian } from "../utils.js";
+import dxcc_map_raw from "../assets/dxcc_map.json";
 import Spot from "./Spot.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -36,42 +41,26 @@ function calculate_distance([lat1, lon1], [lat2, lon2]) {
     return d;
 }
 
-function to_radian(deg) {
-  return deg * (Math.PI / 180)
-}
-
 function Map({
+    location,
+    set_location,
     spots = [],
     band_colors = {},
     enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
-    center = [0, 0],
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+    const max_radius = 20000;
+    const [radius_in_km, set_radius_in_km] = useState(max_radius);
 
     const inner_padding = 50;
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
+    const [center_lon, center_lat] = location.location;
 
-    const angles_radius = radius + inner_padding / 2;
-    const degrees_diff = 15;
-    const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
-        .map(x => {
-            const angle_degrees = x * degrees_diff;
-            const angle_radians = to_radian(angle_degrees - 90);
-            return [
-                angle_degrees,
-                [
-                    Math.cos(angle_radians) * angles_radius + center_x,
-                    Math.sin(angle_radians) * angles_radius + center_y,
-                ],
-            ]
-        })
-
-    const [center_lat, center_lon] = center;
     const projection = d3["geo" + projection_type]()
         .precision(0.1)
         .fitSize(
@@ -80,31 +69,68 @@ function Map({
         )
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
-    const path_generator = d3.geoPath().projection(projection);
-    const graticule = d3.geoGraticule10();
 
-    const displayed_radius = calculate_distance(
-        projection.invert([center_x, center_y]),
-        projection.invert([center_x + radius, center_y]),
-    );
+    projection.scale(max_radius / radius_in_km * projection.scale());
+
+    const path_generator = d3.geoPath().projection(projection);
 
     // Auto resize effect hook that updates the dimensions state
     useEffect(() => {
-    const resize = () => {
-        const { width, height } = svg_ref.current.getBoundingClientRect();
-        set_dimensions({ width, height });
-    };
+        const resize = () => {
+            const { width, height } = svg_ref.current.getBoundingClientRect();
+            set_dimensions({ width, height });
+        };
 
-    resize();
-    window.addEventListener("resize", resize);
+        resize();
+        window.addEventListener("resize", resize);
 
-    return () => {
-      window.removeEventListener("resize", resize);
-    };
-    }, []);
+        return () => {
+          window.removeEventListener("resize", resize);
+        };
+    }, [svg_ref]);
+
+    useEffect(() => {
+        const svg = d3.select(svg_ref.current);
+        const zoom = d3.zoom()
+            .scaleExtent([1, 20])
+            .on("zoom", event => {
+                const radius_in_km = (21 - Math.round( event.transform.k)) * 1000;
+                set_radius_in_km(radius_in_km);
+            })
+        svg.call(zoom);
+    }, [radius_in_km])
 
 
-    return <svg ref={svg_ref} className="aspect-square w-full self-center">
+    const host = window.location.host;
+    const protocol = window.location.protocol;
+    const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
+
+    const { sendJsonMessage, readyState } = useWebSocket(websocket_url);
+    function on_spot_click(spot) {
+        if (readyState == ReadyState.OPEN) {
+            sendJsonMessage({mode: spot.Mode, freq: spot.Frequency})
+        }
+    }
+
+    return <svg
+        ref={svg_ref}
+        className="aspect-square w-full self-center"
+        onClick={event => {
+            const dims = svg_ref.current.getBoundingClientRect();
+            const x = event.clientX - dims.left;
+            const y = event.clientY - dims.top;
+            const distance_from_center = Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+
+            if (event.detail == 2 && distance_from_center <= radius) {
+                const [lon, lat] = projection.invert([x, y]);
+                const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
+                set_location({
+                    displayed_locator: displayed_locator,
+                    location: [ lon, lat ],
+                });
+            }
+        }}
+    >
         <defs>
             <clipPath id="map-clip">
                 <circle r={radius} cx={center_x} cy={center_y}/>
@@ -112,26 +138,35 @@ function Map({
         </defs>
         <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
-        <text x="30" y="30" style={{font: "bold 20px sans-serif"}}>Radius: {Math.round(displayed_radius)} KM</text>
+        <text
+            x="30"
+            y="30"
+            style={{font: "bold 20px sans-serif", userSelect: "none"}}>
+            Radius: {Math.round(radius_in_km)} KM
+        </text>
 
-        {angle_labels.map(([label, [x, y]]) => <text
-            key={label}
-            dominantBaseline="middle"
-            textAnchor="middle"
-            x={x}
-            y={y}
-            fontSize="14px"
-        >{label}°</text>)}
+        <MapAngles
+            center_x={center_x}
+            center_y={center_y}
+            radius={radius + inner_padding / 2}
+        />
 
         <g clipPath="url(#map-clip)">
-            <path fill="none" stroke="#eee" d={path_generator(graticule)}></path>
+            <path
+                fill="none"
+                stroke="#eee"
+                pointerEvents="none"
+                d={path_generator(d3.geoGraticule10())}
+            ></path>
             {dxcc_map.features.map(shape => {
                 return (
                     <path
                         fill="#def7cf"
                         stroke="#777"
+                        pointerEvents="none"
                         key={shape.properties.dxcc_name}
-                        d={path_generator(shape)}>
+                        d={path_generator(shape)}
+                    >
                         <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
                     </path>
                 )
@@ -145,6 +180,7 @@ function Map({
                     color={band_colors[spot.Band]}
                     path_generator={path_generator}
                     projection={projection}
+                    on_spot_click={on_spot_click}
                 ></Spot>;
             })}
             {night_enabled ?
