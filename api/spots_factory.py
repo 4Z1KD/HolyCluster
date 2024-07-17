@@ -1,6 +1,7 @@
 import random
 import datetime
 import re
+import json
 
 class MockFactory():
 
@@ -40,23 +41,23 @@ class MockFactory():
     @staticmethod
     def frequency_to_band(frequency_khz):
         bands = {
-            "160m": (1800, 2000),
-            "80m": (3500, 4000),
-            "60m": (5250, 5450),
-            "40m": (7000, 7300),
-            "30m": (10100, 10150),
-            "20m": (14000, 14350),
-            "17m": (18068, 18168),
-            "15m": (21000, 21450),
-            "12m": (24890, 24990),
-            "10m": (28000, 29700),
-            "6m": (50000, 54000),
-            "2m": (144000, 148000),
-            "1.25m": (222000, 225000),
-            "70cm": (420000, 450000),
-            "33cm": (902000, 928000),
-            "23cm": (1240000, 1300000),
-            "13cm": (2300000, 2450000)
+            "160": (1800, 2000),
+            "80": (3500, 4000),
+            "60": (5250, 5450),
+            "40": (7000, 7300),
+            "30": (10100, 10150),
+            "20": (14000, 14350),
+            "17": (18068, 18168),
+            "15": (21000, 21450),
+            "12": (24890, 24990),
+            "10": (28000, 29700),
+            "6": (50000, 54000),
+            "2": (144000, 148000),
+            "1.25": (222000, 225000),
+            "70": (420000, 450000),
+            "33": (902000, 928000),
+            "23": (1240000, 1300000),
+            "13": (2300000, 2450000)
         }
 
         for band, (low, high) in bands.items():
@@ -67,7 +68,7 @@ class MockFactory():
     @staticmethod
     def generate_random_spot():
         spotter = MockFactory.generate_random_callsign()
-        dx = MockFactory.generate_random_callsign(),
+        dx = MockFactory.generate_random_callsign()
         freq = round(random.choice([1880, 3670, 7130, 10130, 14240, 18110, 21300, 24920, 28480])+random.uniform(-30, 20))
         band = MockFactory.frequency_to_band(freq)
         return {
@@ -76,7 +77,7 @@ class MockFactory():
             "dx_loc": [random.uniform(-180, 180), random.uniform(-90, 90)],
             "DXCall": dx,
             "Nr": random.randint(10000000, 99999999),
-            "Frequency": freq,
+            "Frequency": str(freq),
             "Time": f"{random.randint(0, 23):02}:{random.randint(0, 59):02}",
             "Date": (datetime.datetime.now() - datetime.timedelta(days=random.randint(0, 365))).strftime("%d/%m/%y"),
             "Beacon": random.choice([True, False]),
@@ -86,7 +87,7 @@ class MockFactory():
             "DXHomecall": dx,
             "Comment": " ",
             "Flag": random.choice(["my", "us", "uk", "au", "jp"]),
-            "Band": band,
+            "Band": int(band),
             "Mode": random.choice(["CW", "SSB", "RTTY"]),
             "Continent_dx": random.choice(["AS", "NA", "EU", "AF", "SA", "OC"]),
             "Continent_spotter": random.choice(["AS", "NA", "EU", "AF", "SA", "OC"]),
@@ -99,6 +100,13 @@ class MockFactory():
 
 if __name__ == '__main__':
     # Example usage
-    random_spots = MockFactory.generate_random_spots(500)
+    with open("../ui/src/assets/spots.json", "w") as file:
+        file.write("[]")
+    random_spots = MockFactory.generate_random_spots(20)
     for spot in random_spots:
-        print(spot)
+        with open("../ui/src/assets/spots.json", "r+") as file:
+            file_data = json.load(file)
+            file_data.append(spot)
+            file.seek(0)
+            json.dump(file_data, file, indent = 4)
+            print(spot)
