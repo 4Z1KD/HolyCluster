@@ -18,7 +18,7 @@ function MapControls({
     }
 
     return (
-        <div className="relative w-full bottom-0 p-3 space-x-4 self-end">
+        <div className="flex justify-center place-items-center w-full h-auto p-3 space-x-4">
             <label>Locator:</label>
             <input
                 className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

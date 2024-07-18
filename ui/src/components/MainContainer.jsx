@@ -25,13 +25,6 @@ const band_colors = {
 const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
 
 function MainContainer() {
-    const main_squares_classes = [
-        "w-full",
-        "flex",
-        "aspect-square",
-        "text-center",
-    ].join(" ");
-
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
     const [night_enabled, set_night] = useState(false);
 
@@ -59,7 +52,13 @@ function MainContainer() {
                 set_enabled_modes={set_enabled_modes}
             />
             <div className="flex divide-x divide-slate-300">
-                <div className={`${main_squares_classes} flex-wrap divide-y divide-slate-300`}>
+                <div className="w-full divide-y divide-slate-300">
+                    <MapControls
+                        set_projection_type={set_projection_type}
+                        set_night={set_night}
+                        location={location}
+                        set_location={set_location}
+                    />
                     <Map
                         spots={filtered_spots}
                         band_colors={band_colors}
@@ -69,14 +68,8 @@ function MainContainer() {
                         location={location}
                         set_location={set_location}
                     />
-                    <MapControls
-                        set_projection_type={set_projection_type}
-                        set_night={set_night}
-                        location={location}
-                        set_location={set_location}
-                    />
                 </div>
-                <div className={`${main_squares_classes} flex content-start flex-wrap gap-2 p-4`}>
+                <div className="flex flex-wrap content-start w-full text-center gap-2 p-4">
                     {Object.entries(band_colors).map(([band, color]) => {
                         return <BandSpots
                             key={band}

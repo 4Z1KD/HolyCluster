@@ -113,7 +113,7 @@ function Map({
 
     return <svg
         ref={svg_ref}
-        className="aspect-square w-full self-center"
+        className="aspect-square w-full"
         onClick={event => {
             const dims = svg_ref.current.getBoundingClientRect();
             const x = event.clientX - dims.left;
