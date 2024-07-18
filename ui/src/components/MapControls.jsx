@@ -19,11 +19,11 @@ function MapControls({
 
     return (
         <div className="flex justify-center place-items-center w-full h-auto p-3 space-x-4">
-            <label>Locator:</label>
             <input
                 className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 value={location.displayed_locator}
+                placeholder="Locator"
                 onChange={event => {
                     const new_value = event.target.value;
                     if (Maidenhead.valid(new_value)) {
@@ -40,7 +40,7 @@ function MapControls({
                     }
                 }
             }/>
-            <select className="rounded-lg px-4 py-2" onChange={() => set_projection_type(event.target.value)}>
+            <select className="rounded-lg px-4 py-2" onChange={event => set_projection_type(event.target.value)}>
                 {projection_types.map(type => <option key={type} value={type}>{type}</option>)}
             </select>
             <button

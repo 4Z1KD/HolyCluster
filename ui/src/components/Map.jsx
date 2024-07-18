@@ -28,19 +28,6 @@ function get_night_circle() {
         .center(antipode(get_sun_coordinates()))()
 }
 
-function calculate_distance([lat1, lon1], [lat2, lon2]) {
-    const earth_radius = 6371;
-    const diff_lat = to_radian(lat2 - lat1);
-    const diff_lon = to_radian(lon2 - lon1);
-    const a =
-        Math.sin(diff_lat / 2) * Math.sin(diff_lat / 2) +
-        Math.cos(to_radian(lat1)) * Math.cos(to_radian(lat2)) *
-        Math.sin(diff_lon / 2) * Math.sin(diff_lon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = earth_radius * c;
-    return d;
-}
-
 function Map({
     location,
     set_location,

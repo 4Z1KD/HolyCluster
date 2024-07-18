@@ -4,7 +4,6 @@ import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
 
 import { useState } from "react";
-import Maidenhead from "maidenhead";
 
 // This is temporary mock data
 import spots from "../assets/spots.json";
