@@ -71,14 +71,17 @@ function MainContainer() {
                 </div>
                 <div className="flex flex-wrap content-start w-full text-center gap-2 p-4">
                     {Object.entries(band_colors).map(([band, color]) => {
-                        return <BandSpots
-                            key={band}
-                            band={band}
-                            color={color}
-                            spots={filtered_spots}
-                            enabled={enabled_bands[band]}
-                            enabled_modes={enabled_modes}
-                        />;
+                        if (enabled_bands[band]) {
+                            return <BandSpots
+                                key={band}
+                                band={band}
+                                color={color}
+                                spots={filtered_spots}
+                                enabled_modes={enabled_modes}
+                            />;
+                        } else {
+                            return <></>
+                        }
                     })}
                 </div>
             </div>

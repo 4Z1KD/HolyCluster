@@ -2,12 +2,11 @@ function BandSpots({
     band,
     color,
     spots = [],
-    enabled = true,
 }) {
     const filtered_spots = spots.filter(spot => spot.Band == band)
 
     return (
-        filtered_spots.length > 0 && enabled ?
+        filtered_spots.length > 0 ?
         <div className="basis-[49%] border-slate-400 border-solid border-2 rounded-2xl p-0 h-fit min-h-48 max-h-80 overflow-y-auto">
             <div
                 className="p-0 w-full rounded-t-2xl border-b-solid border-b-2 sticky top-0"
