@@ -1,11 +1,10 @@
 function BandSpots({
     band,
     color,
-    enabled_modes,
     spots = [],
     enabled = true,
 }) {
-    const filtered_spots = spots.filter(spot => enabled_modes[spot.Mode] && spot.Band == band)
+    const filtered_spots = spots.filter(spot => spot.Band == band)
 
     return (
         filtered_spots.length > 0 && enabled ?

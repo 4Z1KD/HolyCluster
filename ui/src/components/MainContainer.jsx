@@ -7,7 +7,7 @@ import { useState } from "react";
 import Maidenhead from "maidenhead";
 
 // This is temporary mock data
-import spots_data from "../assets/spots.json";
+import spots from "../assets/spots.json";
 
 const band_colors = {
     160: "#f65356",
@@ -34,7 +34,6 @@ function MainContainer() {
 
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
     const [night_enabled, set_night] = useState(false);
-    const [spots, _] = useState(spots_data);
 
     const [location, set_location] = useState({
         displayed_locator: "",
@@ -48,6 +47,7 @@ function MainContainer() {
     const [enabled_modes, set_enabled_modes] = useState(
         Object.fromEntries(modes.map(mode => [mode, true]))
     )
+    const filtered_spots = spots.filter(spot => enabled_bands[spot.Band] && enabled_modes[spot.Mode])
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
@@ -61,7 +61,7 @@ function MainContainer() {
             <div className="flex divide-x divide-slate-300">
                 <div className={`${main_squares_classes} flex-wrap divide-y divide-slate-300`}>
                     <Map
-                        spots={spots}
+                        spots={filtered_spots}
                         band_colors={band_colors}
                         projection_type={projection_type}
                         night_enabled={night_enabled}
@@ -82,7 +82,7 @@ function MainContainer() {
                             key={band}
                             band={band}
                             color={color}
-                            spots={spots}
+                            spots={filtered_spots}
                             enabled={enabled_bands[band]}
                             enabled_modes={enabled_modes}
                         />;

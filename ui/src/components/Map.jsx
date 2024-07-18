@@ -46,7 +46,6 @@ function Map({
     set_location,
     spots = [],
     band_colors = {},
-    enabled_bands = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
@@ -172,7 +171,6 @@ function Map({
                 )
             })}
             {spots
-                .filter(spot => enabled_bands[spot.Band])
                 .map((spot, index) => {
                 return <Spot
                     key={index}
