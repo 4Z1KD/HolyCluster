@@ -18,7 +18,7 @@ function MapControls({
     }
 
     return (
-        <div className="flex justify-center place-items-center w-full h-auto p-3 space-x-4">
+        <div className="flex flex-wrap justify-center place-items-center w-full h-auto p-3 gap-4">
             <input
                 className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
@@ -49,12 +49,14 @@ function MapControls({
             >
                 Reset
             </button>
-            <input
-                type="checkbox"
-                autoComplete="off"
-                onChange={() => set_night(previous_state => !previous_state)}
-            ></input>
-            <label className="text-slate-700">Show night</label>
+            <div className="space-x-2">
+                <input
+                    type="checkbox"
+                    autoComplete="off"
+                    onChange={() => set_night(previous_state => !previous_state)}
+                ></input>
+                <label className="text-slate-700">Show night</label>
+            </div>
         </div>
     );
 }
