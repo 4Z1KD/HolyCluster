@@ -18,14 +18,15 @@ function BandSpots({
                 <tbody className="divide-y divide-slate-200">
                     {filtered_spots
                         .map(spot => {
-                        return <tr key={spot.Spotter + "_" + spot.DXCall + "_" + spot.Time}>
-                            <td>{spot.Time}</td>
-                            <td>{spot.DXCall}</td>
-                            <td>{spot.Frequency}</td>
-                            <td>{spot.Spotter}</td>
-                            <td>{spot.Mode}</td>
-                        </tr>;
-                    })}
+                            const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
+                            return <tr key={spot.Spotter + "_" + spot.DXCall + "_" + spot.time}>
+                                <td>{formatted_time}</td>
+                                <td>{spot.DXCall}</td>
+                                <td>{spot.Frequency}</td>
+                                <td>{spot.Spotter}</td>
+                                <td>{spot.Mode}</td>
+                            </tr>;
+                        })}
                 </tbody>
             </table>
         </div> : ""
