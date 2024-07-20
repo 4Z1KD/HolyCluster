@@ -3,6 +3,7 @@ import datetime
 import json
 import random
 import string
+import time
 
 
 FREQUENCIES = [1880, 3670, 7130, 10130, 14240, 18110, 21300, 24920, 28480]
@@ -60,7 +61,7 @@ def frequency_to_band(frequency_khz):
     return "Frequency out of ham radio bands"
 
 
-def generate_random_spot():
+def generate_random_spot(spot_time):
     spotter = generate_random_callsign()
     dx = generate_random_callsign(),
     freq = round(random.choice(FREQUENCIES) + random.uniform(-30, 20))
@@ -73,8 +74,7 @@ def generate_random_spot():
         "DXCall": dx,
         "Nr": random.randint(10000000, 99999999),
         "Frequency": freq,
-        "Time": f"{random.randint(0, 23):02}:{random.randint(0, 59):02}",
-        "Date": (datetime.datetime.now() - datetime.timedelta(days=random.randint(0, 365))).strftime("%d/%m/%y"),
+        "time": spot_time,
         "Beacon": random.choice([True, False]),
         "MM": random.choice([True, False]),
         "AM": random.choice([True, False]),
@@ -91,15 +91,12 @@ def generate_random_spot():
 
 
 def generate_random_spots(n):
-    return [generate_random_spot() for _ in range(n)]
-
-
-def get_spot_datetime(spot):
-    return datetime.datetime.strptime(f"{spot['Time']} {spot['Date']}", "%H:%M %d/%m/%y"),
-
-
-def sort_spots(spots):
-    return sorted(spots, key=get_spot_datetime, reverse=True)
+    current_time = int(time.time())
+    spots = []
+    for _ in range(n):
+        current_time -= random.randint(10, 600)
+        spots.append(generate_random_spot(current_time))
+    return spots
 
 
 def parse_args():
@@ -112,9 +109,8 @@ def parse_args():
 def main():
     args = parse_args()
     random_spots = generate_random_spots(args.number_of_spots)
-    sorted_spots = sort_spots(random_spots)
     with open(args.output, "w") as output_file:
-        json.dump(sorted_spots, output_file, indent=4)
+        json.dump(random_spots, output_file, indent=4)
 
 
 if __name__ == '__main__':
