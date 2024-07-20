@@ -94,7 +94,7 @@ def generate_random_spots(n):
     current_time = int(time.time())
     spots = []
     for _ in range(n):
-        current_time -= random.randint(10, 600)
+        current_time -= random.randint(10, 30)
         spots.append(generate_random_spot(current_time))
     return spots
 
