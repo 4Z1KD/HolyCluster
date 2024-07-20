@@ -1,16 +1,30 @@
+const spots_time_limits = {
+    "5 Minutes": 5,
+    "15 Minutes": 15,
+    "30 Minutes": 30,
+    "1 Hour": 60,
+    "3 Hour": 180,
+    "9 Hour": 540,
+    "12 Hour": 720,
+    "24 Hour": 1440,
+}
+
 function Filters({
     band_colors,
     enabled_bands,
     set_enabled_bands,
     enabled_modes,
     set_enabled_modes,
+    spots_time_limit,
+    set_spots_time_limit,
 }) {
     const box_container_style = [
         "flex",
         "flex-wrap",
         "justify-start",
         "h-full",
-        "p-1",
+        "p-2",
+        "gap-3",
         "w-1/2",
         "inline-block",
     ].join(" ");
@@ -18,7 +32,6 @@ function Filters({
         // Related to the layout of the box itself
         "flex-grow",
         "max-w-16",
-        "m-1",
         "rounded-xl",
         "border-slate-400",
         "border-2",
@@ -68,6 +81,9 @@ function Filters({
                         />
                     </div>;
                 })}
+                <select className="rounded-lg px-4 py-2" onChange={event => set_spots_time_limit(event.target.value)}>
+                    {Object.entries(spots_time_limits).map(([text, minutes]) => <option key={minutes} value={minutes}>{text}</option>)}
+                </select>
             </div>
         </div>
     );

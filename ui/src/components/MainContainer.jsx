@@ -39,7 +39,13 @@ function MainContainer() {
     const [enabled_modes, set_enabled_modes] = useState(
         Object.fromEntries(modes.map(mode => [mode, true]))
     )
-    const filtered_spots = spots.filter(spot => enabled_bands[spot.Band] && enabled_modes[spot.Mode])
+    const [spots_time_limit, set_spots_time_limit] = useState(60)
+
+    const current_time = new Date().getTime() / 1000;
+    const filtered_spots = spots
+        .filter(spot => (current_time - spot.time) / 60 < spots_time_limit)
+        .filter(spot => enabled_bands[spot.Band] && enabled_modes[spot.Mode])
+        .slice(0, 100)
 
     return (
         <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
@@ -49,6 +55,8 @@ function MainContainer() {
                 set_enabled_bands={set_enabled_bands}
                 enabled_modes={enabled_modes}
                 set_enabled_modes={set_enabled_modes}
+                spots_time_limit={spots_time_limit}
+                set_spots_time_limit={set_spots_time_limit}
             />
             <div className="flex divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">

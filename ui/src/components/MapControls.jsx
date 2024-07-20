@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Maidenhead from "maidenhead";
 
 const projection_types = [
