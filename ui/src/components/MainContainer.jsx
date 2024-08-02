@@ -48,7 +48,7 @@ function MainContainer() {
         .slice(0, 100)
 
     return (
-        <div className="mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2">
+        <div className="max-xl:mx-4 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
                 band_colors={band_colors}
                 enabled_bands={enabled_bands}
@@ -58,7 +58,7 @@ function MainContainer() {
                 spots_time_limit={spots_time_limit}
                 set_spots_time_limit={set_spots_time_limit}
             />
-            <div className="flex divide-x divide-slate-300">
+            <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
                     <MapControls
                         set_projection_type={set_projection_type}
@@ -76,7 +76,7 @@ function MainContainer() {
                         set_location={set_location}
                     />
                 </div>
-                <div className="flex flex-wrap content-start w-full text-center gap-2 p-4">
+                <div className="flex flex-wrap content-start items-stretch  w-full text-center gap-2 p-4 overflow-x-auto">
                     {Object.entries(band_colors).map(([band, color]) => {
                         if (enabled_bands[band]) {
                             return <BandSpots

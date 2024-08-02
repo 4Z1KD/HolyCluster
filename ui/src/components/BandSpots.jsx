@@ -7,7 +7,7 @@ function BandSpots({
 
     return (
         filtered_spots.length > 0 ?
-        <div className="xl:basis-[49%] border-slate-400 border-solid border-2 rounded-2xl p-0 h-fit max-h-80 overflow-y-auto min-w-64">
+        <div className="basis-[49%] border-slate-400 border-solid border-2 rounded-2xl p-0 max-h-80 overflow-y-auto min-w-80 max-w-[50%]">
             <div
                 className="p-0 w-full rounded-t-2xl border-b-solid border-b-2 sticky top-0"
                 style={{backgroundColor: color}}
