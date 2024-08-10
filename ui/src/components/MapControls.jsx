@@ -1,3 +1,5 @@
+import Button from "./Button.jsx";
+
 import Maidenhead from "maidenhead";
 
 const projection_types = [
@@ -42,12 +44,7 @@ function MapControls({
             <select className="rounded-lg px-4 py-2" onChange={event => set_projection_type(event.target.value)}>
                 {projection_types.map(type => <option key={type} value={type}>{type}</option>)}
             </select>
-            <button
-                className="text-white bg-blue-600 active:bg-blue-800 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
-                onClick={reset_map}
-            >
-                Reset
-            </button>
+            <Button on_click={reset_map}>Reset</Button>
             <div className="space-x-2">
                 <input
                     type="checkbox"
