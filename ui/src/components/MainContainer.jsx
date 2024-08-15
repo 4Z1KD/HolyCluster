@@ -48,7 +48,7 @@ function MainContainer() {
         .slice(0, 100)
 
     return (
-        <div className="max-xl:mx-4 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
+        <div className="max-xl:mx-4 mt-10 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
                 band_colors={band_colors}
                 enabled_bands={enabled_bands}
