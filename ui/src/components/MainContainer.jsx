@@ -3,10 +3,8 @@ import MapControls from "./MapControls.jsx";
 import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// This is temporary mock data
-import spots from "../assets/spots.json";
 
 const band_colors = {
     160: "#f65356",
@@ -42,9 +40,17 @@ function MainContainer() {
     const [spots_time_limit, set_spots_time_limit] = useState(60)
 
     const current_time = new Date().getTime() / 1000;
+
+    const [spots, set_spots] = useState([])
+    useEffect(() => {
+        fetch("/spots").then(response => {
+            return response.json()
+        }).then(set_spots)
+    }, [])
+
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) / 60 < spots_time_limit)
-        .filter(spot => enabled_bands[spot.Band] && enabled_modes[spot.Mode])
+        .filter(spot => enabled_bands[spot.band] && enabled_modes[spot.mode])
         .slice(0, 100)
 
     return (

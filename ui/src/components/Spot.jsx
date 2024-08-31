@@ -14,9 +14,9 @@ function Spot({
             spot.dx_loc,
         ],
         properties: {
-            band: spot.Band,
-            freq: Number(spot.Frequency) * 1000,
-            mode: spot.Mode
+            band: spot.band,
+            freq: Number(spot.freq) * 1000,
+            mode: spot.mode
         }
     };
 
@@ -53,7 +53,7 @@ function Spot({
             onMouseLeave={() => set_spotter_hovered(false)}
             onClick={() => on_spot_click(spot)}
         >
-        <title>Callsign: {spot.Spotter}</title>
+        <title>Callsign: {spot.spotter}</title>
         </circle>
         <rect
             x={dx_x - dx_size / 2}
@@ -67,9 +67,9 @@ function Spot({
             onClick={() => on_spot_click(spot)}
         >
             <title>
-                Callsign: {spot.DXCall}{'\n'}
-                Grid: {spot.DXLocator}{'\n'}
-                Continent: {spot.Continent_dx}
+                Callsign: {spot.dx_call}{'\n'}
+                Grid: {spot.dx_locator}{'\n'}
+                Continent: {spot.continent_dx}
             </title>
         </rect>
     </>;

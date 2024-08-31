@@ -3,7 +3,7 @@ function BandSpots({
     color,
     spots = [],
 }) {
-    const filtered_spots = spots.filter(spot => spot.Band == band)
+    const filtered_spots = spots.filter(spot => spot.band == band)
 
     return (
         filtered_spots.length > 0 ?
@@ -19,12 +19,12 @@ function BandSpots({
                     {filtered_spots
                         .map(spot => {
                             const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
-                            return <tr key={spot.Spotter + "_" + spot.DXCall + "_" + spot.time}>
+                            return <tr key={spot.spotter + "_" + spot.dx_call + "_" + spot.time}>
                                 <td>{formatted_time}</td>
-                                <td>{spot.DXCall}</td>
-                                <td>{spot.Frequency}</td>
-                                <td>{spot.Spotter}</td>
-                                <td>{spot.Mode}</td>
+                                <td>{spot.dx_call}</td>
+                                <td>{spot.freq}</td>
+                                <td>{spot.spotter}</td>
+                                <td>{spot.mode}</td>
                             </tr>;
                         })}
                 </tbody>

@@ -94,7 +94,7 @@ function Map({
     const { sendJsonMessage, readyState } = useWebSocket(websocket_url);
     function on_spot_click(spot) {
         if (readyState == ReadyState.OPEN) {
-            sendJsonMessage({mode: spot.Mode, freq: spot.Frequency})
+            sendJsonMessage({mode: spot.mode, freq: spot.freq})
         }
     }
 
@@ -162,7 +162,7 @@ function Map({
                 return <Spot
                     key={index}
                     spot={spot}
-                    color={band_colors[spot.Band]}
+                    color={band_colors[spot.band]}
                     path_generator={path_generator}
                     projection={projection}
                     on_spot_click={on_spot_click}
