@@ -43,9 +43,9 @@ function MainContainer() {
 
     const [spots, set_spots] = useState([])
     useEffect(() => {
-        fetch("/spots").then(response => {
-            return response.json()
-        }).then(set_spots)
+        setInterval(() => {
+            fetch("/spots").then(response => response.json()).then(set_spots)
+        }, 30 * 1000)
     }, [])
 
     const filtered_spots = spots
