@@ -39,13 +39,25 @@ function MainContainer() {
     )
     const [spots_time_limit, set_spots_time_limit] = useState(60)
 
-    const current_time = new Date().getTime() / 1000;
+    const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
+
+    const fetch_spots = () => {
+        let url;
+        // For debugging purposes
+        if (window.location.port == "5173") {
+            url = "https://holycluster.iarc.org/spots"
+        } else {
+            url = "/spots"
+        }
+        return fetch(url, {mode: "cors"})
+            .then(response => response.json())
+            .then(set_spots)
+    }
     useEffect(() => {
-        setInterval(() => {
-            fetch("/spots").then(response => response.json()).then(set_spots)
-        }, 30 * 1000)
+        fetch_spots()
+        setInterval(fetch_spots, 30 * 1000)
     }, [])
 
     const filtered_spots = spots
