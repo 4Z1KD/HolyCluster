@@ -1,3 +1,7 @@
+function Callsign({callsign}) {
+    return <a href={"https://www.qrz.com/db/" + callsign} target="_blank">{callsign}</a>
+}
+
 function BandSpots({
     band,
     color,
@@ -22,9 +26,9 @@ function BandSpots({
                             const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
                             return <tr key={spot.spotter + "_" + spot.dx_call + "_" + spot.time}>
                                 <td>{formatted_time}</td>
-                                <td>{spot.dx_call}</td>
+                                <td><Callsign callsign={spot.dx_call}></Callsign></td>
                                 <td>{spot.freq}</td>
-                                <td>{spot.spotter}</td>
+                                <td><Callsign callsign={spot.spotter}></Callsign></td>
                                 <td>{spot.mode}</td>
                             </tr>;
                         })}
