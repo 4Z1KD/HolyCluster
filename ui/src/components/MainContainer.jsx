@@ -94,7 +94,7 @@ function MainContainer() {
                         set_location={set_location}
                     />
                 </div>
-                <div className="flex flex-wrap content-start items-stretch  w-full text-center gap-2 p-4 overflow-x-auto">
+                <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
                     {Object.entries(band_colors).map(([band, color]) => {
                         if (enabled_bands[band]) {
                             return <BandSpots
