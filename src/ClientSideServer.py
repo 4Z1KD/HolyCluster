@@ -5,6 +5,7 @@ import os
 import fastapi
 from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
+import httpx
 
 import RadioController
 
@@ -32,7 +33,7 @@ logging.config.dictConfig({
         },
     },
     "loggers": {
-        "": {"handlers": ["default"], "level": "DEBUG"},
+        "": {"handlers": ["default"], "level": "INFO"},
     },
 })
 app = fastapi.FastAPI()
@@ -58,6 +59,15 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
             await websocket.send_json({"status": 1})
         except WebSocketDisconnect:
             break
+
+
+@app.get("/spots")
+async def spots(response: fastapi.Response):
+    async with httpx.AsyncClient() as client:
+        result = await client.get("https://holycluster.iarc.org/spots")
+        response.body = result.content
+        response.status_code = result.status_code
+        return response
 
 
 app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
