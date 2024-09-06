@@ -1,4 +1,5 @@
 import Button from "./Button.jsx";
+import Radio from "./Radio.jsx";
 
 import Maidenhead from "maidenhead";
 
@@ -13,9 +14,17 @@ function MapControls({
     set_night,
     location,
     set_location,
+    radio_status,
 }) {
     function reset_map() {
         set_location({displayed_locator: "", location: [0, 0]})
+    }
+
+    const radio_status_to_color = {
+        unknown: "#888888",
+        unavailable: "#888888",
+        connected: "#00DD00",
+        disconnected: "#DD0000",
     }
 
     return (
@@ -53,6 +62,7 @@ function MapControls({
                 ></input>
                 <label className="text-slate-700">Show night</label>
             </div>
+        <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
         </div>
     );
 }

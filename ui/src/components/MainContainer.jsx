@@ -5,6 +5,7 @@ import BandSpots from "./BandSpots.jsx";
 import Maidenhead from "maidenhead";
 
 import { useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 
 const band_colors = {
@@ -21,6 +22,32 @@ const band_colors = {
 };
 
 const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
+
+function connect_to_radio() {
+    const host = window.location.host;
+    const protocol = window.location.protocol;
+    const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
+
+    const { sendJsonMessage, readyState, lastJsonMessage } = useWebSocket(websocket_url);
+    const [radio_status, set_radio_status] = useState("unknown");
+
+    useEffect(() => {
+        if (lastJsonMessage != null) {
+            set_radio_status(lastJsonMessage.status)
+        }
+    }, [lastJsonMessage, set_radio_status]);
+
+    const send_message_to_radio = (message) => {
+        if (readyState == ReadyState.OPEN) {
+            sendJsonMessage(message)
+        }
+    }
+
+    return {
+        send_message_to_radio: send_message_to_radio,
+        radio_status: radio_status,
+    }
+}
 
 function MainContainer() {
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
@@ -91,6 +118,8 @@ function MainContainer() {
         spot.spotter_loc = [lon, lat];
     })
 
+    let { send_message_to_radio, radio_status } = connect_to_radio();
+
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
@@ -109,6 +138,7 @@ function MainContainer() {
                         set_night={set_night}
                         location={location}
                         set_location={set_location}
+                        radio_status={radio_status}
                     />
                     <Map
                         spots={filtered_spots}
@@ -118,6 +148,7 @@ function MainContainer() {
                         enabled_bands={enabled_bands}
                         location={location}
                         set_location={set_location}
+                        send_message_to_radio={send_message_to_radio}
                     />
                 </div>
                 {is_spots_failed ?

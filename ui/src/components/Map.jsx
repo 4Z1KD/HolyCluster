@@ -1,13 +1,11 @@
 import * as d3 from "d3";
 import { useRef, useState, useEffect } from "react";
-import useWebSocket, { ReadyState } from 'react-use-websocket';
 import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
 import MapAngles from "./MapAngles.jsx";
 
-import { to_radian } from "../utils.js";
 import dxcc_map_raw from "../assets/dxcc_map.json";
 import Spot from "./Spot.jsx";
 
@@ -31,6 +29,7 @@ function get_night_circle() {
 function Map({
     location,
     set_location,
+    send_message_to_radio,
     spots = [],
     band_colors = {},
     night_enabled = false,
@@ -87,15 +86,8 @@ function Map({
     }, [radius_in_km])
 
 
-    const host = window.location.host;
-    const protocol = window.location.protocol;
-    const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
-
-    const { sendJsonMessage, readyState } = useWebSocket(websocket_url);
     function on_spot_click(spot) {
-        if (readyState == ReadyState.OPEN) {
-            sendJsonMessage({mode: spot.mode, freq: spot.freq})
-        }
+        send_message_to_radio({mode: spot.mode, freq: spot.freq})
     }
 
     return <svg

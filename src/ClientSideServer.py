@@ -51,6 +51,7 @@ async def startup_event():
 @app.websocket("/radio")
 async def websocket_endpoint(websocket: fastapi.WebSocket):
     await websocket.accept()
+    await websocket.send_json({"status": "connected"})
     while True:
         try:
             data = await websocket.receive_json()
