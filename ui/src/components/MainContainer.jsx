@@ -37,7 +37,7 @@ function MainContainer() {
     const [enabled_modes, set_enabled_modes] = useState(
         Object.fromEntries(modes.map(mode => [mode, true]))
     )
-    const [spots_time_limit, set_spots_time_limit] = useState(60)
+    const [spots_time_limit, set_spots_time_limit] = useState(300)
 
     const current_time = new Date().getTime() / 1000
 
@@ -61,7 +61,7 @@ function MainContainer() {
     }, [])
 
     const filtered_spots = spots
-        .filter(spot => (current_time - spot.time) / 60 < spots_time_limit)
+        .filter(spot => (current_time - spot.time) < spots_time_limit)
         .filter(spot => enabled_bands[spot.band] && enabled_modes[spot.mode])
         .slice(0, 100)
 

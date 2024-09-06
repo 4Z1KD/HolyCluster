@@ -1,12 +1,12 @@
 const spots_time_limits = {
-    "5 Minutes": 5,
-    "15 Minutes": 15,
-    "30 Minutes": 30,
-    "1 Hour": 60,
-    "3 Hour": 180,
-    "9 Hour": 540,
-    "12 Hour": 720,
-    "24 Hour": 1440,
+    "5 Minutes": 300,
+    "15 Minutes": 900,
+    "30 Minutes": 1800,
+    "1 Hour": 3600,
+    "3 Hour": 10800,
+    "9 Hour": 32400,
+    "12 Hour": 43200,
+    "24 Hour": 86400,
 }
 
 function Filters({
