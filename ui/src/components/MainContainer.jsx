@@ -128,7 +128,6 @@ function MainContainer() {
                 set_enabled_bands={set_enabled_bands}
                 enabled_modes={enabled_modes}
                 set_enabled_modes={set_enabled_modes}
-                spots_time_limit={spots_time_limit}
                 set_spots_time_limit={set_spots_time_limit}
             />
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">

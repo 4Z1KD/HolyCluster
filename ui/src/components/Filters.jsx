@@ -1,3 +1,5 @@
+import Clock from "./Clock.jsx";
+
 const spots_time_limits = {
     "5 Minutes": 300,
     "15 Minutes": 900,
@@ -15,13 +17,12 @@ function Filters({
     set_enabled_bands,
     enabled_modes,
     set_enabled_modes,
-    spots_time_limit,
     set_spots_time_limit,
 }) {
     const box_container_style = [
         "flex",
         "flex-wrap",
-        "justify-start",
+        "justify-around",
         "h-full",
         "p-2",
         "gap-3",
@@ -42,7 +43,6 @@ function Filters({
         "items-center",
         "p-2",
     ].join(" ");
-
 
     return (
         <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
@@ -84,6 +84,7 @@ function Filters({
                 <select className="rounded-lg px-4 py-2" onChange={event => set_spots_time_limit(event.target.value)}>
                     {Object.entries(spots_time_limits).map(([text, minutes]) => <option key={minutes} value={minutes}>{text}</option>)}
                 </select>
+                <Clock></Clock>
             </div>
         </div>
     );
