@@ -43,6 +43,7 @@ function MainContainer() {
     const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
+    const [is_spots_failed, set_is_spots_failed] = useState(false)
 
     const fetch_spots = () => {
         let url;
@@ -53,8 +54,18 @@ function MainContainer() {
             url = "/spots"
         }
         return fetch(url, {mode: "cors"})
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return Promise.reject(response)
+                }
+            })
             .then(set_spots)
+            .catch(_ => {
+                set_spots([])
+                set_is_spots_failed(true)
+            })
     }
     useEffect(() => {
         fetch_spots()
@@ -74,7 +85,7 @@ function MainContainer() {
     })
 
     return (
-        <div className="max-xl:mx-4 mt-10 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
+        <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
                 band_colors={band_colors}
                 enabled_bands={enabled_bands}
@@ -102,21 +113,31 @@ function MainContainer() {
                         set_location={set_location}
                     />
                 </div>
-                <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
-                    {Object.entries(band_colors).map(([band, color]) => {
-                        if (enabled_bands[band]) {
-                            return <BandSpots
-                                key={band}
-                                band={band}
-                                color={color}
-                                spots={filtered_spots}
-                                enabled_modes={enabled_modes}
-                            />;
-                        } else {
-                            return <></>
-                        }
-                    })}
-                </div>
+                {is_spots_failed ?
+                    <div className="flex items-start justify-center w-full p-6">
+                        <p class="border-red-400 border bg-red-100 text-red-700 px-1 py-3 w-80 text-center rounded-md relative" role="alert">
+                            <strong className="font-bold">Error!</strong> <span className="block">Failed to get spots data.</span>
+                        </p>
+                    </div>
+                :
+                    <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
+                    {
+                        Object.entries(band_colors).map(([band, color]) => {
+                            if (enabled_bands[band]) {
+                                return <BandSpots
+                                    key={band}
+                                    band={band}
+                                    color={color}
+                                    spots={filtered_spots}
+                                    enabled_modes={enabled_modes}
+                                />;
+                            } else {
+                                return <></>
+                            }
+                        })
+                    }
+                    </div>
+                }
             </div>
         </div>
     );
