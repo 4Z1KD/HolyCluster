@@ -2,6 +2,7 @@ import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
 import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
+import Maidenhead from "maidenhead";
 
 import { useState, useEffect } from "react";
 
@@ -63,7 +64,14 @@ function MainContainer() {
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) < spots_time_limit)
         .filter(spot => enabled_bands[spot.band] && enabled_modes[spot.mode])
-        .slice(0, 100)
+        .slice(0, 1000)
+
+    // Just a hack for displaying locations of the dx
+    filtered_spots.forEach(spot => {
+        const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
+        spot.dx_loc = [lon, lat];
+        spot.spotter_loc = [lon, lat];
+    })
 
     return (
         <div className="max-xl:mx-4 mt-10 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
