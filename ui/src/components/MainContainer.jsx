@@ -55,18 +55,25 @@ function MainContainer() {
         }
         return fetch(url, {mode: "cors"})
             .then(response => {
-                if (response.ok) {
-                    return response.json()
-                } else {
+                if (response == null || !response.ok) {
                     return Promise.reject(response)
+                } else {
+                    return response.json()
                 }
             })
-            .then(set_spots)
+            .then(data => {
+                if (data == null) {
+                    return Promise.reject(response)
+                } else {
+                    set_spots(data)
+                }
+            })
             .catch(_ => {
                 set_spots([])
                 set_is_spots_failed(true)
             })
     }
+
     useEffect(() => {
         fetch_spots()
         setInterval(fetch_spots, 30 * 1000)
