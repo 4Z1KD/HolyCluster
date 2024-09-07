@@ -62,8 +62,6 @@ function MainContainer() {
         })
     }
 
-    const [spots_time_limit, set_spots_time_limit] = useState(300)
-
     const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
@@ -104,7 +102,7 @@ function MainContainer() {
     }, [])
 
     const filtered_spots = spots
-        .filter(spot => (current_time - spot.time) < spots_time_limit)
+        .filter(spot => (current_time - spot.time) < filters.time_limit)
         .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
         .slice(0, 1000)
 
@@ -119,11 +117,7 @@ function MainContainer() {
 
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
-            <Filters
-                filters={filters}
-                set_filters={set_filters}
-                set_spots_time_limit={set_spots_time_limit}
-            />
+            <Filters filters={filters} set_filters={set_filters}/>
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
                     <MapControls

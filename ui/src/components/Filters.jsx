@@ -13,11 +13,7 @@ const spots_time_limits = {
     "24 Hour": 86400,
 }
 
-function Filters({
-    filters,
-    set_filters,
-    set_spots_time_limit,
-}) {
+function Filters({ filters, set_filters }) {
     const box_container_style = [
         "flex",
         "flex-wrap",
@@ -72,8 +68,14 @@ function Filters({
                         />
                     </div>;
                 })}
-                <select className="rounded-lg px-4 py-2" onChange={event => set_spots_time_limit(event.target.value)}>
-                    {Object.entries(spots_time_limits).map(([text, minutes]) => <option key={minutes} value={minutes}>{text}</option>)}
+                <select
+                    className="rounded-lg px-4 py-2"
+                    value={filters.time_limit}
+                    onChange={event => set_filters(state => state.time_limit = event.target.value)}
+                >
+                    {Object.entries(spots_time_limits).map(([text, minutes]) => {
+                        return <option key={minutes} value={minutes}>{text}</option>
+                    })}
                 </select>
                 <Clock></Clock>
             </div>
