@@ -89,6 +89,13 @@ function MainContainer() {
                 if (data == null) {
                     return Promise.reject(response)
                 } else {
+                    // Just a hack for displaying locations of the dx
+                    data.forEach(spot => {
+                        const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
+                        spot.dx_loc = [lon, lat];
+                        spot.spotter_loc = [(Math.random() - 0.5) * 360, (Math.random() - 0.5) * 180];
+                    });
+
                     set_spots(data)
                 }
             })
@@ -107,13 +114,6 @@ function MainContainer() {
         .filter(spot => (current_time - spot.time) < filters.time_limit)
         .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
         .slice(0, 1000)
-
-    // Just a hack for displaying locations of the dx
-    filtered_spots.forEach(spot => {
-        const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
-        spot.dx_loc = [lon, lat];
-        spot.spotter_loc = [lon, lat];
-    })
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
