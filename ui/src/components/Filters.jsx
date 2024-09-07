@@ -14,10 +14,8 @@ const spots_time_limits = {
 }
 
 function Filters({
-    enabled_bands,
-    set_enabled_bands,
-    enabled_modes,
-    set_enabled_modes,
+    filters,
+    set_filters,
     set_spots_time_limit,
 }) {
     const box_container_style = [
@@ -57,28 +55,20 @@ function Filters({
                         <span>{band}</span>
                         <input
                             type="checkbox"
-                            onChange={_ => set_enabled_bands(previous_state => {
-                                const state = structuredClone(previous_state);
-                                state[band] = !state[band];
-                                return state;
-                            })}
-                            defaultChecked={enabled_bands[band]}
+                            onChange={_ => set_filters(state => state.bands[band] = !state.bands[band])}
+                            defaultChecked={filters.bands[band]}
                         />
                     </div>
                 })}
             </div>
             <div className={box_container_style}>
-                {Object.keys(enabled_modes).map(mode => {
+                {Object.keys(filters.modes).map(mode => {
                     return <div key={mode} className={box_style}>
                         <span>{mode}</span>
                         <input
                             type="checkbox"
-                            onChange={_ =>  set_enabled_modes(previous_state => {
-                                const state = structuredClone(previous_state);
-                                state[mode] = !state[mode];
-                                return state;
-                            })}
-                            defaultChecked={enabled_modes[mode]}
+                            onChange={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
+                            defaultChecked={filters.modes[mode]}
                         />
                     </div>;
                 })}

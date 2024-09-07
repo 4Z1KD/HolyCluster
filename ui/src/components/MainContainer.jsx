@@ -7,6 +7,7 @@ import { band_colors, modes } from "../bands_and_modes.js";
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 
 function connect_to_radio() {
@@ -45,12 +46,22 @@ function MainContainer() {
         location: [0, 0]
     });
 
-    const [enabled_bands, set_enabled_bands] = useState(
-        Object.fromEntries(Object.keys(band_colors).map(band => [band, true]))
-    )
-    const [enabled_modes, set_enabled_modes] = useState(
-        Object.fromEntries(modes.map(mode => [mode, true]))
-    )
+    const [filters, set_filters_inner] = useLocalStorage(
+        "filters",
+        {
+            bands: Object.fromEntries(Object.keys(band_colors).map(band => [band, true])),
+            modes: Object.fromEntries(modes.map(mode => [mode, true])),
+            time_limit: 300,
+        }
+    );
+    const set_filters = (change_func) => {
+        set_filters_inner(previous_state => {
+            const state = structuredClone(previous_state);
+            change_func(state);
+            return state;
+        })
+    }
+
     const [spots_time_limit, set_spots_time_limit] = useState(300)
 
     const current_time = new Date().getTime() / 1000
@@ -94,7 +105,7 @@ function MainContainer() {
 
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) < spots_time_limit)
-        .filter(spot => enabled_bands[spot.band] && enabled_modes[spot.mode])
+        .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
         .slice(0, 1000)
 
     // Just a hack for displaying locations of the dx
@@ -109,10 +120,8 @@ function MainContainer() {
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
-                enabled_bands={enabled_bands}
-                set_enabled_bands={set_enabled_bands}
-                enabled_modes={enabled_modes}
-                set_enabled_modes={set_enabled_modes}
+                filters={filters}
+                set_filters={set_filters}
                 set_spots_time_limit={set_spots_time_limit}
             />
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
@@ -128,7 +137,6 @@ function MainContainer() {
                         spots={filtered_spots}
                         projection_type={projection_type}
                         night_enabled={night_enabled}
-                        enabled_bands={enabled_bands}
                         location={location}
                         set_location={set_location}
                         send_message_to_radio={send_message_to_radio}
@@ -136,7 +144,7 @@ function MainContainer() {
                 </div>
                 {is_spots_failed ?
                     <div className="flex items-start justify-center w-full p-6">
-                        <p class="border-red-400 border bg-red-100 text-red-700 px-1 py-3 w-80 text-center rounded-md relative" role="alert">
+                        <p className="border-red-400 border bg-red-100 text-red-700 px-1 py-3 w-80 text-center rounded-md relative" role="alert">
                             <strong className="font-bold">Error!</strong> <span className="block">Failed to get spots data.</span>
                         </p>
                     </div>
@@ -144,13 +152,12 @@ function MainContainer() {
                     <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
                     {
                         Object.entries(band_colors).map(([band, color]) => {
-                            if (enabled_bands[band]) {
+                            if (filters.bands[band]) {
                                 return <BandSpots
                                     key={band}
                                     band={band}
                                     color={color}
                                     spots={filtered_spots}
-                                    enabled_modes={enabled_modes}
                                 />;
                             } else {
                                 return <></>
