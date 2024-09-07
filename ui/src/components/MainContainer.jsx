@@ -20,9 +20,11 @@ function connect_to_radio() {
 
     useEffect(() => {
         if (lastJsonMessage != null) {
-            set_radio_status(lastJsonMessage.status)
+            if ("status" in lastJsonMessage) {
+                set_radio_status(lastJsonMessage.status)
+            }
         }
-    }, [lastJsonMessage, set_radio_status]);
+    }, [lastJsonMessage]);
 
     const send_message_to_radio = (message) => {
         if (readyState == ReadyState.OPEN) {

@@ -57,7 +57,7 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
             data = await websocket.receive_json()
             app.state.radio_controller.set_mode(data["mode"])
             app.state.radio_controller.set_frequency("A", data["freq"])
-            await websocket.send_json({"status": 1})
+            await websocket.send_json({"result": "success"})
         except WebSocketDisconnect:
             break
 
