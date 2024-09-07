@@ -38,6 +38,43 @@ function connect_to_radio() {
     }
 }
 
+function fetch_spots(set_spots, set_is_spots_failed) {
+    let url;
+    // For debugging purposes
+    if (window.location.port == "5173") {
+        url = "https://holycluster.iarc.org/spots"
+    } else {
+        url = "/spots"
+    }
+    return fetch(url, {mode: "cors"})
+        .then(response => {
+            if (response == null || !response.ok) {
+                return Promise.reject(response)
+            } else {
+                return response.json()
+            }
+        })
+        .then(data => {
+            if (data == null) {
+                return Promise.reject(response)
+            } else {
+                // Just a hack for displaying locations of the dx
+                data.forEach(spot => {
+                    const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
+                    spot.dx_loc = [lon, lat];
+                    spot.spotter_loc = [(Math.random() - 0.5) * 360, (Math.random() - 0.5) * 180];
+                });
+
+                set_spots(data)
+            }
+        })
+        .catch(_ => {
+            set_spots([])
+            set_is_spots_failed(true)
+        })
+}
+
+
 function MainContainer() {
     const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
     const [night_enabled, set_night] = useState(false);
@@ -69,45 +106,9 @@ function MainContainer() {
     const [spots, set_spots] = useState([])
     const [is_spots_failed, set_is_spots_failed] = useState(false)
 
-    const fetch_spots = () => {
-        let url;
-        // For debugging purposes
-        if (window.location.port == "5173") {
-            url = "https://holycluster.iarc.org/spots"
-        } else {
-            url = "/spots"
-        }
-        return fetch(url, {mode: "cors"})
-            .then(response => {
-                if (response == null || !response.ok) {
-                    return Promise.reject(response)
-                } else {
-                    return response.json()
-                }
-            })
-            .then(data => {
-                if (data == null) {
-                    return Promise.reject(response)
-                } else {
-                    // Just a hack for displaying locations of the dx
-                    data.forEach(spot => {
-                        const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
-                        spot.dx_loc = [lon, lat];
-                        spot.spotter_loc = [(Math.random() - 0.5) * 360, (Math.random() - 0.5) * 180];
-                    });
-
-                    set_spots(data)
-                }
-            })
-            .catch(_ => {
-                set_spots([])
-                set_is_spots_failed(true)
-            })
-    }
-
     useEffect(() => {
-        fetch_spots()
-        setInterval(fetch_spots, 30 * 1000)
+        fetch_spots(set_spots, set_is_spots_failed)
+        setInterval(() => fetch_spots(set_spots, set_is_spots_failed), 30 * 1000)
     }, [])
 
     const filtered_spots = spots

@@ -30,19 +30,20 @@ function Spot({
 
     return <>
         <path
-        fill="none"
-        stroke={color}
-        onMouseOver={event => {
-            event.target.style["stroke-width"] = "5px"
-            event.target.style.filter = "brightness(110%)"
-        }}
-        onMouseLeave={event => {
-            event.target.style["stroke-width"] = ""
-            event.target.style.filter = ""
-        }}
-        onClick={() => on_spot_click(spot)}
-        strokeWidth="3px"
-        d={path_generator(line)}></path>
+            fill="none"
+            stroke={color}
+            onMouseOver={event => {
+                event.target.style["stroke-width"] = "5px"
+                event.target.style.filter = "brightness(110%)"
+            }}
+            onMouseLeave={event => {
+                event.target.style["stroke-width"] = ""
+                event.target.style.filter = ""
+            }}
+            onClick={() => on_spot_click(spot)}
+            strokeWidth="3px"
+            d={path_generator(line)}
+        />
         <circle
             cx={spotter_x}
             cy={spotter_y}
