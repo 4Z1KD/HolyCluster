@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mapbox/geojson-rewind": "^0.5.2",
+    "@uidotdev/usehooks": "^2.4.1",
     "d3": "^7.9.0",
     "maidenhead": "^1.0.7",
     "react": "^18.3.1",
