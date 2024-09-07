@@ -1,3 +1,5 @@
+import { band_light_colors } from "../bands_and_modes.js";
+
 function Callsign({callsign}) {
     return <a href={"https://www.qrz.com/db/" + callsign} target="_blank">{callsign}</a>
 }
@@ -6,6 +8,8 @@ function BandSpots({
     band,
     color,
     spots = [],
+    hovered_spot,
+    set_hovered_spot,
 }) {
     const filtered_spots = spots.filter(spot => spot.band == band)
 
@@ -24,7 +28,14 @@ function BandSpots({
                     {filtered_spots
                         .map(spot => {
                             const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
-                            return <tr key={spot.spotter + "_" + spot.dx_call + "_" + spot.time}>
+                            return <tr
+                                key={spot.id}
+                                style={{
+                                    backgroundColor: spot.id == hovered_spot ? band_light_colors[band] : "white",
+                                }}
+                                onMouseOver={() => set_hovered_spot(spot.id)}
+                                onMouseLeave={() => set_hovered_spot(null)}
+                            >
                                 <td>{formatted_time}</td>
                                 <td><Callsign callsign={spot.dx_call}></Callsign></td>
                                 <td>{spot.freq}</td>

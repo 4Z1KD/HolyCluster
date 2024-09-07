@@ -27,12 +27,14 @@ function get_night_circle() {
 }
 
 function Map({
+    spots = [],
+    projection_type = "AzimuthalEquidistant",
+    night_enabled = false,
     location,
     set_location,
     send_message_to_radio,
-    spots = [],
-    night_enabled = false,
-    projection_type = "AzimuthalEquidistant",
+    hovered_spot,
+    set_hovered_spot,
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -153,10 +155,11 @@ function Map({
                 return <Spot
                     key={index}
                     spot={spot}
-                    color={band_colors[spot.band]}
                     path_generator={path_generator}
                     projection={projection}
                     on_spot_click={on_spot_click}
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
                 ></Spot>;
             })}
             {night_enabled ?

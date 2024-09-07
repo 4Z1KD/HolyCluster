@@ -118,6 +118,8 @@ function MainContainer() {
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
+    let [hovered_spot, set_hovered_spot] = useState(null);
+
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters filters={filters} set_filters={set_filters}/>
@@ -137,6 +139,8 @@ function MainContainer() {
                         location={location}
                         set_location={set_location}
                         send_message_to_radio={send_message_to_radio}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
                     />
                 </div>
                 {is_spots_failed ?
@@ -155,6 +159,8 @@ function MainContainer() {
                                     band={band}
                                     color={color}
                                     spots={filtered_spots}
+                                    hovered_spot={hovered_spot}
+                                    set_hovered_spot={set_hovered_spot}
                                 />;
                             } else {
                                 return <></>
