@@ -2,26 +2,12 @@ import Map from "./Map.jsx";
 import MapControls from "./MapControls.jsx";
 import Filters from "./Filters.jsx";
 import BandSpots from "./BandSpots.jsx";
-import Maidenhead from "maidenhead";
+import { band_colors, modes } from "../bands_and_modes.js";
 
+import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-
-const band_colors = {
-    160: "#f65356",
-    80: "#fb8066",
-    40: "#fea671",
-    30: "#fec979",
-    20: "#feea80",
-    17: "#d7e586",
-    15: "#a5de94",
-    12: "#5daad8",
-    10: "#8187c7",
-    6: "#c56bba",
-};
-
-const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
 
 function connect_to_radio() {
     const host = window.location.host;
@@ -123,7 +109,6 @@ function MainContainer() {
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
-                band_colors={band_colors}
                 enabled_bands={enabled_bands}
                 set_enabled_bands={set_enabled_bands}
                 enabled_modes={enabled_modes}
@@ -141,7 +126,6 @@ function MainContainer() {
                     />
                     <Map
                         spots={filtered_spots}
-                        band_colors={band_colors}
                         projection_type={projection_type}
                         night_enabled={night_enabled}
                         enabled_bands={enabled_bands}

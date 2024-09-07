@@ -1,3 +1,5 @@
+import { band_colors } from "../bands_and_modes.js";
+
 import Clock from "./Clock.jsx";
 
 const spots_time_limits = {
@@ -12,7 +14,6 @@ const spots_time_limits = {
 }
 
 function Filters({
-    band_colors,
     enabled_bands,
     set_enabled_bands,
     enabled_modes,

@@ -4,9 +4,9 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import MapAngles from "./MapAngles.jsx";
-
+import { band_colors } from "../bands_and_modes.js";
 import dxcc_map_raw from "../assets/dxcc_map.json";
+import MapAngles from "./MapAngles.jsx";
 import Spot from "./Spot.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -31,7 +31,6 @@ function Map({
     set_location,
     send_message_to_radio,
     spots = [],
-    band_colors = {},
     night_enabled = false,
     projection_type = "AzimuthalEquidistant",
 }) {
