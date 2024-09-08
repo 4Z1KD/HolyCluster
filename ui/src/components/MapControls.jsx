@@ -28,7 +28,7 @@ function MapControls({
     }
 
     return (
-        <div className="flex flex-wrap justify-center place-items-center w-full h-auto p-3 gap-4">
+        <div className="flex flex-wrap justify-start place-items-center w-full h-auto p-3 gap-4">
             <input
                 className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
@@ -62,7 +62,10 @@ function MapControls({
                 ></input>
                 <label className="text-slate-700">Show night</label>
             </div>
-        <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+
+            <div className="ml-auto">
+                <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+            </div>
         </div>
     );
 }
