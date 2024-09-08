@@ -32,7 +32,7 @@ function Map({
     night_enabled = false,
     location,
     set_location,
-    send_message_to_radio,
+    on_spot_click,
     hovered_spot,
     set_hovered_spot,
 }) {
@@ -85,11 +85,6 @@ function Map({
             })
         svg.call(zoom);
     }, [radius_in_km])
-
-
-    function on_spot_click(spot) {
-        send_message_to_radio({mode: spot.mode, freq: spot.freq})
-    }
 
     return <svg
         ref={svg_ref}

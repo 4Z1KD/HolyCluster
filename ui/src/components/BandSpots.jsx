@@ -10,6 +10,7 @@ function BandSpots({
     spots = [],
     hovered_spot,
     set_hovered_spot,
+    on_spot_click,
 }) {
     const filtered_spots = spots.filter(spot => spot.band == band)
 
@@ -38,7 +39,11 @@ function BandSpots({
                             >
                                 <td>{formatted_time}</td>
                                 <td><Callsign callsign={spot.dx_call}></Callsign></td>
-                                <td>{spot.freq}</td>
+                                <td>
+                                    <div className="cursor-pointer" onClick={() => on_spot_click(spot)}>
+                                        {spot.freq}
+                                    </div>
+                                </td>
                                 <td><Callsign callsign={spot.spotter}></Callsign></td>
                                 <td>{spot.mode}</td>
                             </tr>;

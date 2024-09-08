@@ -118,6 +118,10 @@ function MainContainer() {
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
+    function on_spot_click(spot) {
+        send_message_to_radio({mode: spot.mode, freq: spot.freq})
+    }
+
     let [hovered_spot, set_hovered_spot] = useState(null);
 
     return (
@@ -138,7 +142,7 @@ function MainContainer() {
                         night_enabled={night_enabled}
                         location={location}
                         set_location={set_location}
-                        send_message_to_radio={send_message_to_radio}
+                        on_spot_click={on_spot_click}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
                     />
@@ -161,6 +165,7 @@ function MainContainer() {
                                     spots={filtered_spots}
                                     hovered_spot={hovered_spot}
                                     set_hovered_spot={set_hovered_spot}
+                                    on_spot_click={on_spot_click}
                                 />;
                             } else {
                                 return <></>
