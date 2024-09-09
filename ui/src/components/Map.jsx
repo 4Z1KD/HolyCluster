@@ -28,10 +28,8 @@ function get_night_circle() {
 
 function Map({
     spots = [],
-    projection_type = "AzimuthalEquidistant",
-    night_enabled = false,
-    location,
-    set_location,
+    map_controls,
+    set_map_controls,
     on_spot_click,
     hovered_spot,
     set_hovered_spot,
@@ -45,9 +43,9 @@ function Map({
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
-    const [center_lon, center_lat] = location.location;
+    const [center_lon, center_lat] = map_controls.location.location;
 
-    const projection = d3["geo" + projection_type]()
+    const projection = d3["geo" + map_controls.projection_type]()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
@@ -98,10 +96,9 @@ function Map({
             if (event.detail == 2 && distance_from_center <= radius) {
                 const [lon, lat] = projection.invert([x, y]);
                 const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
-                set_location({
-                    displayed_locator: displayed_locator,
-                    location: [ lon, lat ],
-                });
+                set_map_controls(state => {
+                    state.location = {displayed_locator: displayed_locator, location: [ lon, lat ]};
+                })
             }
         }}
     >
@@ -157,7 +154,7 @@ function Map({
                     set_hovered_spot={set_hovered_spot}
                 ></Spot>;
             })}
-            {night_enabled ?
+            {map_controls.night ?
                 <path
                     style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
                     d={path_generator(get_night_circle())}

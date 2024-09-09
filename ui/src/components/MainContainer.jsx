@@ -76,15 +76,6 @@ function fetch_spots(set_spots, set_is_spots_failed) {
 
 
 function MainContainer() {
-    const [projection_type, set_projection_type] = useState("AzimuthalEquidistant");
-    const [night_enabled, set_night] = useState(false);
-
-    const [location, set_location] = useState({
-        displayed_locator: "",
-        // Longitude, latitude
-        location: [0, 0]
-    });
-
     const [filters, set_filters_inner] = useLocalStorage(
         "filters",
         {
@@ -95,6 +86,25 @@ function MainContainer() {
     );
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
+            const state = structuredClone(previous_state);
+            change_func(state);
+            return state;
+        })
+    }
+    const [map_controls, set_map_controls_inner] = useLocalStorage(
+        "map_controls",
+        {
+            projection_type: "AzimuthalEquidistant",
+            night: false,
+            location: {
+                displayed_locator: "",
+                // Longitude, latitude
+                location: [0, 0]
+            }
+        }
+    );
+    const set_map_controls = (change_func) => {
+        set_map_controls_inner(previous_state => {
             const state = structuredClone(previous_state);
             change_func(state);
             return state;
@@ -130,18 +140,14 @@ function MainContainer() {
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
                     <MapControls
-                        set_projection_type={set_projection_type}
-                        set_night={set_night}
-                        location={location}
-                        set_location={set_location}
+                        map_controls={map_controls}
+                        set_map_controls={set_map_controls}
                         radio_status={radio_status}
                     />
                     <Map
                         spots={filtered_spots}
-                        projection_type={projection_type}
-                        night_enabled={night_enabled}
-                        location={location}
-                        set_location={set_location}
+                        map_controls={map_controls}
+                        set_map_controls={set_map_controls}
                         on_spot_click={on_spot_click}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
