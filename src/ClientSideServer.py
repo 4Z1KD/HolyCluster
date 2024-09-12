@@ -1,3 +1,4 @@
+import argparse
 import logging
 import mimetypes
 import os
@@ -6,6 +7,7 @@ import fastapi
 from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 import httpx
+import uvicorn
 
 import RadioController
 
@@ -72,3 +74,19 @@ async def spots(response: fastapi.Response):
 
 
 app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", type=str, default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=7373)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
