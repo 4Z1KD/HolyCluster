@@ -1,6 +1,7 @@
-import { band_colors } from "../bands_and_modes.js";
-
+import Alerts from "./Alerts.jsx";
 import Clock from "./Clock.jsx";
+
+import { band_colors } from "../bands_and_modes.js";
 
 const spots_time_limits = {
     "5 Minutes": 300,
@@ -13,7 +14,12 @@ const spots_time_limits = {
     "24 Hour": 86400,
 }
 
-function Filters({ filters, set_filters }) {
+function Filters({
+    filters,
+    set_filters,
+    alerts,
+    set_alerts,
+}) {
     const box_container_style = [
         "flex",
         "flex-wrap",
@@ -77,6 +83,7 @@ function Filters({ filters, set_filters }) {
                         return <option key={minutes} value={minutes}>{text}</option>
                     })}
                 </select>
+                <Alerts alerts={alerts} set_alerts={set_alerts}></Alerts>
                 <Clock></Clock>
             </div>
         </div>

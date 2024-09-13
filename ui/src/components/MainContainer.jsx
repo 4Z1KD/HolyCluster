@@ -91,6 +91,9 @@ function MainContainer() {
             return state;
         })
     }
+
+    const [alerts, set_alerts] = useLocalStorage("alerts", [])
+
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
         {
@@ -136,7 +139,12 @@ function MainContainer() {
 
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
-            <Filters filters={filters} set_filters={set_filters}/>
+            <Filters
+                filters={filters}
+                set_filters={set_filters}
+                alerts={alerts}
+                set_alerts={set_alerts}
+            />
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
                     <MapControls

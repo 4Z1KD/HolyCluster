@@ -1,3 +1,4 @@
+import Input from "./Input.jsx";
 import Button from "./Button.jsx";
 import Radio from "./Radio.jsx";
 
@@ -27,9 +28,7 @@ function MapControls({
 
     return (
         <div className="flex flex-wrap justify-start place-items-center w-full h-auto p-3 gap-4">
-            <input
-                className="shadow appearance-none border rounded-lg w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
+            <Input
                 value={map_controls.location.displayed_locator}
                 placeholder="Locator"
                 onChange={event => {
