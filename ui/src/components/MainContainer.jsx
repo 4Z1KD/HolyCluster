@@ -93,7 +93,7 @@ function MainContainer() {
     }
 
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
-    const alerts_regex = alerts.map(alert => new RegExp(`^${alert.replace("*", ".*")}$`))
+    const alerts_regex = alerts.map(alert => new RegExp(`^${alert.replaceAll("*", ".*")}$`))
 
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
