@@ -13,6 +13,7 @@ function Spot({
     on_spot_click,
     hovered_spot,
     set_hovered_spot,
+    alerts
 }) {
     const line = {
         type: "LineString",
@@ -48,6 +49,18 @@ function Spot({
         [spotter_x, -t + spotter_y],
     ];
 
+    const is_alerted = alerts.some(regex => spot.dx_call.match(regex));
+    let style;
+    if (is_alerted) {
+        style = {
+            strokeDasharray: 5,
+            strokeDashoffset: 50,
+            animation: "dash 2s linear forwards infinite"
+        };
+    } else {
+        style = {};
+    }
+
     return <g>
         <path
             fill="none"
@@ -57,7 +70,19 @@ function Spot({
             onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}
             d={path_generator(line)}
+            style={style}
         />
+        {is_alerted ?
+            <style>
+            {`
+                @keyframes dash {
+                    to {
+                        stroke-dashoffset: 0;
+                    }
+                }
+            `}
+            </style>
+        : ""}
         <polygon
             points={spotter_triangle.map(point => point.join(",")).join(" ")}
             fill={light_color}

@@ -160,6 +160,7 @@ function MainContainer() {
                         on_spot_click={on_spot_click}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
+                        alerts={alerts_regex}
                     />
                 </div>
                 {is_spots_failed ?

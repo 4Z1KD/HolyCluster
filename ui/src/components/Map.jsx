@@ -4,7 +4,6 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { band_colors } from "../bands_and_modes.js";
 import dxcc_map_raw from "../assets/dxcc_map.json";
 import MapAngles from "./MapAngles.jsx";
 import Spot from "./Spot.jsx";
@@ -33,6 +32,7 @@ function Map({
     on_spot_click,
     hovered_spot,
     set_hovered_spot,
+    alerts,
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -152,6 +152,7 @@ function Map({
                     on_spot_click={on_spot_click}
                     hovered_spot={hovered_spot}
                     set_hovered_spot={set_hovered_spot}
+                    alerts={alerts}
                 ></Spot>;
             })}
             {map_controls.night ?
