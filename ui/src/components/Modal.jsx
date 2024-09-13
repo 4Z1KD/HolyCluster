@@ -2,11 +2,23 @@ import Button from "./Button.jsx";
 
 import { useState } from "react";
 
-function Modal({ title, button, on_apply, on_cancel, children }) {
+function Modal({
+    title,
+    button,
+    on_open = null,
+    on_apply = null,
+    on_cancel = null,
+    children,
+}) {
     const [show_modal, set_show_modal] = useState(false);
 
     return <>
-        <button onClick={() => set_show_modal(true)}>{button}</button>
+        <button onClick={() => {
+            if (on_open != null) {
+                on_open()
+            }
+            set_show_modal(true)
+        }}>{button}</button>
         {(show_modal ? (
             <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                 <div className="relative min-w-80 my-6 mx-auto max-w-3xl">
@@ -19,13 +31,17 @@ function Modal({ title, button, on_apply, on_cancel, children }) {
                     </div>
                     <div className="flex items-center justify-around p-3 border-t border-solid border-blueGray-200 rounded-b">
                         <Button color="red" on_click={() => {
-                            on_cancel()
+                            if (on_cancel != null) {
+                                on_cancel()
+                            }
                             set_show_modal(false)
                         }}>
                             Cancel
                         </Button>
                         <Button color="blue" on_click={() => {
-                            on_apply()
+                            if (on_apply != null) {
+                                on_apply()
+                            }
                             set_show_modal(false)
                         }}>
                             Apply

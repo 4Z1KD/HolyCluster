@@ -23,19 +23,38 @@ function Alerts({ alerts, set_alerts }) {
     const [pending_alert, set_pending_alert] = useState("")
 
     return <Modal
-        title="alerts"
+        title="Alerts"
         button={<Alert size="32px"></Alert>}
+        on_open={() => set_temp_alerts(alerts)}
         on_apply={() => {
             set_alerts(temp_alerts)
             set_temp_alerts([])
+            set_pending_alert("")
         }}
         on_cancel={() => {
             set_temp_alerts([])
+            set_pending_alert("")
         }}
     >
         {temp_alerts.map((alert, index) => {
             return <>
-                <Input value={alert}></Input><br/>
+                <Input value={alert} key={index} className="mb-2 mr-2" onChange={event => {
+                    set_temp_alerts(old_state => {
+                        const state = structuredClone(old_state);
+                        state[index] = event.target.value;
+                        return state;
+                    })
+                }}></Input>
+                <button
+                    onClick={() => {
+                        set_temp_alerts(old_state => {
+                            const state = structuredClone(old_state);
+                            state.splice(index, 1);
+                            return state;
+                        })
+                    }}
+                >❌</button>
+                <br/>
             </>
         })}
         <Input
@@ -44,8 +63,8 @@ function Alerts({ alerts, set_alerts }) {
             onKeyDown={event => {
                 if (event.key == "Enter") {
                     set_temp_alerts(old_state => {
-                        old_state.push(pending_alert)
-                        return old_state
+                        old_state.push(pending_alert);
+                        return old_state;
                     })
                     set_pending_alert("")
                 }
