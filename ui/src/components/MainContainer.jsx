@@ -93,6 +93,7 @@ function MainContainer() {
     }
 
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
+    const alerts_regex = alerts.map(alert => new RegExp(`^${alert.replace("*", ".*")}$`))
 
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
@@ -180,6 +181,7 @@ function MainContainer() {
                                     hovered_spot={hovered_spot}
                                     set_hovered_spot={set_hovered_spot}
                                     on_spot_click={on_spot_click}
+                                    alerts={alerts_regex}
                                 />;
                             } else {
                                 return <></>

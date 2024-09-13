@@ -1,7 +1,11 @@
 import { band_light_colors } from "../bands_and_modes.js";
 
-function Callsign({callsign}) {
-    return <a href={"https://www.qrz.com/db/" + callsign} target="_blank">{callsign}</a>
+function Callsign({ callsign, is_alerted }) {
+    return <a
+        className={is_alerted ? "bg-emerald-100" : ""}
+        href={"https://www.qrz.com/db/" + callsign}
+        target="_blank"
+    >{callsign}</a>
 }
 
 function BandSpots({
@@ -11,6 +15,7 @@ function BandSpots({
     hovered_spot,
     set_hovered_spot,
     on_spot_click,
+    alerts,
 }) {
     const filtered_spots = spots.filter(spot => spot.band == band)
 
@@ -29,6 +34,8 @@ function BandSpots({
                     {filtered_spots
                         .map(spot => {
                             const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
+                            const is_alerted = alerts.some(regex => spot.dx_call.match(regex));
+
                             return <tr
                                 key={spot.id}
                                 style={{
@@ -38,7 +45,7 @@ function BandSpots({
                                 onMouseLeave={() => set_hovered_spot(null)}
                             >
                                 <td>{formatted_time}</td>
-                                <td><Callsign callsign={spot.dx_call}></Callsign></td>
+                                <td ><Callsign callsign={spot.dx_call} is_alerted={is_alerted}></Callsign></td>
                                 <td>
                                     <div className="cursor-pointer" onClick={() => on_spot_click(spot)}>
                                         {spot.freq}
