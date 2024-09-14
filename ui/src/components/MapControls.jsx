@@ -14,8 +14,6 @@ function MapControls({
     map_controls,
     set_map_controls,
     radio_status,
-    canvas_rendering,
-    set_canvas_rendering,
 }) {
     function reset_map() {
         set_map_controls(state => state.location = {displayed_locator: "", location: [ 0, 0 ]})
@@ -64,15 +62,7 @@ function MapControls({
                 <label className="text-slate-700">Show night</label>
             </div>
 
-            <div className="ml-auto flex gap-4">
-                <div className="flex gap-2">
-                    <input
-                        type="checkbox"
-                        onChange={_ => set_canvas_rendering(!canvas_rendering)}
-                        defaultChecked={canvas_rendering}
-                    />
-                <span>Canvas</span>
-                </div>
+            <div className="ml-auto">
                 <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
             </div>
         </div>

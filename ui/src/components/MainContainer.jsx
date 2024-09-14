@@ -139,7 +139,8 @@ function MainContainer() {
 
     let [hovered_spot, set_hovered_spot] = useState(null);
 
-    let [canvas_rendering, set_canvas_rendering] = useState(false);
+    // This is a debug variable that should be set from the dev console
+    let [canvas, _] = useLocalStorage("canvas", false);
 
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
@@ -155,10 +156,8 @@ function MainContainer() {
                         map_controls={map_controls}
                         set_map_controls={set_map_controls}
                         radio_status={radio_status}
-                        canvas_rendering={canvas_rendering}
-                        set_canvas_rendering={set_canvas_rendering}
                     />
-                    {canvas_rendering ?
+                    {canvas ?
                         <CanvasMap
                             spots={filtered_spots}
                             map_controls={map_controls}
