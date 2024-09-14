@@ -9,15 +9,8 @@ import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
-function draw_spot(
-    spot,
-    hovered_spot,
-    context,
-    transform,
-    path_generator,
-    projection,
-) {
-    const line = {
+function build_geojson_line(spot) {
+    return {
         type: "LineString",
         coordinates: [
             spot.spotter_loc,
@@ -29,6 +22,17 @@ function draw_spot(
             mode: spot.mode
         }
     };
+}
+
+function draw_spot(
+    spot,
+    hovered_spot,
+    context,
+    transform,
+    path_generator,
+    projection,
+) {
+    const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot;
 
     // Render the arc of the spot
@@ -115,6 +119,14 @@ function CanvasMap({
             .projection(projection)
             .context(context);
 
+        function apply_context_transform(transform) {
+            context.setTransform(
+                transform.k, 0, 0,
+                transform.k, transform.x, transform.y,
+                1, 1, 1
+            );
+        }
+
         function draw_map(transform) {
             // Clear the map before rendering
             context.clearRect(0, 0, dimensions.width, dimensions.height);
@@ -131,11 +143,7 @@ function CanvasMap({
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.clip();
 
-            context.setTransform(
-                transform.k, 0, 0,
-                transform.k, transform.x, transform.y,
-                1, 1, 1
-            );
+            apply_context_transform(transform);
             context.lineWidth = 1 / transform.k;
 
             // Render the graticule
@@ -188,7 +196,36 @@ function CanvasMap({
             }
         );
         d3.select(canvas).call(zoom);
-    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform]);
+
+        const handle_mouse_move = (event) => {
+            const { offsetX, offsetY } = event;
+            let found_spot = null;
+
+            context.save();
+            spots.forEach(spot => {
+                const line = build_geojson_line(spot);
+                context.beginPath();
+                apply_context_transform(zoom_transform);
+                path_generator(line);
+                context.lineWidth = 8 / zoom_transform.k;
+
+                if (context.isPointInStroke(offsetX, offsetY)) {
+                    found_spot = spot.id;
+                }
+            });
+            context.restore();
+            if (found_spot !== hovered_spot) {
+                set_hovered_spot(found_spot);
+            }
+        };
+
+        // Add event listener for mousemove
+        canvas.addEventListener("mousemove", handle_mouse_move);
+
+        return () => {
+            canvas.removeEventListener("mousemove", handle_mouse_move);
+        };
+    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform, hovered_spot]);
 
     return <canvas
         ref={canvas_ref}
