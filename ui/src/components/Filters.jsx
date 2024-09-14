@@ -1,7 +1,7 @@
-import Alerts from "./Alerts.jsx";
-import Clock from "./Clock.jsx";
+import Alerts from "@/components/Alerts.jsx";
+import Clock from "@/components/Clock.jsx";
 
-import { band_colors } from "../bands_and_modes.js";
+import { band_colors } from "@/bands_and_modes.js";
 
 const spots_time_limits = {
     "5 Minutes": 300,

@@ -1,10 +1,8 @@
 import haversine from "haversine-distance";
-
-import { to_radian } from "../utils.js";
-
 import { useState } from "react";
 
-import { band_colors, band_light_colors } from "../bands_and_modes.js";
+import { to_radian } from "@/utils.js";
+import { band_colors, band_light_colors } from "@/bands_and_modes.js";
 
 function Spot({
     spot,

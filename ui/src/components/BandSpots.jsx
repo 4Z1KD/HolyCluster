@@ -1,4 +1,4 @@
-import { band_light_colors } from "../bands_and_modes.js";
+import { band_light_colors } from "@/bands_and_modes.js";
 
 function Callsign({ callsign, is_alerted }) {
     return <a

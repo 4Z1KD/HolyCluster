@@ -1,8 +1,8 @@
-import Map from "./Map.jsx";
-import MapControls from "./MapControls.jsx";
-import Filters from "./Filters.jsx";
-import BandSpots from "./BandSpots.jsx";
-import { band_colors, modes } from "../bands_and_modes.js";
+import Map from "@/components/Map.jsx";
+import MapControls from "@/components/MapControls.jsx";
+import Filters from "@/components/Filters.jsx";
+import BandSpots from "@/components/BandSpots.jsx";
+import { band_colors, modes } from "@/bands_and_modes.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";

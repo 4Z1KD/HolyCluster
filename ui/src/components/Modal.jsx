@@ -1,4 +1,4 @@
-import Button from "./Button.jsx";
+import Button from "@/components/Button.jsx";
 
 import { useState } from "react";
 

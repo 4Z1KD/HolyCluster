@@ -4,9 +4,9 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import dxcc_map_raw from "../assets/dxcc_map.json";
-import MapAngles from "./MapAngles.jsx";
-import Spot from "./Spot.jsx";
+import dxcc_map_raw from "@/assets/dxcc_map.json";
+import MapAngles from "@/components/MapAngles.jsx";
+import Spot from "@/components/Spot.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import Input from "./Input.jsx";
-import Modal from "./Modal.jsx";
+import Input from "@/components/Input.jsx";
+import Modal from "@/components/Modal.jsx";
 
 function Alert({ size }) {
     return <svg

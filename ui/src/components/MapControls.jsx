@@ -1,6 +1,6 @@
-import Input from "./Input.jsx";
-import Button from "./Button.jsx";
-import Radio from "./Radio.jsx";
+import Input from "@/components/Input.jsx";
+import Button from "@/components/Button.jsx";
+import Radio from "@/components/Radio.jsx";
 
 import Maidenhead from "maidenhead";
 
