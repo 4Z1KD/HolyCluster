@@ -1,4 +1,5 @@
 import SvgMap from "@/components/SvgMap.jsx";
+import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import Filters from "@/components/Filters.jsx";
 import BandSpots from "@/components/BandSpots.jsx";
@@ -157,15 +158,27 @@ function MainContainer() {
                         canvas_rendering={canvas_rendering}
                         set_canvas_rendering={set_canvas_rendering}
                     />
-                    <SvgMap
-                        spots={filtered_spots}
-                        map_controls={map_controls}
-                        set_map_controls={set_map_controls}
-                        on_spot_click={on_spot_click}
-                        hovered_spot={hovered_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        alerts={alerts_regex}
-                    />
+                    {canvas_rendering ?
+                        <CanvasMap
+                            spots={filtered_spots}
+                            map_controls={map_controls}
+                            set_map_controls={set_map_controls}
+                            on_spot_click={on_spot_click}
+                            hovered_spot={hovered_spot}
+                            set_hovered_spot={set_hovered_spot}
+                            alerts={alerts_regex}
+                        />
+                        :
+                        <SvgMap
+                            spots={filtered_spots}
+                            map_controls={map_controls}
+                            set_map_controls={set_map_controls}
+                            on_spot_click={on_spot_click}
+                            hovered_spot={hovered_spot}
+                            set_hovered_spot={set_hovered_spot}
+                            alerts={alerts_regex}
+                        />
+                    }
                 </div>
                 {is_spots_failed ?
                     <div className="flex items-start justify-center w-full p-6">
