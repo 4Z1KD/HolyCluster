@@ -25,7 +25,7 @@ function get_night_circle() {
         .center(antipode(get_sun_coordinates()))()
 }
 
-function Map({
+function SvgMap({
     spots = [],
     map_controls,
     set_map_controls,
@@ -165,4 +165,4 @@ function Map({
     </svg>;
 }
 
-export default Map;
+export default SvgMap;

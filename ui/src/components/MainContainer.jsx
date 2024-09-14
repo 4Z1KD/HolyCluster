@@ -1,4 +1,4 @@
-import Map from "@/components/Map.jsx";
+import SvgMap from "@/components/SvgMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import Filters from "@/components/Filters.jsx";
 import BandSpots from "@/components/BandSpots.jsx";
@@ -157,7 +157,7 @@ function MainContainer() {
                         canvas_rendering={canvas_rendering}
                         set_canvas_rendering={set_canvas_rendering}
                     />
-                    <Map
+                    <SvgMap
                         spots={filtered_spots}
                         map_controls={map_controls}
                         set_map_controls={set_map_controls}
