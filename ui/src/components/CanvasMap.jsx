@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
 
+import { band_colors, band_light_colors } from "@/bands_and_modes.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -84,6 +85,36 @@ function CanvasMap({
                 context.stroke();
             });
 
+            spots.forEach(spot => {
+                const line = {
+                    type: "LineString",
+                    coordinates: [
+                        spot.spotter_loc,
+                        spot.dx_loc,
+                    ],
+                    properties: {
+                        band: spot.band,
+                        freq: Number(spot.freq) * 1000,
+                        mode: spot.mode
+                    }
+                };
+                const is_hovered = spot.id == hovered_spot;
+
+                context.beginPath();
+                if (is_hovered) {
+                    context.strokeStyle = band_light_colors[spot.band];
+                    context.lineWidth = 6;
+                } else {
+                    context.strokeStyle = band_colors[spot.band];
+                    context.lineWidth = 2;
+                }
+                if (transform != null) {
+                    context.lineWidth = context.lineWidth / transform.k;
+                }
+                path_generator(line)
+                context.stroke();
+            })
+
             context.restore()
         }
 
@@ -106,7 +137,7 @@ function CanvasMap({
             }
         );
         d3.select(canvas).call(zoom);
-    }, [dxcc_map, center_lon, center_lat]);
+    }, [dxcc_map, spots, center_lon, center_lat]);
 
     return <canvas
         ref={canvas_ref}
