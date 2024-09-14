@@ -3,10 +3,80 @@ import { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
 
+import { to_radian } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/bands_and_modes.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
+
+function draw_spot(
+    spot,
+    hovered_spot,
+    context,
+    transform,
+    path_generator,
+    projection,
+) {
+    const line = {
+        type: "LineString",
+        coordinates: [
+            spot.spotter_loc,
+            spot.dx_loc,
+        ],
+        properties: {
+            band: spot.band,
+            freq: Number(spot.freq) * 1000,
+            mode: spot.mode
+        }
+    };
+    const is_hovered = spot.id == hovered_spot;
+
+    // Render the arc of the spot
+    context.beginPath();
+    if (is_hovered) {
+        context.strokeStyle = band_light_colors[spot.band];
+        context.lineWidth = 6;
+    } else {
+        context.strokeStyle = band_colors[spot.band];
+        context.lineWidth = 2;
+    }
+    context.lineWidth = context.lineWidth / transform.k;
+    path_generator(line)
+    context.stroke();
+
+    const dx_size = (is_hovered ? 12 : 10) / transform.k;
+    const [dx_x, dx_y] = projection(spot.dx_loc);
+
+    // Render the dx rectangle
+    context.beginPath();
+    context.strokeStyle = "grey";
+    context.fillStyle = band_light_colors[spot.band];
+    context.lineWidth = 1 / transform.k;
+    context.rect(
+        dx_x - dx_size / 2,
+        dx_y - dx_size / 2,
+        dx_size,
+        dx_size
+    );
+    context.fill();
+    context.stroke();
+
+    const spotter_size = (is_hovered ? 16 : 12) / transform.k;
+    const [spotter_x, spotter_y] = projection(spot.spotter_loc);
+    const t = (Math.sin(to_radian(60)) * spotter_size) / 2;
+
+    context.beginPath();
+
+    context.strokeStyle = "grey";
+    context.fillStyle = band_light_colors[spot.band];
+    context.lineWidth = 1 / transform.k;
+    context.moveTo(-spotter_size / 2 + spotter_x, t + spotter_y);
+    context.lineTo(spotter_size / 2 + spotter_x, t + spotter_y);
+    context.lineTo(spotter_x, -t + spotter_y);
+    context.closePath();
+    context.fill();
+    context.stroke();
+}
 
 function CanvasMap({
     spots = [],
@@ -85,32 +155,14 @@ function CanvasMap({
             });
 
             spots.forEach(spot => {
-                const line = {
-                    type: "LineString",
-                    coordinates: [
-                        spot.spotter_loc,
-                        spot.dx_loc,
-                    ],
-                    properties: {
-                        band: spot.band,
-                        freq: Number(spot.freq) * 1000,
-                        mode: spot.mode
-                    }
-                };
-                const is_hovered = spot.id == hovered_spot;
-
-                context.beginPath();
-                if (is_hovered) {
-                    context.strokeStyle = band_light_colors[spot.band];
-                    context.lineWidth = 6;
-                } else {
-                    context.strokeStyle = band_colors[spot.band];
-                    context.lineWidth = 2;
-                }
-                context.lineWidth = context.lineWidth / transform.k;
-
-                path_generator(line)
-                context.stroke();
+                draw_spot(
+                    spot,
+                    hovered_spot,
+                    context,
+                    transform,
+                    path_generator,
+                    projection,
+                );
             })
 
             context.restore()
