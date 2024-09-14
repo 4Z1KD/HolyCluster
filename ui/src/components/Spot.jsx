@@ -66,11 +66,18 @@ function Spot({
             fill="none"
             stroke={is_hovered ? light_color : color}
             strokeWidth={is_hovered ? "6px" : "2px"}
+            d={path_generator(line)}
+            style={style}
+        />
+        <path
+            fill="none"
+            opacity="0"
+            strokeWidth="8px"
+            stroke="#FFFFFF"
             onMouseOver={() => set_hovered_spot(spot.id)}
             onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}
             d={path_generator(line)}
-            style={style}
         />
         {is_alerted ?
             <style>
