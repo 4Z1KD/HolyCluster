@@ -19,6 +19,7 @@ function CanvasMap({
 }) {
     const canvas_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 837, height: 837 });
+    const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
     const inner_padding = 50;
     const center_x = dimensions.width / 2;
@@ -60,14 +61,12 @@ function CanvasMap({
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.clip();
 
-            if (transform != null) {
-                context.setTransform(
-                    transform.k, 0, 0,
-                    transform.k, transform.x, transform.y,
-                    1, 1, 1
-                );
-                context.lineWidth = 1 / transform.k;
-            }
+            context.setTransform(
+                transform.k, 0, 0,
+                transform.k, transform.x, transform.y,
+                1, 1, 1
+            );
+            context.lineWidth = 1 / transform.k;
 
             // Render the graticule
             context.beginPath();
@@ -108,9 +107,8 @@ function CanvasMap({
                     context.strokeStyle = band_colors[spot.band];
                     context.lineWidth = 2;
                 }
-                if (transform != null) {
-                    context.lineWidth = context.lineWidth / transform.k;
-                }
+                context.lineWidth = context.lineWidth / transform.k;
+
                 path_generator(line)
                 context.stroke();
             })
@@ -118,7 +116,7 @@ function CanvasMap({
             context.restore()
         }
 
-        draw_map();
+        draw_map(zoom_transform);
 
         let is_drawing = false;
         const zoom = d3.zoom()
@@ -130,6 +128,7 @@ function CanvasMap({
                     is_drawing = true;
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
+                        set_zoom_transform(transform)
                         draw_map(transform);
                         is_drawing = false;
                     })
@@ -137,7 +136,7 @@ function CanvasMap({
             }
         );
         d3.select(canvas).call(zoom);
-    }, [dxcc_map, spots, center_lon, center_lat]);
+    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform]);
 
     return <canvas
         ref={canvas_ref}
