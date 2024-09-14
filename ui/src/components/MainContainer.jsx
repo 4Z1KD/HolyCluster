@@ -138,6 +138,8 @@ function MainContainer() {
 
     let [hovered_spot, set_hovered_spot] = useState(null);
 
+    let [canvas_rendering, set_canvas_rendering] = useState(false);
+
     return (
         <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
@@ -152,6 +154,8 @@ function MainContainer() {
                         map_controls={map_controls}
                         set_map_controls={set_map_controls}
                         radio_status={radio_status}
+                        canvas_rendering={canvas_rendering}
+                        set_canvas_rendering={set_canvas_rendering}
                     />
                     <Map
                         spots={filtered_spots}
