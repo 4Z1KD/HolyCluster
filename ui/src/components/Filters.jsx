@@ -1,6 +1,8 @@
 import Alerts from "@/components/Alerts.jsx";
 import Clock from "@/components/Clock.jsx";
 
+import FilterOptions from "@/components/FilterOptions.jsx";
+
 import { band_colors } from "@/bands_and_modes.js";
 
 const spots_time_limits = {
@@ -49,30 +51,33 @@ function Filters({
         <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
                 {Object.entries(band_colors).map(([band, color]) => {
-                    return <div
-                        key={band}
-                        className={box_style}
-                        style={{ backgroundColor: color }}
-                    >
-                        <span>{band}</span>
-                        <input
-                            type="checkbox"
-                            onChange={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                            defaultChecked={filters.bands[band]}
-                        />
-                    </div>
+                    return <FilterOptions>
+                        <div
+                            key={band}
+                            className={box_style}
+                            style={{ backgroundColor: color }}>
+                            <span>{band}</span>
+                            <input
+                                type="checkbox"
+                                onChange={_ => set_filters(state => state.bands[band] = !state.bands[band])}
+                                defaultChecked={filters.bands[band]}
+                            />
+                        </div>
+                    </FilterOptions>;
                 })}
             </div>
             <div className={box_container_style}>
                 {Object.keys(filters.modes).map(mode => {
-                    return <div key={mode} className={box_style}>
-                        <span>{mode}</span>
-                        <input
-                            type="checkbox"
-                            onChange={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
-                            defaultChecked={filters.modes[mode]}
-                        />
-                    </div>;
+                    return <FilterOptions>
+                        <div key={mode} className={box_style}>
+                            <span>{mode}</span>
+                            <input
+                                type="checkbox"
+                                onChange={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
+                                defaultChecked={filters.modes[mode]}
+                            />
+                        </div>
+                    </FilterOptions>;
                 })}
                 <select
                     className="rounded-lg px-4 py-2"
