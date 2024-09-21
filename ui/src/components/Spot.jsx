@@ -47,7 +47,7 @@ function Spot({
         [spotter_x, -t + spotter_y],
     ];
 
-    const is_alerted = alerts.some(regex => spot.dx_call.match(regex));
+    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
     let style;
     if (is_alerted) {
         style = {
@@ -109,8 +109,8 @@ function Spot({
             onClick={() => on_spot_click(spot)}
         />
         <title>
-            DX: {spot.dx_call} ({spot.dx_locator}{"continent_dx" in spot ? ", " + spot.continent_dx : ""}){"\n"}
-            de: {spot.spotter}{'\n'}
+            DX: {spot.dx_callsign} ({spot.dx_locator}{"continent_dx" in spot ? ", " + spot.continent_dx : ""}){"\n"}
+            de: {spot.spotter_callsign}{'\n'}
             Distance: {distance} KM
         </title>
     </g>;

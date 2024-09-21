@@ -59,13 +59,6 @@ function fetch_spots(set_spots, set_is_spots_failed) {
             if (data == null) {
                 return Promise.reject(response)
             } else {
-                // Just a hack for displaying locations of the dx
-                data.forEach(spot => {
-                    const [lat, lon] = Maidenhead.toLatLon(spot.dx_locator);
-                    spot.dx_loc = [lon, lat];
-                    spot.spotter_loc = [(Math.random() - 0.5) * 360, (Math.random() - 0.5) * 180];
-                });
-
                 set_spots(data)
             }
         })

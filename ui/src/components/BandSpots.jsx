@@ -34,7 +34,7 @@ function BandSpots({
                     {filtered_spots
                         .map(spot => {
                             const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
-                            const is_alerted = alerts.some(regex => spot.dx_call.match(regex));
+                            const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
                             return <tr
                                 key={spot.id}
@@ -45,13 +45,13 @@ function BandSpots({
                                 onMouseLeave={() => set_hovered_spot(null)}
                             >
                                 <td>{formatted_time}</td>
-                                <td ><Callsign callsign={spot.dx_call} is_alerted={is_alerted}></Callsign></td>
+                                <td ><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
                                 <td>
                                     <div className="cursor-pointer" onClick={() => on_spot_click(spot)}>
                                         {spot.freq}
                                     </div>
                                 </td>
-                                <td><Callsign callsign={spot.spotter}></Callsign></td>
+                                <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
                                 <td>{spot.mode}</td>
                             </tr>;
                         })}
