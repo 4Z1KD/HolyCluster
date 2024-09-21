@@ -47,20 +47,44 @@ function Filters({
         "p-2",
     ].join(" ");
 
+    // This function changes all the keys in the filter object.
+    // For example: set_filter_keys("bands", true) will enable all bands.
+    function set_filter_keys(filters_key, is_active) {
+        set_filters(state => {
+            Object.keys(state[filters_key]).forEach(key => {
+                state[filters_key][key] = is_active;
+            })
+        })
+    }
+
+    // This function set only on filter on.
+    // For example: set_only_filter_keys("modes", "CW"), enables only CW.
+    function set_only_filter_keys(filters_key, selected_key) {
+        set_filters(state => {
+            Object.keys(state[filters_key]).forEach(key => {
+                state[filters_key][key] = selected_key == key;
+            })
+        })
+    }
+
     return (
         <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
                 {Object.entries(band_colors).map(([band, color]) => {
-                    return <FilterOptions>
+                    return <FilterOptions
+                        key={band}
+                        on_only_click={() => set_only_filter_keys("bands", band)}
+                        on_all_click={() => set_filter_keys("bands", true)}
+                        on_none_click={() => set_filter_keys("bands", false)}
+                    >
                         <div
-                            key={band}
                             className={box_style}
                             style={{ backgroundColor: color }}>
                             <span>{band}</span>
                             <input
                                 type="checkbox"
                                 onChange={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                                defaultChecked={filters.bands[band]}
+                                checked={filters.bands[band]}
                             />
                         </div>
                     </FilterOptions>;
@@ -68,13 +92,18 @@ function Filters({
             </div>
             <div className={box_container_style}>
                 {Object.keys(filters.modes).map(mode => {
-                    return <FilterOptions>
-                        <div key={mode} className={box_style}>
+                    return <FilterOptions
+                        key={mode}
+                        on_only_click={() => set_only_filter_keys("modes", mode)}
+                        on_all_click={() => set_filter_keys("modes", true)}
+                        on_none_click={() => set_filter_keys("modes", false)}
+                    >
+                        <div className={box_style}>
                             <span>{mode}</span>
                             <input
                                 type="checkbox"
                                 onChange={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
-                                defaultChecked={filters.modes[mode]}
+                                checked={filters.modes[mode]}
                             />
                         </div>
                     </FilterOptions>;
