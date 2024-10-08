@@ -4,12 +4,6 @@ import Radio from "@/components/Radio.jsx";
 
 import Maidenhead from "maidenhead";
 
-const projection_types = [
-    "AzimuthalEquidistant",
-    "AzimuthalEqualArea",
-    "Orthographic",
-]
-
 function MapControls({
     map_controls,
     set_map_controls,
@@ -45,13 +39,6 @@ function MapControls({
                     }
                 }
             }/>
-            <select
-                className="rounded-lg px-4 py-2"
-                value={map_controls.projection_type}
-                onChange={event => set_map_controls(state => state.projection_type = event.target.value)}
-            >
-                {projection_types.map(type => <option key={type} value={type}>{type}</option>)}
-            </select>
             <Button on_click={reset_map}>Reset</Button>
             <div className="space-x-2">
                 <input

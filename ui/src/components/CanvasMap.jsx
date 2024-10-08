@@ -101,7 +101,7 @@ function CanvasMap({
     const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
 
-    const projection = d3["geo" + map_controls.projection_type]()
+    const projection = d3["geoAzimuthalEquidistant"]()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],

@@ -92,7 +92,6 @@ function MainContainer() {
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
         {
-            projection_type: "AzimuthalEquidistant",
             night: false,
             location: {
                 displayed_locator: "",
