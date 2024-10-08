@@ -35,7 +35,7 @@ function Spot({
     const dx_size = dx_hovered ? 12 : 10;
 
     const is_hovered = spot.id == hovered_spot;
-    const color = band_colors[spot.band];
+    const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
     const distance = (haversine(spot.dx_loc, spot.spotter_loc) / 1000).toFixed();

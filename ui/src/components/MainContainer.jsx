@@ -73,7 +73,7 @@ function MainContainer() {
     const [filters, set_filters_inner] = useLocalStorage(
         "filters",
         {
-            bands: Object.fromEntries(Object.keys(band_colors).map(band => [band, true])),
+            bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
             time_limit: 300,
         }
@@ -121,7 +121,7 @@ function MainContainer() {
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) < filters.time_limit)
         .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
-        .slice(0, 1000)
+        .slice(0, 100)
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
@@ -180,7 +180,7 @@ function MainContainer() {
                 :
                     <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
                     {
-                        Object.entries(band_colors).map(([band, color]) => {
+                        [...band_colors].map(([band, color]) => {
                             if (filters.bands[band]) {
                                 return <BandSpots
                                     key={band}

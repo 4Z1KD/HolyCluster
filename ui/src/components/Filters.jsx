@@ -70,7 +70,7 @@ function Filters({
     return (
         <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
-                {Object.entries(band_colors).map(([band, color]) => {
+                {[...band_colors].map(([band, color]) => {
                     return <FilterOptions
                         key={band}
                         on_only_click={() => set_only_filter_keys("bands", band)}

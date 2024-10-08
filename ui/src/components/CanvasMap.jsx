@@ -41,7 +41,7 @@ function draw_spot(
         context.strokeStyle = band_light_colors[spot.band];
         context.lineWidth = 6;
     } else {
-        context.strokeStyle = band_colors[spot.band];
+        context.strokeStyle = band_colors.get(spot.band);
         context.lineWidth = 2;
     }
     context.lineWidth = context.lineWidth / transform.k;
