@@ -28,7 +28,7 @@ function BandSpots({
                         <td>Time</td>
                         <td>DX</td>
                         <td><strong>{band}m</strong></td>
-                        <td>de</td>
+                        <td>Spotter</td>
                         <td>Mode</td>
                     </tr>
                     {filtered_spots
