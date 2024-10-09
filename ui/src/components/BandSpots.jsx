@@ -1,33 +1,60 @@
+import { band_light_colors } from "@/bands_and_modes.js";
+
+function Callsign({ callsign, is_alerted }) {
+    return <a
+        className={is_alerted ? "bg-emerald-100" : ""}
+        href={"https://www.qrz.com/db/" + callsign}
+        target="_blank"
+    >{callsign}</a>
+}
+
 function BandSpots({
     band,
     color,
-    enabled_modes,
     spots = [],
-    enabled = true,
+    hovered_spot,
+    set_hovered_spot,
+    on_spot_click,
+    alerts,
 }) {
-    const filtered_spots = spots.filter(spot => enabled_modes[spot.Mode] && spot.Band == band)
+    const filtered_spots = spots.filter(spot => spot.band == band)
 
     return (
-        filtered_spots.length > 0 && enabled ?
-        <div className="basis-[49%] border-slate-400 border-solid border-2 rounded-2xl p-0 h-fit min-h-48 max-h-80">
-            <div
-                className="p-0 w-full rounded-t-2xl border-b-solid border-b-2"
-                style={{backgroundColor: color}}
-            >
-                {band}m
-            </div>
+        filtered_spots.length > 0 ?
+        <div className="border-slate-400 border-solid border-2 rounded-2xl p-0 max-h-80 overflow-y-auto">
             <table className="table-fixed w-full">
                 <tbody className="divide-y divide-slate-200">
+                    <tr className="sticky top-0" style={{backgroundColor: color}}>
+                        <td>Time</td>
+                        <td>DX</td>
+                        <td><strong>{band}m</strong></td>
+                        <td>Spotter</td>
+                        <td>Mode</td>
+                    </tr>
                     {filtered_spots
                         .map(spot => {
-                        return <tr key={spot.Spotter + "_" + spot.DXCall + "_" + spot.Time}>
-                            <td>{spot.Time}</td>
-                            <td>{spot.DXCall}</td>
-                            <td>{spot.Frequency}</td>
-                            <td>{spot.Spotter}</td>
-                            <td>{spot.Mode}</td>
-                        </tr>;
-                    })}
+                            const formatted_time = new Date(spot.time * 1000).toLocaleTimeString("he-IL");
+                            const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+
+                            return <tr
+                                key={spot.id}
+                                style={{
+                                    backgroundColor: spot.id == hovered_spot ? band_light_colors[band] : "white",
+                                }}
+                                onMouseOver={() => set_hovered_spot(spot.id)}
+                                onMouseLeave={() => set_hovered_spot(null)}
+                            >
+                                <td>{formatted_time}</td>
+                                <td ><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
+                                <td>
+                                    <div className="cursor-pointer" onClick={() => on_spot_click(spot)}>
+                                        {spot.freq}
+                                    </div>
+                                </td>
+                                <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
+                                <td>{spot.mode}</td>
+                            </tr>;
+                        })}
                 </tbody>
             </table>
         </div> : ""

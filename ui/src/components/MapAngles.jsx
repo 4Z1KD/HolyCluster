@@ -1,4 +1,4 @@
-import { to_radian } from "../utils.js";
+import { to_radian } from "@/utils.js";
 
 function MapAngles({
     radius,

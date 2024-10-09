@@ -1,15 +1,12 @@
 import * as d3 from "d3";
 import { useRef, useState, useEffect } from "react";
-import useWebSocket, { ReadyState } from 'react-use-websocket';
 import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import MapAngles from "./MapAngles.jsx";
-
-import { to_radian } from "../utils.js";
-import dxcc_map_raw from "../assets/dxcc_map.json";
-import Spot from "./Spot.jsx";
+import dxcc_map_raw from "@/assets/dxcc_map.json";
+import MapAngles from "@/components/MapAngles.jsx";
+import Spot from "@/components/Spot.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
@@ -28,27 +25,14 @@ function get_night_circle() {
         .center(antipode(get_sun_coordinates()))()
 }
 
-function calculate_distance([lat1, lon1], [lat2, lon2]) {
-    const earth_radius = 6371;
-    const diff_lat = to_radian(lat2 - lat1);
-    const diff_lon = to_radian(lon2 - lon1);
-    const a =
-        Math.sin(diff_lat / 2) * Math.sin(diff_lat / 2) +
-        Math.cos(to_radian(lat1)) * Math.cos(to_radian(lat2)) *
-        Math.sin(diff_lon / 2) * Math.sin(diff_lon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = earth_radius * c;
-    return d;
-}
-
-function Map({
-    location,
-    set_location,
+function SvgMap({
     spots = [],
-    band_colors = {},
-    enabled_bands = {},
-    night_enabled = false,
-    projection_type = "AzimuthalEquidistant",
+    map_controls,
+    set_map_controls,
+    on_spot_click,
+    hovered_spot,
+    set_hovered_spot,
+    alerts,
 }) {
     const svg_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -59,9 +43,9 @@ function Map({
     const center_x = dimensions.width / 2;
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
-    const [center_lon, center_lat] = location.location;
+    const [center_lon, center_lat] = map_controls.location.location;
 
-    const projection = d3["geo" + projection_type]()
+    const projection = d3["geoAzimuthalEquidistant"]()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
@@ -100,21 +84,9 @@ function Map({
         svg.call(zoom);
     }, [radius_in_km])
 
-
-    const host = window.location.host;
-    const protocol = window.location.protocol;
-    const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/radio";
-
-    const { sendJsonMessage, readyState } = useWebSocket(websocket_url);
-    function on_spot_click(spot) {
-        if (readyState == ReadyState.OPEN) {
-            sendJsonMessage({mode: spot.Mode, freq: spot.Frequency})
-        }
-    }
-
     return <svg
         ref={svg_ref}
-        className="aspect-square w-full self-center"
+        className="aspect-square w-full"
         onClick={event => {
             const dims = svg_ref.current.getBoundingClientRect();
             const x = event.clientX - dims.left;
@@ -124,10 +96,9 @@ function Map({
             if (event.detail == 2 && distance_from_center <= radius) {
                 const [lon, lat] = projection.invert([x, y]);
                 const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
-                set_location({
-                    displayed_locator: displayed_locator,
-                    location: [ lon, lat ],
-                });
+                set_map_controls(state => {
+                    state.location = {displayed_locator: displayed_locator, location: [ lon, lat ]};
+                })
             }
         }}
     >
@@ -172,18 +143,19 @@ function Map({
                 )
             })}
             {spots
-                .filter(spot => enabled_bands[spot.Band])
                 .map((spot, index) => {
                 return <Spot
                     key={index}
                     spot={spot}
-                    color={band_colors[spot.Band]}
                     path_generator={path_generator}
                     projection={projection}
                     on_spot_click={on_spot_click}
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
+                    alerts={alerts}
                 ></Spot>;
             })}
-            {night_enabled ?
+            {map_controls.night ?
                 <path
                     style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
                     d={path_generator(get_night_circle())}
@@ -193,4 +165,4 @@ function Map({
     </svg>;
 }
 
-export default Map;
+export default SvgMap;

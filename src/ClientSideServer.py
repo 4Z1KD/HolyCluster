@@ -1,3 +1,4 @@
+import argparse
 import logging
 import mimetypes
 import os
@@ -5,6 +6,8 @@ import os
 import fastapi
 from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
+import httpx
+import uvicorn
 
 import RadioController
 
@@ -32,7 +35,7 @@ logging.config.dictConfig({
         },
     },
     "loggers": {
-        "": {"handlers": ["default"], "level": "DEBUG"},
+        "": {"handlers": ["default"], "level": "INFO"},
     },
 })
 app = fastapi.FastAPI()
@@ -50,14 +53,40 @@ async def startup_event():
 @app.websocket("/radio")
 async def websocket_endpoint(websocket: fastapi.WebSocket):
     await websocket.accept()
+    await websocket.send_json({"status": "connected"})
     while True:
         try:
             data = await websocket.receive_json()
             app.state.radio_controller.set_mode(data["mode"])
             app.state.radio_controller.set_frequency("A", data["freq"])
-            await websocket.send_json({"status": 1})
+            await websocket.send_json({"result": "success"})
         except WebSocketDisconnect:
             break
 
 
+@app.get("/spots")
+async def spots(response: fastapi.Response):
+    async with httpx.AsyncClient() as client:
+        result = await client.get("https://holycluster.iarc.org/spots")
+        response.body = result.content
+        response.status_code = result.status_code
+        return response
+
+
 app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", type=str, default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=7373)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
