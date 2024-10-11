@@ -1,10 +1,11 @@
 import argparse
 import logging
 import mimetypes
+import time
+import webbrowser
 import os
 
 import fastapi
-from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 import httpx
 import uvicorn
@@ -14,8 +15,6 @@ import RadioController
 # This is a work around for a bug of mimetypes in the windows registry
 mimetypes.init()
 mimetypes.add_type("text/javascript", ".js")
-
-UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui/dist")
 
 logging.config.dictConfig({
     "version": 1,
@@ -40,6 +39,10 @@ logging.config.dictConfig({
 })
 app = fastapi.FastAPI()
 
+# Ugly hack for passing the host and port to the startup event hook
+host = None
+port = None
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -48,6 +51,10 @@ async def startup_event():
     else:
         app.state.radio_controller = RadioController.OmnirigRadioController()
     app.state.radio_controller.init_radio()
+    # Waiting until the server is listening to request, maybe there is a better way?
+    time.sleep(1)
+    url = f"http://{host}:{port}/"
+    webbrowser.open(url)
 
 
 @app.websocket("/radio")
@@ -64,28 +71,34 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
             break
 
 
-@app.get("/spots")
-async def spots(response: fastapi.Response):
+@app.get("/{path:path}")
+async def proxy_to_main_server(path: str, response: fastapi.Response):
     async with httpx.AsyncClient() as client:
-        result = await client.get("https://holycluster.iarc.org/spots")
+        result = await client.get(f"https://holycluster.iarc.org/{path}")
         response.body = result.content
         response.status_code = result.status_code
+        for (key, value) in result.headers.items():
+            response.headers[key] = value
         return response
-
-
-app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", type=str, default="0.0.0.0")
+    # For some reason, the host must be "localhost" on windows, "0.0.0.0" doens't work
+    # With webbrowser.open.
+    parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=7373)
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    uvicorn.run(app, host=args.host, port=args.port)
+
+    global host, port
+    host = args.host
+    port = args.port
+
+    uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":
