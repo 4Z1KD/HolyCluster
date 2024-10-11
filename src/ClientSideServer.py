@@ -64,7 +64,15 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
     while True:
         try:
             data = await websocket.receive_json()
-            app.state.radio_controller.set_mode(data["mode"])
+            mode = data["mode"]
+            band = int(data["band"])
+            if mode == "SSB":
+                if band in (160, 80, 40):
+                    mode = "LSB"
+                else:
+                    mode = "USB"
+
+            app.state.radio_controller.set_mode(mode)
             app.state.radio_controller.set_frequency("A", data["freq"])
             await websocket.send_json({"result": "success"})
         except WebSocketDisconnect:

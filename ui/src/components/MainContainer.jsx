@@ -126,7 +126,7 @@ function MainContainer() {
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
     function on_spot_click(spot) {
-        send_message_to_radio({mode: spot.mode, freq: spot.freq})
+        send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 
     let [hovered_spot, set_hovered_spot] = useState(null);
