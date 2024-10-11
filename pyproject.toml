@@ -6,4 +6,6 @@ dependencies = [
     "websockets",
     "fastapi",
     "httpx",
+    "uvicorn",
+    "omnipyrig",
 ]
