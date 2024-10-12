@@ -8,13 +8,12 @@ class DummyRadioController:
     def init_radio(self):
         self.rig_type = "dummy"
         self.status_string = "I am a dummy"
-        logger.info("Initializing radio")
 
     def set_mode(self, mode):
-        logger.info(f"Setting mode: {mode}")
+        pass
 
     def set_frequency(self, slot, freq):
-        logger.info(f"Setting frequency: {freq} in slot {slot}")
+        pass
 
 
 class OmnirigRadioController:

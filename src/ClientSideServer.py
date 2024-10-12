@@ -72,6 +72,7 @@ async def lifespan(app: fastapi.FastAPI):
     else:
         app.state.radio_controller = RadioController.OmnirigRadioController()
 
+    logger.info("Initializing radio")
     app.state.radio_controller.init_radio()
 
     asyncio.create_task(start_webbrowser())
@@ -89,17 +90,23 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
     while True:
         try:
             data = await websocket.receive_json()
-
             mode = data["mode"]
             band = int(data["band"])
+            freq = data["freq"]
+            slot = "A"
+
             if mode.upper() == "SSB":
                 if band in (160, 80, 40):
                     mode = "LSB"
                 else:
                     mode = "USB"
 
+            logger.info(f"Setting mode: {mode}")
             app.state.radio_controller.set_mode(mode)
-            app.state.radio_controller.set_frequency("A", data["freq"])
+
+            logger.info(f"Setting frequency: {freq} in slot {slot}")
+            app.state.radio_controller.set_frequency(slot, freq)
+
             await websocket.send_json({"result": "success"})
         except WebSocketDisconnect:
             break
