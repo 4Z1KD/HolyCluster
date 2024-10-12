@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import argparse
 import logging
 import mimetypes
@@ -37,24 +38,29 @@ logging.config.dictConfig({
         "": {"handlers": ["default"], "level": "INFO"},
     },
 })
-app = fastapi.FastAPI()
-
 # Ugly hack for passing the host and port to the startup event hook
 host = None
 port = None
 
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: fastapi.FastAPI):
     if os.environ.get("DUMMY") is not None:
         app.state.radio_controller = RadioController.DummyRadioController()
     else:
         app.state.radio_controller = RadioController.OmnirigRadioController()
+
     app.state.radio_controller.init_radio()
+
     # Waiting until the server is listening to request, maybe there is a better way?
     time.sleep(1)
     url = f"http://{host}:{port}/"
     webbrowser.open(url)
+
+    yield
+
+
+app = fastapi.FastAPI(lifespan=lifespan)
 
 
 @app.websocket("/radio")
@@ -64,9 +70,10 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
     while True:
         try:
             data = await websocket.receive_json()
+
             mode = data["mode"]
             band = int(data["band"])
-            if mode == "SSB":
+            if mode.upper() == "SSB":
                 if band in (160, 80, 40):
                     mode = "LSB"
                 else:
