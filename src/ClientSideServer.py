@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
-import argparse
+import asyncio
 import logging
 import mimetypes
-import time
+import random
+import socket
 import webbrowser
 import os
 
@@ -38,9 +39,30 @@ logging.config.dictConfig({
         "": {"handlers": ["default"], "level": "INFO"},
     },
 })
-# Ugly hack for passing the host and port to the startup event hook
-host = None
-port = None
+
+logger = logging.getLogger(__name__)
+
+HOST = "localhost"
+# Port collision is very unlikely
+port = port = random.randint(10000, 60000)
+
+
+async def start_webbrowser():
+    """Waiting until the server is listening to requests"""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    logger.info("Checking if the server is up")
+    while True:
+        result = sock.connect_ex((HOST, port))
+        if result == 0:
+            break
+        logger.info("The server is not listening...")
+        await asyncio.sleep(1)
+
+    logger.info("The server is up, openning browser")
+    sock.close()
+
+    webbrowser.open(f"http://{HOST}:{port}/")
 
 
 @asynccontextmanager
@@ -52,10 +74,7 @@ async def lifespan(app: fastapi.FastAPI):
 
     app.state.radio_controller.init_radio()
 
-    # Waiting until the server is listening to request, maybe there is a better way?
-    time.sleep(1)
-    url = f"http://{host}:{port}/"
-    webbrowser.open(url)
+    asyncio.create_task(start_webbrowser())
 
     yield
 
@@ -97,23 +116,8 @@ async def proxy_to_main_server(path: str, response: fastapi.Response):
         return response
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    # For some reason, the host must be "localhost" on windows, "0.0.0.0" doens't work
-    # With webbrowser.open.
-    parser.add_argument("--host", type=str, default="localhost")
-    parser.add_argument("--port", type=int, default=7373)
-    return parser.parse_args()
-
-
 def main():
-    args = parse_args()
-
-    global host, port
-    host = args.host
-    port = args.port
-
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(app, host=HOST, port=port)
 
 
 if __name__ == "__main__":
