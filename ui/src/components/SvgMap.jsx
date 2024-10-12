@@ -84,6 +84,10 @@ function SvgMap({
         svg.call(zoom);
     }, [radius_in_km])
 
+    const text_height = 20
+    const text_x = 20
+    const text_y = 30
+
     return <svg
         ref={svg_ref}
         className="aspect-square w-full"
@@ -109,12 +113,10 @@ function SvgMap({
         </defs>
         <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
-        <text
-            x="30"
-            y="30"
-            style={{font: "bold 20px sans-serif", userSelect: "none"}}>
-            Radius: {Math.round(radius_in_km)} KM
-        </text>
+        <g style={{font: `bold ${text_height}px sans-serif`, userSelect: "none"}}>
+            <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
+            <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
+        </g>
 
         <MapAngles
             center_x={center_x}
