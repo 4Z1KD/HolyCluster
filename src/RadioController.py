@@ -17,11 +17,9 @@ class DummyRadioController:
 
 
 class OmnirigRadioController:
-    def __init__(self, port=8765, log_level=logging.DEBUG):
+    def __init__(self):
         self.server = None
         self.omni_client = None
-        self.port = port
-        self.log_level = log_level
 
     def init_radio(self):
         """initialize an omnipyrig instance and set active rig"""
@@ -43,4 +41,11 @@ class OmnirigRadioController:
         self.omni_client.setMode(mode_to_number[mode])
 
     def set_frequency(self, slot, freq):
-        self.omni_client.setFrequency("A", freq)
+        """Set the frequency of an omnirig slot.
+
+        Args:
+            slot (str): Either "A" or "B"
+            freq (int): The frequency, in Khz. For example, 28500.
+        """
+        freq_in_hz = int(freq) * 1000
+        self.omni_client.setFrequency("A", freq_in_hz)
