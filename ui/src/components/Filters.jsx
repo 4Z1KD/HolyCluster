@@ -25,11 +25,9 @@ function Filters({
     const box_container_style = [
         "flex",
         "flex-wrap",
-        "justify-around",
         "h-full",
         "p-2",
         "gap-3",
-        "w-1/2",
         "inline-block",
     ].join(" ");
     const box_style = [
@@ -69,7 +67,7 @@ function Filters({
 
     return (
         <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
-            <div className={box_container_style}>
+            <div className={box_container_style + " justify-start w-1/2"}>
                 {[...band_colors].map(([band, color]) => {
                     return <FilterOptions
                         key={band}
@@ -90,7 +88,7 @@ function Filters({
                     </FilterOptions>;
                 })}
             </div>
-            <div className={box_container_style}>
+            <div className={box_container_style + " justify-start w-1/4"}>
                 {modes.map(mode => {
                     return <FilterOptions
                         key={mode}
@@ -108,6 +106,8 @@ function Filters({
                         </div>
                     </FilterOptions>;
                 })}
+            </div>
+            <div className={box_container_style + " justify-end w-1/4"}>
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}
