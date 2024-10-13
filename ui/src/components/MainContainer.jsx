@@ -178,27 +178,28 @@ function MainContainer() {
                         </p>
                     </div>
                 :
-                    <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
-                    {
-                        [...band_colors].map(([band, color]) => {
-                            if (filters.bands[band]) {
-                                return <BandSpots
-                                    key={band}
-                                    band={band}
-                                    color={color}
-                                    spots={filtered_spots}
-                                    hovered_spot={hovered_spot}
-                                    set_hovered_spot={set_hovered_spot}
-                                    on_spot_click={on_spot_click}
-                                    alerts={alerts_regex}
-                                />;
-                            } else {
-                                return <></>
-                            }
-                        })
-                    }
-                    </div>
+                    ""
                 }
+                <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
+                {
+                    [...band_colors].map(([band, color]) => {
+                        if (filters.bands[band]) {
+                            return <BandSpots
+                                key={band}
+                                band={band}
+                                color={color}
+                                spots={filtered_spots}
+                                hovered_spot={hovered_spot}
+                                set_hovered_spot={set_hovered_spot}
+                                on_spot_click={on_spot_click}
+                                alerts={alerts_regex}
+                            />;
+                        } else {
+                            return <></>
+                        }
+                    })
+                }
+                </div>
             </div>
         </div>
     );

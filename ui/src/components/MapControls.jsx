@@ -39,7 +39,7 @@ function MapControls({
                     }
                 }
             }/>
-            <Button on_click={reset_map}>Recenter</Button>
+            <Button on_click={reset_map}>MyQTH</Button>
             <div className="space-x-2">
                 <input
                     type="checkbox"
