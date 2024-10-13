@@ -28,11 +28,17 @@ function Alerts({ alerts, set_alerts }) {
         button={<Alert size="32px" color={color}></Alert>}
         on_open={() => set_temp_alerts(alerts)}
         on_apply={() => {
+            let new_alerts;
             if (pending_alert != "") {
-                set_alerts(temp_alerts.concat(pending_alert))
+                new_alerts = temp_alerts.concat(pending_alert);
             } else {
-                set_alerts(temp_alerts)
+                new_alerts = temp_alerts;
             }
+
+            // Convert all patterns to uppercase and then remove all duplicated entries
+            new_alerts = [...new Set(new_alerts.map(alert => alert.toUpperCase()))];
+
+            set_alerts(new_alerts)
             set_temp_alerts([])
             set_pending_alert("")
         }}
