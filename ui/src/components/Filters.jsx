@@ -3,7 +3,7 @@ import Clock from "@/components/Clock.jsx";
 
 import FilterOptions from "@/components/FilterOptions.jsx";
 
-import { band_colors } from "@/bands_and_modes.js";
+import { band_colors, modes } from "@/bands_and_modes.js";
 
 const spots_time_limits = {
     "5 Minutes": 300,
@@ -91,7 +91,7 @@ function Filters({
                 })}
             </div>
             <div className={box_container_style}>
-                {Object.keys(filters.modes).map(mode => {
+                {modes.map(mode => {
                     return <FilterOptions
                         key={mode}
                         on_only_click={() => set_only_filter_keys("modes", mode)}

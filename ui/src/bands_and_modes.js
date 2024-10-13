@@ -22,5 +22,5 @@ export const band_light_colors = Object.fromEntries(
     [...band_colors].map(([band, color]) => [band, RGB_Linear_Shade(0.25, color)])
 );
 
-export const modes = ["SSB", "CW", "FT8", "RTTY", "PSK", "AM", "FM"];
+export const modes = ["SSB", "CW", "FT8", "FT4"];
 
