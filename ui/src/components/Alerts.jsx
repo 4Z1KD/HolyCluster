@@ -23,6 +23,9 @@ function Alerts({ alerts, set_alerts }) {
     const [temp_alerts, set_temp_alerts] = useState([])
     const [pending_alert, set_pending_alert] = useState("")
 
+    const [is_help_hovered, set_is_help_hovered] = useState(false)
+    const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
+
     return <Modal
         title="Alerts"
         button={<Alert size="32px" color={color}></Alert>}
@@ -47,40 +50,57 @@ function Alerts({ alerts, set_alerts }) {
             set_pending_alert("")
         }}
     >
-        {temp_alerts.map((alert, index) => {
-            return <div key={index}>
-                <Input value={alert} className="mb-2 mr-2" onChange={event => {
-                    set_temp_alerts(old_state => {
-                        const state = structuredClone(old_state);
-                        state[index] = event.target.value;
-                        return state;
-                    })
-                }}></Input>
-                <button
-                    onClick={() => {
+        <div
+            className="mx-2 text-wrap w-80"
+            onMouseOver={() => set_is_help_hovered(true)}
+            onMouseLeave={() => set_is_help_hovered(false)}
+        >
+            {
+                is_help_hovered ? <small>
+                    You can highlight a pattern of a callsign. For example,<br/>
+                    Israeli stations: <code className={exmaple_pattern_classes}>4X*</code>,&nbsp;&nbsp;
+                                      <code className={exmaple_pattern_classes}>4Z*</code><br/>
+                    Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
+                </small> :
+                <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 m-1 font-bold text-white">?</span>
+            }
+        </div>
+        <div className="my-4 mx-2">
+            {temp_alerts.map((alert, index) => {
+                return <div key={index}>
+                    <Input value={alert} className="mb-2 mr-2" onChange={event => {
                         set_temp_alerts(old_state => {
                             const state = structuredClone(old_state);
-                            state.splice(index, 1);
+                            state[index] = event.target.value;
                             return state;
                         })
-                    }}
-                >❌</button>
-                <br/>
-            </div>
-        })}
-        <Input
-            value={pending_alert}
-            onChange={event => set_pending_alert(event.target.value)}
-            onKeyDown={event => {
-                if (event.key == "Enter") {
-                    set_temp_alerts(old_state => {
-                        old_state.push(pending_alert);
-                        return old_state;
-                    })
-                    set_pending_alert("")
-                }
-            }}
-        ></Input>
+                    }}></Input>
+                    <button
+                        onClick={() => {
+                            set_temp_alerts(old_state => {
+                                const state = structuredClone(old_state);
+                                state.splice(index, 1);
+                                return state;
+                            })
+                        }}
+                    >❌</button>
+                    <br/>
+                </div>
+            })}
+            <Input
+                value={pending_alert}
+                onChange={event => set_pending_alert(event.target.value)}
+                onKeyDown={event => {
+                    if (event.key == "Enter") {
+                        set_temp_alerts(old_state => {
+                            old_state.push(pending_alert);
+                            return old_state;
+                        })
+                        set_pending_alert("")
+                    }
+                }}
+            ></Input>
+        </div>
     </Modal>
 }
 

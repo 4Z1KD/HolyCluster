@@ -26,7 +26,7 @@ function Modal({
                     <div className="flex items-start items-center p-5 border-b border-solid border-gray-300 rounded-t gap-3">
                       <h3 className="text-3xl font=semibold">{title}</h3>
                     </div>
-                    <div className="my-4 mx-2">
+                    <div>
                         {children}
                     </div>
                     <div className="flex items-center justify-around p-3 border-t border-solid border-blueGray-200 rounded-b">
