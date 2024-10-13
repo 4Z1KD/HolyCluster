@@ -30,7 +30,6 @@ function Spot({
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     const [spotter_hovered, set_spotter_hovered] = useState(false);
-    const spotter_size = spotter_hovered ? 16 : 12;
     const [dx_hovered, set_dx_hovered] = useState(false);
     const dx_size = dx_hovered ? 12 : 10;
 
@@ -39,13 +38,6 @@ function Spot({
     const light_color = band_light_colors[spot.band];
 
     const distance = (haversine(spot.dx_loc, spot.spotter_loc) / 1000).toFixed();
-
-    const t = (Math.sin(to_radian(60)) * spotter_size) / 2;
-    const spotter_triangle = [
-        [-spotter_size / 2 + spotter_x, t + spotter_y],
-        [spotter_size / 2 + spotter_x, t + spotter_y],
-        [spotter_x, -t + spotter_y],
-    ];
 
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
     let style;
@@ -88,14 +80,16 @@ function Spot({
             `}
             </style>
         : ""}
-        <polygon
-            points={spotter_triangle.map(point => point.join(",")).join(" ")}
+        <circle
+            r="3"
             fill={light_color}
             stroke="grey"
-            strokeWidth="1px"
-            onMouseOver={() => set_spotter_hovered(true)}
-            onMouseLeave={() => set_spotter_hovered(false)}
-        ></polygon>
+            cx={spotter_x}
+            cy={spotter_y}
+            onMouseOver={() => set_dx_hovered(true)}
+            onMouseLeave={() => set_dx_hovered(false)}
+            onClick={() => on_spot_click(spot)}>
+        </circle>
         <rect
             x={dx_x - dx_size / 2}
             y={dx_y - dx_size / 2}
@@ -109,8 +103,8 @@ function Spot({
             onClick={() => on_spot_click(spot)}
         />
         <title>
-            DX: {spot.dx_callsign} ({spot.dx_locator}{"continent_dx" in spot ? ", " + spot.continent_dx : ""}){"\n"}
-            de: {spot.spotter_callsign}{'\n'}
+            DX: {spot.dx_callsign} ({spot.freq}{"continent_dx" in spot ? ", " + spot.continent_dx : ""}){"\n"}
+            Spotter: {spot.spotter_callsign}{'\n'}
             Distance: {distance} KM
         </title>
     </g>;
