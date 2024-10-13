@@ -135,7 +135,7 @@ function MainContainer() {
     let [canvas, _] = useLocalStorage("canvas", false);
 
     return (
-        <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
+        <div className="mt-6 mx-6 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
             <Filters
                 filters={filters}
                 set_filters={set_filters}
