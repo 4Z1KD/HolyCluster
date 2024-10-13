@@ -50,7 +50,12 @@ function MapControls({
             </div>
 
             <div className="ml-auto">
-                <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+                {
+                    // Remove this when we release the radio CAT control feature!!!
+                    radio_status != "unavailable" && radio_status != "unknown"
+                    ? <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+                    : ""
+                }
             </div>
         </div>
     );
