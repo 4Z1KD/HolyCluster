@@ -28,20 +28,15 @@ function Filters({
         "h-full",
         "p-2",
         "gap-3",
-        "inline-block",
     ].join(" ");
     const box_style = [
         // Related to the layout of the box itself
-        "flex-grow",
         "max-w-16",
         "rounded-xl",
         "border-slate-400",
         "border-2",
 
         // Related to the content of each box
-        "flex",
-        "justify-around",
-        "items-center",
         "p-2",
     ].join(" ");
 
@@ -66,8 +61,8 @@ function Filters({
     }
 
     return (
-        <div className="flex flex-row flex-wrap w-full border-b-solid border-b-sky border-b-2">
-            <div className={box_container_style + " justify-start w-1/2"}>
+        <div className="flex flex-row justify-between border-b-solid border-b-sky border-b-2">
+            <div className={box_container_style}>
                 {[...band_colors].map(([band, color]) => {
                     return <FilterOptions
                         key={band}
@@ -88,7 +83,7 @@ function Filters({
                     </FilterOptions>;
                 })}
             </div>
-            <div className={box_container_style + " justify-start w-1/4"}>
+            <div className={box_container_style}>
                 {modes.map(mode => {
                     return <FilterOptions
                         key={mode}
@@ -107,7 +102,7 @@ function Filters({
                     </FilterOptions>;
                 })}
             </div>
-            <div className={box_container_style + " justify-end w-1/4"}>
+            <div className={box_container_style + " self-center px-4"}>
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}
