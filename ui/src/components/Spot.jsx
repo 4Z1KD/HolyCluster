@@ -29,11 +29,9 @@ function Spot({
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
-    const [spotter_hovered, set_spotter_hovered] = useState(false);
-    const [dx_hovered, set_dx_hovered] = useState(false);
-    const dx_size = dx_hovered ? 12 : 10;
-
     const is_hovered = spot.id == hovered_spot;
+    const dx_size = is_hovered ? 14 : 10;
+
     const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
@@ -81,13 +79,13 @@ function Spot({
             </style>
         : ""}
         <circle
-            r="3"
+            r={is_hovered ? 5 : 3}
             fill={light_color}
             stroke="grey"
             cx={spotter_x}
             cy={spotter_y}
-            onMouseOver={() => set_dx_hovered(true)}
-            onMouseLeave={() => set_dx_hovered(false)}
+            onMouseOver={() => set_hovered_spot(spot.id)}
+            onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}>
         </circle>
         <rect
@@ -98,8 +96,8 @@ function Spot({
             fill={light_color}
             stroke="grey"
             strokeWidth="1px"
-            onMouseOver={() => set_dx_hovered(true)}
-            onMouseLeave={() => set_dx_hovered(false)}
+            onMouseOver={() => set_hovered_spot(spot.id)}
+            onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}
         />
         <title>
