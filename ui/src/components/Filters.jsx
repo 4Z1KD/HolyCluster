@@ -1,5 +1,7 @@
 import Alerts from "@/components/Alerts.jsx";
 import Clock from "@/components/Clock.jsx";
+import NetworkState from "@/components/NetworkState.jsx";
+import Spinner from "@/components/Spinner.jsx";
 
 import FilterOptions from "@/components/FilterOptions.jsx";
 
@@ -21,6 +23,7 @@ function Filters({
     set_filters,
     alerts,
     set_alerts,
+    network_state,
 }) {
     const box_container_style = [
         "flex",
@@ -59,6 +62,7 @@ function Filters({
             })
         })
     }
+    const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
 
     return (
         <div className="flex flex-row justify-between min-h-[60px] border-b-solid border-b-sky border-b-2">
@@ -103,6 +107,14 @@ function Filters({
                 })}
             </div>
             <div className={box_container_style + " self-center px-4"}>
+                {network_state == "connecting"
+                    ? <Spinner size="32" color="lightblue"></Spinner>
+                    : <NetworkState
+                        size="32"
+                        color={network_state_colors[network_state]}
+                        title={network_state}
+                    />
+                }
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}

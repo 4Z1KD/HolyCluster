@@ -39,7 +39,7 @@ function connect_to_radio() {
     }
 }
 
-function fetch_spots(set_spots, set_is_spots_failed) {
+function fetch_spots(set_spots, set_network_state) {
     let url;
     // For debugging purposes
     if (window.location.port == "5173") {
@@ -48,7 +48,7 @@ function fetch_spots(set_spots, set_is_spots_failed) {
         url = "/spots"
     }
     if (!navigator.onLine) {
-        set_is_spots_failed(true)
+        set_network_state("disconnected")
     } else {
         return fetch(url, {mode: "cors"})
             .then(response => {
@@ -63,12 +63,11 @@ function fetch_spots(set_spots, set_is_spots_failed) {
                     return Promise.reject(response)
                 } else {
                     set_spots(data)
-                    set_is_spots_failed(false)
+                    set_network_state("connected")
                 }
             })
             .catch(_ => {
-                set_spots([])
-                set_is_spots_failed(true)
+                set_network_state("disconnected")
             })
     }
 }
@@ -117,20 +116,27 @@ function MainContainer() {
     const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
-    const [is_spots_failed, set_is_spots_failed] = useState(false)
+    const [network_state, set_network_state] = useState("connecting")
 
     useEffect(() => {
-        fetch_spots(set_spots, set_is_spots_failed)
-        let interval_id = setInterval(() => fetch_spots(set_spots, set_is_spots_failed), 30 * 1000);
+        fetch_spots(set_spots, set_network_state)
+        let interval_id = setInterval(() => fetch_spots(set_spots, set_network_state), 30 * 1000);
 
         // Try to fetch again the spots when the device is connected to the internet
         const handle_online = () => {
-            fetch_spots(set_spots, set_is_spots_failed)
+            set_network_state("connecting");
+            fetch_spots(set_spots, set_network_state);
+        };
+        const handle_offline = () => {
+            set_network_state("disconnected");
         };
 
         window.addEventListener("online", handle_online);
+        window.addEventListener("offline", handle_offline);
+
         return () => {
             window.removeEventListener("online", handle_online);
+            window.removeEventListener("offline", handle_offline);
             clearInterval(interval_id);
         };
     }, [])
@@ -158,6 +164,7 @@ function MainContainer() {
                 set_filters={set_filters}
                 alerts={alerts}
                 set_alerts={set_alerts}
+                network_state={network_state}
             />
             <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
@@ -188,24 +195,16 @@ function MainContainer() {
                         />
                     }
                 </div>
-                {is_spots_failed ?
-                    <div className="flex items-start justify-center w-full p-6">
-                        <p className="border-red-400 border bg-red-100 text-red-700 px-1 py-3 w-80 text-center rounded-md relative" role="alert">
-                            <strong className="font-bold">Error!</strong> <span className="block">Failed to get spots data.</span>
-                        </p>
-                    </div>
-                :
-                    <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
-                        <TextualSpots
-                            filters={filters}
-                            spots={filtered_spots}
-                            hovered_spot={hovered_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            on_spot_click={on_spot_click}
-                            alerts={alerts_regex}
-                        ></TextualSpots>
-                    </div>
-                }
+                <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
+                    <TextualSpots
+                        filters={filters}
+                        spots={filtered_spots}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
+                        on_spot_click={on_spot_click}
+                        alerts={alerts_regex}
+                    ></TextualSpots>
+                </div>
             </div>
         </div>
     );
