@@ -35,7 +35,7 @@ function TextualSpots({
     band_tables = Object.fromEntries(band_tables);
 
     const band_size_scores = Object.entries(spots_by_band).map(([band, spots]) => {
-        return [band, 1 + Math.max(spots.length, 11)];
+        return [band, Math.min(spots.length + 1, 10)];
     });
 
     let second_column = band_size_scores;
