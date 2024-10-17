@@ -21,7 +21,7 @@ function MapControls({
     }
 
     return (
-        <div className="flex flex-wrap justify-start place-items-center w-full h-auto p-3 gap-4">
+        <div className="flex flex-wrap justify-start place-items-center w-full h-auto min-h-[35px] p-3 gap-4">
             <Input
                 value={map_controls.location.displayed_locator}
                 placeholder="Locator"

@@ -17,11 +17,9 @@ function BandSpots({
     on_spot_click,
     alerts,
 }) {
-    const filtered_spots = spots.filter(spot => spot.band == band)
-
     return (
-        filtered_spots.length > 0 ?
-        <div className="border-slate-400 border-solid border-2 rounded-2xl p-0 max-h-80 overflow-y-auto">
+        spots.length > 0 ?
+        <div className="border-slate-400 mb-2 border-solid border-2 rounded-2xl p-0 max-h-80 overflow-y-auto">
             <table className="table-fixed w-full">
                 <tbody className="divide-y divide-slate-200">
                     <tr className="sticky top-0" style={{backgroundColor: color}}>
@@ -31,7 +29,7 @@ function BandSpots({
                         <td>Spotter</td>
                         <td>Mode</td>
                     </tr>
-                    {filtered_spots
+                    {spots
                         .map(spot => {
                             const time = new Date(spot.time * 1000);
                             const formatted_time = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0");

@@ -2,7 +2,7 @@ import SvgMap from "@/components/SvgMap.jsx";
 import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import Filters from "@/components/Filters.jsx";
-import BandSpots from "@/components/BandSpots.jsx";
+import TextualSpots from "@/components/TextualSpots.jsx";
 import { band_colors, modes } from "@/bands_and_modes.js";
 
 import Maidenhead from "maidenhead";
@@ -100,6 +100,7 @@ function MainContainer() {
             }
         }
     );
+
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
             const state = structuredClone(previous_state);
@@ -180,25 +181,15 @@ function MainContainer() {
                 :
                     ""
                 }
-                <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
-                {
-                    [...band_colors].map(([band, color]) => {
-                        if (filters.bands[band]) {
-                            return <BandSpots
-                                key={band}
-                                band={band}
-                                color={color}
-                                spots={filtered_spots}
-                                hovered_spot={hovered_spot}
-                                set_hovered_spot={set_hovered_spot}
-                                on_spot_click={on_spot_click}
-                                alerts={alerts_regex}
-                            />;
-                        } else {
-                            return <></>
-                        }
-                    })
-                }
+                <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
+                    <TextualSpots
+                        filters={filters}
+                        spots={filtered_spots}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
+                        on_spot_click={on_spot_click}
+                        alerts={alerts_regex}
+                    ></TextualSpots>
                 </div>
             </div>
         </div>

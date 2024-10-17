@@ -61,7 +61,7 @@ function Filters({
     }
 
     return (
-        <div className="flex flex-row justify-between border-b-solid border-b-sky border-b-2">
+        <div className="flex flex-row justify-between min-h-[60px] border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
                 {[...band_colors].map(([band, color]) => {
                     return <FilterOptions
