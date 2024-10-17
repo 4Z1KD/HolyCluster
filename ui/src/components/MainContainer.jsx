@@ -47,25 +47,30 @@ function fetch_spots(set_spots, set_is_spots_failed) {
     } else {
         url = "/spots"
     }
-    return fetch(url, {mode: "cors"})
-        .then(response => {
-            if (response == null || !response.ok) {
-                return Promise.reject(response)
-            } else {
-                return response.json()
-            }
-        })
-        .then(data => {
-            if (data == null) {
-                return Promise.reject(response)
-            } else {
-                set_spots(data)
-            }
-        })
-        .catch(_ => {
-            set_spots([])
-            set_is_spots_failed(true)
-        })
+    if (!navigator.onLine) {
+        set_is_spots_failed(true)
+    } else {
+        return fetch(url, {mode: "cors"})
+            .then(response => {
+                if (response == null || !response.ok) {
+                    return Promise.reject(response)
+                } else {
+                    return response.json()
+                }
+            })
+            .then(data => {
+                if (data == null) {
+                    return Promise.reject(response)
+                } else {
+                    set_spots(data)
+                    set_is_spots_failed(false)
+                }
+            })
+            .catch(_ => {
+                set_spots([])
+                set_is_spots_failed(true)
+            })
+    }
 }
 
 
@@ -116,7 +121,18 @@ function MainContainer() {
 
     useEffect(() => {
         fetch_spots(set_spots, set_is_spots_failed)
-        setInterval(() => fetch_spots(set_spots, set_is_spots_failed), 30 * 1000)
+        let interval_id = setInterval(() => fetch_spots(set_spots, set_is_spots_failed), 30 * 1000);
+
+        // Try to fetch again the spots when the device is connected to the internet
+        const handle_online = () => {
+            fetch_spots(set_spots, set_is_spots_failed)
+        };
+
+        window.addEventListener("online", handle_online);
+        return () => {
+            window.removeEventListener("online", handle_online);
+            clearInterval(interval_id);
+        };
     }, [])
 
     const filtered_spots = spots
@@ -179,18 +195,17 @@ function MainContainer() {
                         </p>
                     </div>
                 :
-                    ""
+                    <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
+                        <TextualSpots
+                            filters={filters}
+                            spots={filtered_spots}
+                            hovered_spot={hovered_spot}
+                            set_hovered_spot={set_hovered_spot}
+                            on_spot_click={on_spot_click}
+                            alerts={alerts_regex}
+                        ></TextualSpots>
+                    </div>
                 }
-                <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
-                    <TextualSpots
-                        filters={filters}
-                        spots={filtered_spots}
-                        hovered_spot={hovered_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        on_spot_click={on_spot_click}
-                        alerts={alerts_regex}
-                    ></TextualSpots>
-                </div>
             </div>
         </div>
     );
