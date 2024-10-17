@@ -34,7 +34,10 @@ function Filters({
     ].join(" ");
     const box_style = [
         // Related to the layout of the box itself
+        "min-w-12",
         "max-w-16",
+        "text-center",
+        "font-bold",
         "rounded-xl",
         "border-slate-400",
         "border-2",
@@ -63,6 +66,9 @@ function Filters({
         })
     }
     const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
+    const inactive_background_color = "#AAAAAA";
+    const active_text_color = "#000000";
+    const inactive_text_color = "#666666";
 
     return (
         <div className="flex flex-row justify-between min-h-[60px] border-b-solid border-b-sky border-b-2">
@@ -76,13 +82,13 @@ function Filters({
                     >
                         <div
                             className={box_style}
-                            style={{ backgroundColor: color }}>
+                            onClick={_ => set_filters(state => state.bands[band] = !state.bands[band])}
+                            style={{
+                                backgroundColor: filters.bands[band] ? color : inactive_background_color,
+                                color: filters.bands[band] ? active_text_color : inactive_text_color,
+                                userSelect: "none",
+                            }}>
                             <span>{band}</span>
-                            <input
-                                type="checkbox"
-                                onChange={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                                checked={filters.bands[band]}
-                            />
                         </div>
                     </FilterOptions>;
                 })}
@@ -95,13 +101,15 @@ function Filters({
                         on_all_click={() => set_filter_keys("modes", true)}
                         on_none_click={() => set_filter_keys("modes", false)}
                     >
-                        <div className={box_style}>
+                        <div
+                            className={box_style}
+                            onClick={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
+                            style={{
+                                backgroundColor: filters.modes[mode] ? "#D1FAE5" : inactive_background_color,
+                                color: filters.modes[mode] ? active_text_color : inactive_text_color,
+                                userSelect: "none",
+                            }}>
                             <span>{mode}</span>
-                            <input
-                                type="checkbox"
-                                onChange={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
-                                checked={filters.modes[mode]}
-                            />
                         </div>
                     </FilterOptions>;
                 })}
