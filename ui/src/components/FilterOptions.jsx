@@ -19,7 +19,7 @@ function FilterOptions({
         {children}
 
         {is_hovered && (
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 z-50 bg-white shadow-lg rounded-lg p-4 flex space-x-4">
+            <div className="absolute top-full left-1/2 transform -translate-x-1/4 z-50 bg-white border shadow-xl rounded-lg p-4 flex space-x-4">
                 <Button
                     color="blue"
                     on_click={() => {
