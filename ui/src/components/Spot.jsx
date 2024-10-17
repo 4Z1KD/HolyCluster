@@ -101,8 +101,9 @@ function Spot({
             onClick={() => on_spot_click(spot)}
         />
         <title>
-            DX: {spot.dx_callsign} ({spot.freq}{"continent_dx" in spot ? ", " + spot.continent_dx : ""}){"\n"}
-            Spotter: {spot.spotter_callsign}{'\n'}
+            DX: {spot.dx_callsign} ({spot.freq}{("continent_dx" in spot ? ", " + spot.continent_dx : "")}){"\n"}
+            DX Country: {spot.dx_country + "\n"}
+            Spotter: {spot.spotter_callsign + "\n"}
             Distance: {distance} KM
         </title>
     </g>;
