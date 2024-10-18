@@ -35,7 +35,7 @@ function Filters({
     const box_style = [
         // Related to the layout of the box itself
         "min-w-12",
-        "max-w-16",
+        "max-w-18",
         "text-center",
         "font-bold",
         "rounded-xl",
