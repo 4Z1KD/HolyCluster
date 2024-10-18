@@ -49,7 +49,10 @@ function Spot({
         style = {};
     }
 
-    return <g>
+    return <g
+        onMouseOver={() => set_hovered_spot(spot.id)}
+        onMouseLeave={() => set_hovered_spot(null)}
+    >
         <path
             fill="none"
             stroke={is_hovered ? light_color : color}
@@ -62,8 +65,6 @@ function Spot({
             opacity="0"
             strokeWidth="8px"
             stroke="#FFFFFF"
-            onMouseOver={() => set_hovered_spot(spot.id)}
-            onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}
             d={path_generator(line)}
         />
@@ -84,8 +85,6 @@ function Spot({
             stroke="grey"
             cx={spotter_x}
             cy={spotter_y}
-            onMouseOver={() => set_hovered_spot(spot.id)}
-            onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}>
         </circle>
         <rect
@@ -96,8 +95,6 @@ function Spot({
             fill={light_color}
             stroke="grey"
             strokeWidth="1px"
-            onMouseOver={() => set_hovered_spot(spot.id)}
-            onMouseLeave={() => set_hovered_spot(null)}
             onClick={() => on_spot_click(spot)}
         />
         <title>
