@@ -1,6 +1,7 @@
 import Input from "@/components/Input.jsx";
 import Button from "@/components/Button.jsx";
 import Radio from "@/components/Radio.jsx";
+import Night from "@/components/Night.jsx";
 
 import Maidenhead from "maidenhead";
 
@@ -40,14 +41,11 @@ function MapControls({
                 }
             }/>
             <Button on_click={reset_map}>MyQTH</Button>
-            <div className="space-x-2">
-                <input
-                    type="checkbox"
-                    checked={map_controls.night}
-                    onChange={event => set_map_controls(state => state.night = event.target.checked)}
-                ></input>
-                <label className="text-slate-700">Show night</label>
-            </div>
+            <Night
+                is_active={map_controls.night}
+                size="32"
+                on_click={event => set_map_controls(state => state.night = !state.night)}
+            />
 
             <div className="ml-auto">
                 {
