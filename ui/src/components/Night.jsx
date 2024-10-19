@@ -3,6 +3,7 @@ function Night({ is_active, size, on_click }) {
         onClick={on_click}
         height={size}
         width={size}
+        className="cursor-pointer"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 511.999 511.999"
     >

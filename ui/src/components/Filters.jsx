@@ -37,10 +37,12 @@ function Filters({
         "min-w-12",
         "max-w-18",
         "text-center",
+        "text-base",
         "font-bold",
         "rounded-xl",
         "border-slate-400",
         "border-2",
+        "cursor-pointer",
 
         // Related to the content of each box
         "p-2",
@@ -81,7 +83,7 @@ function Filters({
                         on_none_click={() => set_filter_keys("bands", false)}
                     >
                         <div
-                            className={box_style}
+                            className={box_style + " hover:brightness-125"}
                             onClick={_ => set_filters(state => state.bands[band] = !state.bands[band])}
                             style={{
                                 backgroundColor: filters.bands[band] ? color : inactive_background_color,
@@ -102,7 +104,7 @@ function Filters({
                         on_none_click={() => set_filter_keys("modes", false)}
                     >
                         <div
-                            className={box_style}
+                            className={box_style + " hover:brightness-110"}
                             onClick={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
                             style={{
                                 backgroundColor: filters.modes[mode] ? "#D1FAE5" : inactive_background_color,
