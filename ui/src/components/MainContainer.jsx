@@ -158,7 +158,8 @@ function MainContainer() {
     let [canvas, _] = useLocalStorage("canvas", false);
 
     return (
-        <div className="mt-6 mx-6 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
+        <>
+        {/*<div className="mt-6 mx-6 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">*/}
             <Filters
                 filters={filters}
                 set_filters={set_filters}
@@ -166,7 +167,7 @@ function MainContainer() {
                 set_alerts={set_alerts}
                 network_state={network_state}
             />
-            <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
+            <div className="flex h-full max-lg:flex-wrap divide-x divide-slate-300">
                 <div className="w-full divide-y divide-slate-300">
                     <MapControls
                         map_controls={map_controls}
@@ -195,7 +196,7 @@ function MainContainer() {
                         />
                     }
                 </div>
-                <div className="w-full max-h-[980px] w-full space-y-2 text-center p-4 overflow-y-auto">
+                <div className="w-full h-full w-full space-y-2 text-center p-4 overflow-y-auto">
                     <TextualSpots
                         filters={filters}
                         spots={filtered_spots}
@@ -206,7 +207,7 @@ function MainContainer() {
                     ></TextualSpots>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
