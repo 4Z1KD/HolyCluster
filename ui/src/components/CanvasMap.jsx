@@ -2,8 +2,9 @@ import { useEffect, useState, useRef } from "react";
 
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
+import Maidenhead from "maidenhead";
 
-import { to_radian } from "@/utils.js";
+import { to_radian, mod } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/bands_and_modes.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
@@ -153,7 +154,7 @@ function CanvasMap({
         };
     }, [div_ref]);
 
-    const projection = d3["geoAzimuthalEquidistant"]()
+    const projection = d3.geoAzimuthalEquidistant()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
@@ -249,7 +250,39 @@ function CanvasMap({
                 }
             }
         );
-        d3.select(canvas).call(zoom);
+
+        let lon_start = null;
+        let current_lon = null;
+        let x_start = null
+
+        const drag = d3.drag()
+            .on("start", event => {
+                x_start = event.x;
+                lon_start = projection.rotate()[0];
+            })
+            .on("drag", event => {
+                const dx = (event.x - x_start) / zoom_transform.k;
+                current_lon = mod(lon_start + dx + 180, 360) - 180;
+
+                const current_rotation = projection.rotate();
+                projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
+
+                const displayed_locator = new Maidenhead(center_lat, current_lon).locator.slice(0, 6);
+                set_map_controls(state => {
+                    state.location = {displayed_locator: displayed_locator, location: [ current_lon, center_lat ]};
+                })
+
+                if (!is_drawing) {
+                    is_drawing = true;
+                    requestAnimationFrame(() => {
+                        context.clearRect(0, 0, dimensions.width, dimensions.height);
+                        draw_map(zoom_transform);
+                        is_drawing = false;
+                    });
+                }
+            });
+
+        d3.select(canvas).call(drag).call(zoom);
 
         const handle_mouse_move = (event) => {
             const { offsetX, offsetY } = event;
