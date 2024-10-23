@@ -90,7 +90,7 @@ function SvgMap({
 
     return <svg
         ref={svg_ref}
-        className="aspect-square h-4/5 w-full"
+        className="aspect-square h-[calc(100%-4rem)] w-full"
         onClick={event => {
             const dims = svg_ref.current.getBoundingClientRect();
             const x = event.clientX - dims.left;

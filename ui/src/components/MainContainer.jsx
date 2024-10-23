@@ -157,58 +157,55 @@ function MainContainer() {
     // This is a debug variable that should be set from the dev console
     let [canvas, _] = useLocalStorage("canvas", false);
 
-    return (
-        <>
-        {/*<div className="mt-6 mx-6 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">*/}
-            <Filters
-                filters={filters}
-                set_filters={set_filters}
-                alerts={alerts}
-                set_alerts={set_alerts}
-                network_state={network_state}
-            />
-            <div className="flex h-full max-lg:flex-wrap divide-x divide-slate-300">
-                <div className="w-full divide-y divide-slate-300">
-                    <MapControls
+    return <>
+        <Filters
+            filters={filters}
+            set_filters={set_filters}
+            alerts={alerts}
+            set_alerts={set_alerts}
+            network_state={network_state}
+        />
+        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
+            <div className="w-full divide-y divide-slate-300">
+                <MapControls
+                    map_controls={map_controls}
+                    set_map_controls={set_map_controls}
+                    radio_status={radio_status}
+                />
+                {canvas ?
+                    <CanvasMap
+                        spots={filtered_spots}
                         map_controls={map_controls}
                         set_map_controls={set_map_controls}
-                        radio_status={radio_status}
-                    />
-                    {canvas ?
-                        <CanvasMap
-                            spots={filtered_spots}
-                            map_controls={map_controls}
-                            set_map_controls={set_map_controls}
-                            on_spot_click={on_spot_click}
-                            hovered_spot={hovered_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            alerts={alerts_regex}
-                        />
-                        :
-                        <SvgMap
-                            spots={filtered_spots}
-                            map_controls={map_controls}
-                            set_map_controls={set_map_controls}
-                            on_spot_click={on_spot_click}
-                            hovered_spot={hovered_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            alerts={alerts_regex}
-                        />
-                    }
-                </div>
-                <div className="w-full h-full w-full space-y-2 text-center p-4 overflow-y-auto">
-                    <TextualSpots
-                        filters={filters}
-                        spots={filtered_spots}
+                        on_spot_click={on_spot_click}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
-                        on_spot_click={on_spot_click}
                         alerts={alerts_regex}
-                    ></TextualSpots>
-                </div>
+                    />
+                    :
+                    <SvgMap
+                        spots={filtered_spots}
+                        map_controls={map_controls}
+                        set_map_controls={set_map_controls}
+                        on_spot_click={on_spot_click}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
+                        alerts={alerts_regex}
+                    />
+                }
             </div>
-        </>
-    );
+            <div className="w-full h-full w-full space-y-2 text-center p-4 overflow-y-auto">
+                <TextualSpots
+                    filters={filters}
+                    spots={filtered_spots}
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
+                    on_spot_click={on_spot_click}
+                    alerts={alerts_regex}
+                ></TextualSpots>
+            </div>
+        </div>
+    </>;
 }
 
 export default MainContainer;
