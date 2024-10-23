@@ -65,19 +65,16 @@ function draw_spot(
     context.fill();
     context.stroke();
 
-    const spotter_size = (is_hovered ? 16 : 12) / transform.k;
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const t = (Math.sin(to_radian(60)) * spotter_size) / 2;
+    const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
 
     context.beginPath();
 
     context.strokeStyle = "grey";
     context.fillStyle = band_light_colors[spot.band];
     context.lineWidth = 1 / transform.k;
-    context.moveTo(-spotter_size / 2 + spotter_x, t + spotter_y);
-    context.lineTo(spotter_size / 2 + spotter_x, t + spotter_y);
-    context.lineTo(spotter_x, -t + spotter_y);
-    context.closePath();
+
+    context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
     context.fill();
     context.stroke();
 }
