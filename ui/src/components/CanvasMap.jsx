@@ -79,6 +79,44 @@ function draw_spot(
     context.stroke();
 }
 
+function draw_map_angles(context, { radius, center_x, center_y, dimensions, degrees_diff = 15 }) {
+    if (dimensions.height < 300) {
+        return;
+    }
+
+    // Heuristics for the scale of the map. This is good enough
+    const scale = Math.max(Math.min(dimensions.height / 900, 1.1), 0.5);
+
+    const angle_radius = radius + 25 * scale;
+    // Calculate the positions for angle labels
+    const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
+        .map(x => {
+            const angle_degrees = x * degrees_diff;
+            const angle_radians = to_radian(angle_degrees - 90);
+            return [
+                angle_degrees,
+                [
+                    Math.cos(angle_radians) * angle_radius + center_x,
+                    Math.sin(angle_radians) * angle_radius + center_y,
+                ],
+            ];
+        }
+    );
+
+    let font_size = Math.floor(20 * scale);
+    // Set font properties
+    context.font = font_size + "px Arial";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillStyle = "#000000";
+
+    // Draw each angle label on the canvas
+    angle_labels.forEach(([label, [x, y]]) => {
+        context.beginPath();
+        context.fillText(`${label}°`, x, y);
+    });
+}
+
 function CanvasMap({
     spots = [],
     map_controls,
@@ -102,7 +140,6 @@ function CanvasMap({
     useEffect(() => {
         const resize = () => {
             const { width, height } = div_ref.current.getBoundingClientRect();
-            console.log("Update canvas: ", dimensions)
             // The height - 1 is a hack to prevent a scrollbar of the entire page to appear.
             // I'm not sure why this happens.
             set_dimensions({ width, height: height - 1 });
@@ -152,6 +189,8 @@ function CanvasMap({
             context.beginPath();
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.stroke();
+
+            draw_map_angles(context, { radius, center_x, center_y, dimensions });
 
             // Clip the map content to the circle
             context.beginPath();
