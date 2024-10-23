@@ -253,30 +253,44 @@ function CanvasMap({
 
         let lon_start = null;
         let current_lon = null;
-        let x_start = null
+        let drag_start = null
+        let local_zoom_transform = zoom_transform;
 
         const drag = d3.drag()
             .on("start", event => {
-                x_start = event.x;
+                drag_start = [event.x, event.y];
                 lon_start = projection.rotate()[0];
             })
             .on("drag", event => {
-                const dx = (event.x - x_start) / zoom_transform.k;
-                current_lon = mod(lon_start + dx + 180, 360) - 180;
+                if (zoom_transform.k > 1) {
+                    // Panning logic: Adjust the zoom translation (transform.x, transform.y)
+                    const dx = (event.x - drag_start[0]) / zoom_transform.k;
+                    const dy = (event.y - drag_start[1]) / zoom_transform.k;
 
-                const current_rotation = projection.rotate();
-                projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
+                    // Update zoom translation (panning)
+                    local_zoom_transform = zoom_transform.translate(dx, dy);
 
-                const displayed_locator = new Maidenhead(center_lat, current_lon).locator.slice(0, 6);
-                set_map_controls(state => {
-                    state.location = {displayed_locator: displayed_locator, location: [ current_lon, center_lat ]};
-                })
+                } else {
+                    const dx = (event.x - drag_start[0]) / local_zoom_transform.k;
+                    current_lon = mod(lon_start + dx + 180, 360) - 180;
+
+                    const current_rotation = projection.rotate();
+                    projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
+
+                    const displayed_locator = new Maidenhead(center_lat, current_lon).locator.slice(0, 6);
+                    set_map_controls(state => {
+                        state.location = {displayed_locator: displayed_locator, location: [ current_lon, center_lat ]};
+                    })
+                }
 
                 if (!is_drawing) {
                     is_drawing = true;
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        draw_map(zoom_transform);
+                        draw_map(local_zoom_transform);
+                        if (zoom_transform != local_zoom_transform) {
+                            set_zoom_transform(local_zoom_transform);
+                        }
                         is_drawing = false;
                     });
                 }
