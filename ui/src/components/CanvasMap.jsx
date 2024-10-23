@@ -92,7 +92,8 @@ function CanvasMap({
     alerts,
 }) {
     const canvas_ref = useRef(null);
-    const [dimensions, set_dimensions] = useState({ width: 837, height: 837 });
+    const div_ref = useRef(null);
+    const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
     const inner_padding = 50;
@@ -100,6 +101,23 @@ function CanvasMap({
     const center_y = dimensions.height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
+
+    useEffect(() => {
+        const resize = () => {
+            const { width, height } = div_ref.current.getBoundingClientRect();
+            console.log("Update canvas: ", dimensions)
+            // The height - 1 is a hack to prevent a scrollbar of the entire page to appear.
+            // I'm not sure why this happens.
+            set_dimensions({ width, height: height - 1 });
+        };
+
+        resize();
+        window.addEventListener("resize", resize);
+
+        return () => {
+          window.removeEventListener("resize", resize);
+        };
+    }, [div_ref]);
 
     const projection = d3["geoAzimuthalEquidistant"]()
         .precision(0.1)
@@ -225,13 +243,15 @@ function CanvasMap({
         return () => {
             canvas.removeEventListener("mousemove", handle_mouse_move);
         };
-    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform, hovered_spot]);
+    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform, hovered_spot, dimensions]);
 
-    return <canvas
-        ref={canvas_ref}
-        width={dimensions.width}
-        height={dimensions.height}
-    />;
+    return <div ref={div_ref} className="aspect-square h-[calc(100%-4rem)] w-full">
+        <canvas
+            ref={canvas_ref}
+            width={dimensions.width}
+            height={dimensions.height}
+        />
+    </div>;
 }
 
 export default CanvasMap;
