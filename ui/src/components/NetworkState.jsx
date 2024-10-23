@@ -1,5 +1,11 @@
 function ConnectionState({ size, color, title }) {
-  return <svg width={size} height={size} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  return <svg
+    width={size}
+    height={size}
+    className="h-full"
+    viewBox="0 0 48 48"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <title>{title}</title>
     <g>
       <path fill={color} d="M24,25a15.1,15.1,0,0,0-11.7,5.5A2,2,0,0,0,15.4,33,11.5,11.5,0,0,1,24,29a11.5,11.5,0,0,1,8.6,4,2,2,0,1,0,3.1-2.5A15.1,15.1,0,0,0,24,25Z"/>

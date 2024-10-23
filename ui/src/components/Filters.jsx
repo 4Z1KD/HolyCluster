@@ -76,11 +76,21 @@ function Filters({
         <div className="flex flex-row justify-between h-16 border-b-solid border-b-sky border-b-2">
             <div className={box_container_style}>
                 {[...band_colors].map(([band, color]) => {
+                    let align;
+                    if (band == 6) {
+                        align = "right";
+                    } else if (band == 10) {
+                        align = "slightly-right";
+                    } else {
+                        align = "center";
+                    }
+
                     return <FilterOptions
                         key={band}
                         on_only_click={() => set_only_filter_keys("bands", band)}
                         on_all_click={() => set_filter_keys("bands", true)}
                         on_none_click={() => set_filter_keys("bands", false)}
+                        align={align}
                     >
                         <div
                             className={box_style + " hover:brightness-125"}

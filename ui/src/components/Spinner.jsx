@@ -1,6 +1,6 @@
 function Spinner({ size, color }) {
     return <svg
-        className="animate-spin"
+        className="animate-spin h-full"
         fill={color}
         width={size}
         height={size}
