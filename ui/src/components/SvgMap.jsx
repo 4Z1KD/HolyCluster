@@ -85,7 +85,6 @@ function SvgMap({
     }, [radius_in_km])
 
     const text_height = 20
-    const text_x = 20
     const text_y = 30
 
     return <svg

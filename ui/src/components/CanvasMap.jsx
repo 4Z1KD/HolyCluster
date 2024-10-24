@@ -25,6 +25,14 @@ function build_geojson_line(spot) {
     };
 }
 
+function apply_context_transform(context, transform) {
+    context.setTransform(
+        transform.k, 0, 0,
+        transform.k, transform.x, transform.y,
+        1, 1, 1
+    );
+}
+
 function draw_spot(
     spot,
     hovered_spot,
@@ -80,13 +88,10 @@ function draw_spot(
     context.stroke();
 }
 
-function draw_map_angles(context, { radius, center_x, center_y, dimensions, degrees_diff = 15 }) {
+function draw_map_angles(context, { radius, center_x, center_y, dimensions, scale, degrees_diff = 15 }) {
     if (dimensions.height < 300) {
         return;
     }
-
-    // Heuristics for the scale of the map. This is good enough
-    const scale = Math.max(Math.min(dimensions.height / 900, 1.1), 0.5);
 
     const angle_radius = radius + 25 * scale;
     // Calculate the positions for angle labels
@@ -104,7 +109,7 @@ function draw_map_angles(context, { radius, center_x, center_y, dimensions, degr
         }
     );
 
-    let font_size = Math.floor(20 * scale);
+    const font_size = Math.floor(20 * scale);
     // Set font properties
     context.font = font_size + "px Arial";
     context.textAlign = "center";
@@ -116,6 +121,14 @@ function draw_map_angles(context, { radius, center_x, center_y, dimensions, degr
         context.beginPath();
         context.fillText(`${label}°`, x, y);
     });
+}
+
+function draw_map_info_text(context, { spots, scale }) {
+    const font_size = Math.floor(20 * scale);
+    context.font = `bold ${font_size}px Arial`;
+    context.fillStyle = "#000000";
+    context.beginPath();
+    context.fillText(`Spots: ${spots.length}`, font_size, 30);
 }
 
 function CanvasMap({
@@ -172,14 +185,6 @@ function CanvasMap({
             .projection(projection)
             .context(context);
 
-        function apply_context_transform(transform) {
-            context.setTransform(
-                transform.k, 0, 0,
-                transform.k, transform.x, transform.y,
-                1, 1, 1
-            );
-        }
-
         function draw_map(transform) {
             // Clear the map before rendering
             context.clearRect(0, 0, dimensions.width, dimensions.height);
@@ -191,14 +196,18 @@ function CanvasMap({
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.stroke();
 
-            draw_map_angles(context, { radius, center_x, center_y, dimensions });
+            // Heuristics for the scale of the map. This is good enough
+            const scale = Math.max(Math.min(dimensions.height / 900, 1.1), 0.5);
+
+            draw_map_info_text(context, { spots, scale });
+            draw_map_angles(context, { radius, center_x, center_y, dimensions, scale });
 
             // Clip the map content to the circle
             context.beginPath();
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.clip();
 
-            apply_context_transform(transform);
+            apply_context_transform(context, transform);
             context.lineWidth = 1 / transform.k;
 
             // Render the graticule
@@ -307,7 +316,7 @@ function CanvasMap({
             spots.forEach(spot => {
                 const line = build_geojson_line(spot);
                 context.beginPath();
-                apply_context_transform(zoom_transform);
+                apply_context_transform(context, zoom_transform);
                 path_generator(line);
                 context.lineWidth = 8 / zoom_transform.k;
 
