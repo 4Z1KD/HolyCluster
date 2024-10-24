@@ -112,6 +112,7 @@ function Filters({
                         on_only_click={() => set_only_filter_keys("modes", mode)}
                         on_all_click={() => set_filter_keys("modes", true)}
                         on_none_click={() => set_filter_keys("modes", false)}
+                        align="center"
                     >
                         <div
                             className={box_style + " hover:brightness-110"}
