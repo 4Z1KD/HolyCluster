@@ -276,11 +276,6 @@ function CanvasMap({
 
                     const current_rotation = projection.rotate();
                     projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
-
-                    const displayed_locator = new Maidenhead(center_lat, current_lon).locator.slice(0, 6);
-                    set_map_controls(state => {
-                        state.location = {displayed_locator: displayed_locator, location: [ current_lon, center_lat ]};
-                    })
                 }
 
                 if (!is_drawing) {
@@ -294,6 +289,12 @@ function CanvasMap({
                         is_drawing = false;
                     });
                 }
+            })
+            .on("end", event => {
+                const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
+                set_map_controls(state => {
+                    state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
+                })
             });
 
         d3.select(canvas).call(drag).call(zoom);
