@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import Maidenhead from "maidenhead";
+import { century, equationOfTime, declination } from "solar-calculator";
 
 import { to_radian, mod } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/bands_and_modes.js";
@@ -31,6 +32,22 @@ function apply_context_transform(context, transform) {
         transform.k, transform.x, transform.y,
         1, 1, 1
     );
+}
+
+function draw_night_circle(context, { path_generator }) {
+    const now = new Date();
+    const day = new Date(+now).setUTCHours(0, 0, 0, 0);
+    const t = century(now);
+    const longitude = (day - now) / 864e5 * 360 - 180;
+    const [sun_lon, sun_lat] = [longitude - equationOfTime(t) / 4, declination(t)];
+    const sun_antipode = [sun_lon + 180, -sun_lat];
+
+    const night_circle = d3.geoCircle().radius(90).center(sun_antipode)();
+
+    context.beginPath();
+    context.fillStyle = "rgba(0,0,128,0.2)";
+    path_generator(night_circle);
+    context.fill();
 }
 
 function draw_spot(
@@ -237,6 +254,10 @@ function CanvasMap({
                 );
             })
 
+            if (map_controls.night) {
+                draw_night_circle(context, { path_generator });
+            }
+
             context.restore()
         }
 
@@ -336,7 +357,16 @@ function CanvasMap({
         return () => {
             canvas.removeEventListener("mousemove", handle_mouse_move);
         };
-    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform, hovered_spot, dimensions]);
+    }, [
+        dxcc_map,
+        spots,
+        center_lon,
+        center_lat,
+        zoom_transform,
+        hovered_spot,
+        dimensions,
+        map_controls,
+    ]);
 
     return <div ref={div_ref} className="aspect-square h-[calc(100%-4rem)] w-full">
         <canvas
