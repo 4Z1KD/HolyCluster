@@ -2,6 +2,7 @@ import Alerts from "@/components/Alerts.jsx";
 import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
+import Settings from "@/components/Settings.jsx";
 
 import FilterOptions from "@/components/FilterOptions.jsx";
 
@@ -23,6 +24,9 @@ function Filters({
     set_filters,
     alerts,
     set_alerts,
+    settings,
+    set_settings,
+    set_map_controls,
     network_state,
 }) {
     const box_container_style = [
@@ -128,14 +132,6 @@ function Filters({
                 })}
             </div>
             <div className={box_container_style + " self-center px-4"}>
-                {network_state == "connecting"
-                    ? <Spinner size="32" color="lightblue"></Spinner>
-                    : <NetworkState
-                        size="32"
-                        color={network_state_colors[network_state]}
-                        title={network_state}
-                    />
-                }
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}
@@ -145,7 +141,20 @@ function Filters({
                         return <option key={minutes} value={minutes}>{text}</option>
                     })}
                 </select>
+                {network_state == "connecting"
+                    ? <Spinner size="32" color="lightblue"></Spinner>
+                    : <NetworkState
+                        size="32"
+                        color={network_state_colors[network_state]}
+                        title={network_state}
+                    />
+                }
                 <Alerts alerts={alerts} set_alerts={set_alerts}></Alerts>
+                <Settings
+                    settings={settings}
+                    set_settings={set_settings}
+                    set_map_controls={set_map_controls}
+                ></Settings>
                 <Clock></Clock>
             </div>
         </div>

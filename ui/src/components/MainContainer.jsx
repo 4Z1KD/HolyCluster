@@ -113,6 +113,16 @@ function MainContainer() {
         })
     }
 
+    const [settings, set_settings_inner] = useLocalStorage("settings", { locator: "JJ00AA" });
+
+    const set_settings = (change_func) => {
+        set_settings_inner(previous_state => {
+            const state = structuredClone(previous_state);
+            change_func(state);
+            return state;
+        })
+    }
+
     const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
@@ -163,11 +173,15 @@ function MainContainer() {
             set_filters={set_filters}
             alerts={alerts}
             set_alerts={set_alerts}
+            settings={settings}
+            set_settings={set_settings}
+            set_map_controls={set_map_controls}
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
             <div className="w-full divide-y divide-slate-300">
                 <MapControls
+                    home_locator={settings.locator}
                     map_controls={map_controls}
                     set_map_controls={set_map_controls}
                     radio_status={radio_status}

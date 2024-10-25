@@ -6,12 +6,15 @@ import Night from "@/components/Night.jsx";
 import Maidenhead from "maidenhead";
 
 function MapControls({
+    home_locator,
     map_controls,
     set_map_controls,
     radio_status,
 }) {
     function reset_map() {
-        set_map_controls(state => state.location = {displayed_locator: "", location: [ 0, 0 ]})
+        const locator = home_locator == "" ? "JJ00AA" : home_locator;
+        const [lat, lon] = Maidenhead.toLatLon(locator);
+        set_map_controls(state => state.location = {displayed_locator: "", location: [lon, lat]})
     }
 
     const radio_status_to_color = {
@@ -25,7 +28,7 @@ function MapControls({
         <div className="flex flex-wrap justify-start place-items-center w-full h-16 p-3 gap-4">
             <Input
                 value={map_controls.location.displayed_locator}
-                placeholder="Locator"
+                placeholder={home_locator}
                 onChange={event => {
                     const new_value = event.target.value;
                     if (Maidenhead.valid(new_value)) {
