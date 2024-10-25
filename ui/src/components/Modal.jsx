@@ -39,10 +39,11 @@ function Modal({
                             Cancel
                         </Button>
                         <Button color="blue" on_click={() => {
+                            let should_close = true;
                             if (on_apply != null) {
-                                on_apply()
+                                should_close = on_apply();
                             }
-                            set_show_modal(false)
+                            set_show_modal(!should_close);
                         }}>
                             Apply
                         </Button>

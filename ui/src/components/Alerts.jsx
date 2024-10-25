@@ -44,6 +44,7 @@ function Alerts({ alerts, set_alerts }) {
             set_alerts(new_alerts)
             set_temp_alerts([])
             set_pending_alert("")
+            return true;
         }}
         on_cancel={() => {
             set_temp_alerts([])

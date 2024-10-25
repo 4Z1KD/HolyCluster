@@ -24,6 +24,7 @@ function Settings({
     set_map_controls,
 }) {
     const [temp_settings, set_temp_settings] = useState({locator: ""})
+    const is_locator_valid = Maidenhead.valid(temp_settings.locator);
 
     return <Modal
         title="Settings"
@@ -32,25 +33,28 @@ function Settings({
             set_temp_settings(settings)
         }}
         on_apply={() => {
-            const is_locator_valid = Maidenhead.valid(temp_settings.locator);
-            set_temp_settings({});
-            set_settings(settings => {
-                if (is_locator_valid) {
-                    settings.locator = temp_settings.locator;
-                }
-            });
+            if (is_locator_valid) {
+                set_temp_settings({locator: ""});
+                set_settings(settings => {
+                        settings.locator = temp_settings.locator;
+                });
+            }
+
             set_map_controls(map_controls => {
                 if (map_controls.location.displayed_locator.length == 0 && is_locator_valid) {
                     const [lat, lon] = Maidenhead.toLatLon(temp_settings.locator);
                     map_controls.location.location = [lon, lat];
                 }
             })
+
+            return is_locator_valid;
         }}
-        on_cancel={() => set_temp_settings({})}
+        on_cancel={() => set_temp_settings({locator: ""})}
     >
         <div className="my-3 mx-2">
             Locator: <Input
                 value={temp_settings.locator}
+                className={is_locator_valid ? "" : "bg-red-200"}
                 onChange={event => {
                     set_temp_settings({locator: event.target.value});
                 }
