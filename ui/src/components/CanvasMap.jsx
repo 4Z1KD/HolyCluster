@@ -51,15 +51,13 @@ function draw_night_circle(context, { path_generator }) {
 }
 
 function draw_spot(
-    spot,
-    hovered_spot,
     context,
-    transform,
-    path_generator,
-    projection,
+    spot,
+    { hovered_spot, transform, path_generator, projection, alerts }
 ) {
     const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot;
+    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
     // Render the arc of the spot
     context.beginPath();
@@ -71,6 +69,11 @@ function draw_spot(
         context.lineWidth = 2;
     }
     context.lineWidth = context.lineWidth / transform.k;
+    if (is_alerted) {
+        context.setLineDash([10 / transform.k, 10 / transform.k])
+    } else {
+        context.setLineDash([])
+    }
     path_generator(line)
     context.stroke();
 
@@ -141,7 +144,7 @@ function draw_map_angles(context, { radius, center_x, center_y, dimensions, scal
 }
 
 function draw_map_info_text(context, { spots, scale }) {
-    const font_size = Math.floor(20 * scale);
+    const font_size = 20;
     context.font = `bold ${font_size}px Arial`;
     context.fillStyle = "#000000";
     context.beginPath();
@@ -245,12 +248,9 @@ function CanvasMap({
 
             spots.forEach(spot => {
                 draw_spot(
-                    spot,
-                    hovered_spot,
                     context,
-                    transform,
-                    path_generator,
-                    projection,
+                    spot,
+                    { hovered_spot, transform, path_generator, projection, alerts }
                 );
             })
 
@@ -264,6 +264,7 @@ function CanvasMap({
         draw_map(zoom_transform);
 
         let is_drawing = false;
+
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
             .translateExtent([[0, 0], [dimensions.width, dimensions.height]])
