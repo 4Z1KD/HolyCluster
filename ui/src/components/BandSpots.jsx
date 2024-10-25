@@ -32,7 +32,9 @@ function BandSpots({
                     {spots
                         .map(spot => {
                             const time = new Date(spot.time * 1000);
-                            const formatted_time = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0");
+                            const utc_hours = String(time.getUTCHours()).padStart(2, "0")
+                            const utc_minutes = String(time.getUTCMinutes()).padStart(2, "0");
+                            const formatted_time = utc_hours + ":" + utc_minutes;
                             const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
                             return <tr
