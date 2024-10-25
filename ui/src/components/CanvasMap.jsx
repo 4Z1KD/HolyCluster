@@ -264,6 +264,7 @@ function CanvasMap({
         draw_map(zoom_transform);
 
         let is_drawing = false;
+        let local_zoom_transform = zoom_transform;
 
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
@@ -274,18 +275,19 @@ function CanvasMap({
                     is_drawing = true;
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        set_zoom_transform(transform)
+                        local_zoom_transform = transform;
                         draw_map(transform);
                         is_drawing = false;
                     })
                 }
-            }
-        );
+            })
+            .on("end", event => {
+                set_zoom_transform(local_zoom_transform)
+            });
 
         let lon_start = null;
         let current_lon = null;
         let drag_start = null
-        let local_zoom_transform = zoom_transform;
 
         const drag = d3.drag()
             .on("start", event => {
@@ -314,15 +316,15 @@ function CanvasMap({
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
                         draw_map(local_zoom_transform);
-                        if (zoom_transform != local_zoom_transform) {
-                            set_zoom_transform(local_zoom_transform);
-                        }
                         is_drawing = false;
                     });
                 }
             })
             .on("end", event => {
                 const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
+                if (zoom_transform != local_zoom_transform) {
+                    set_zoom_transform(local_zoom_transform);
+                }
                 set_map_controls(state => {
                     state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
                 })
