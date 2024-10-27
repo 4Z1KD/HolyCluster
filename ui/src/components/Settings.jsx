@@ -52,7 +52,7 @@ function Settings({
         on_cancel={() => set_temp_settings({locator: ""})}
     >
         <div className="my-3 mx-2">
-            Locator: <Input
+            My locator: <Input
                 value={temp_settings.locator}
                 className={is_locator_valid ? "" : "bg-red-200"}
                 onChange={event => {
