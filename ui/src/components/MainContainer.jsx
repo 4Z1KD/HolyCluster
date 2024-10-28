@@ -79,7 +79,7 @@ function MainContainer() {
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
-            time_limit: 300,
+            time_limit: 3600,
         }
     );
     const set_filters = (change_func) => {
