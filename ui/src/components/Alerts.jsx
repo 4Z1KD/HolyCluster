@@ -20,16 +20,41 @@ function Alert({ size, color }) {
 
 function Alerts({ alerts, set_alerts }) {
     const color = alerts.length > 0 ? "#00CC00" : "#212121";
-    const [temp_alerts, set_temp_alerts] = useState([])
+    const [temp_alerts, set_temp_alerts] = useState([""])
     const [pending_alert, set_pending_alert] = useState("")
 
-    const [is_help_hovered, set_is_help_hovered] = useState(false)
+    const [is_help_displayed, set_is_help_displayed] = useState(false)
     const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
 
+    function reset_state() {
+        set_temp_alerts([])
+        set_pending_alert("")
+        set_is_help_displayed(false)
+    }
+
     return <Modal
-        title="Alerts"
+        title={
+            <div className="flex justify-between items-center w-full">
+                <h3 className="text-3xl">Alerts</h3>
+                <div
+                    className="cursor-pointer"
+                    onClick={() => set_is_help_displayed(!is_help_displayed)}
+                >
+                    {
+                        !is_help_displayed
+                        ? <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 font-bold text-white">?</span>
+                        : <div>❌</div>
+                    }
+                </div>
+            </div>
+
+        }
         button={<Alert size="32px" color={color}></Alert>}
-        on_open={() => set_temp_alerts(alerts)}
+        on_open={() => {
+            if (alerts.length > 0) {
+                set_temp_alerts(alerts);
+            }
+        }}
         on_apply={() => {
             let new_alerts;
             if (pending_alert != "") {
@@ -40,32 +65,39 @@ function Alerts({ alerts, set_alerts }) {
 
             // Convert all patterns to uppercase and then remove all duplicated entries
             new_alerts = [...new Set(new_alerts.map(alert => alert.toUpperCase()))];
+            new_alerts = new_alerts.filter(alert => alert.length > 0);
 
             set_alerts(new_alerts)
-            set_temp_alerts([])
-            set_pending_alert("")
+            reset_state()
             return true;
         }}
-        on_cancel={() => {
-            set_temp_alerts([])
-            set_pending_alert("")
-        }}
+        on_cancel={reset_state}
     >
         <div
-            className="mx-2 text-wrap w-80"
-            onMouseOver={() => set_is_help_hovered(true)}
-            onMouseLeave={() => set_is_help_hovered(false)}
+            className="mx-2 text-wrap w-80 cursor-pointer"
+            onClick={() => set_is_help_displayed(!is_help_displayed)}
         >
             {
-                is_help_hovered ? <small>
+                is_help_displayed ? <small>
                     You can highlight a pattern of a callsign. For example,<br/>
                     Israeli stations: <code className={exmaple_pattern_classes}>4X*</code>,&nbsp;&nbsp;
                                       <code className={exmaple_pattern_classes}>4Z*</code><br/>
                     Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
-                </small> :
-                <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 m-1 font-bold text-white">?</span>
+                </small> : ""
             }
         </div>
+        <button
+            className="flex items-center justify-center w-8 h-8 p-0 m-4 text-green-400 text-2xl font-bold leading-none rounded-full bg-slate-200"
+            onClick={() => {
+                set_temp_alerts(old_state => {
+                    const state = structuredClone(old_state);
+                    state.push("");
+                    return state;
+                })
+            }}
+        >
+            +
+        </button>
         <div className="my-4 mx-2">
             {temp_alerts.map((alert, index) => {
                 return <div key={index}>
@@ -88,19 +120,6 @@ function Alerts({ alerts, set_alerts }) {
                     <br/>
                 </div>
             })}
-            <Input
-                value={pending_alert}
-                onChange={event => set_pending_alert(event.target.value)}
-                onKeyDown={event => {
-                    if (event.key == "Enter") {
-                        set_temp_alerts(old_state => {
-                            old_state.push(pending_alert);
-                            return old_state;
-                        })
-                        set_pending_alert("")
-                    }
-                }}
-            ></Input>
         </div>
     </Modal>
 }

@@ -27,7 +27,7 @@ function Settings({
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
 
     return <Modal
-        title="Settings"
+        title={<h3 className="text-3xl">Settings</h3>}
         button={<SettingsIcon size="32"></SettingsIcon>}
         on_open={() => {
             set_temp_settings(settings)
