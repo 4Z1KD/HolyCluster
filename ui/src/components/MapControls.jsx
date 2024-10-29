@@ -14,7 +14,7 @@ function MapControls({
     function reset_map() {
         const locator = home_locator == "" ? "JJ00AA" : home_locator;
         const [lat, lon] = Maidenhead.toLatLon(locator);
-        set_map_controls(state => state.location = {displayed_locator: "", location: [lon, lat]})
+        set_map_controls(state => state.location = {displayed_locator: locator, location: [lon, lat]})
     }
 
     const radio_status_to_color = {
@@ -26,23 +26,7 @@ function MapControls({
 
     return (
         <div className="flex flex-wrap justify-start place-items-center w-full h-16 p-3 gap-4">
-            <Input
-                value={map_controls.location.displayed_locator}
-                placeholder={home_locator}
-                onChange={event => {
-                    const new_value = event.target.value;
-                    if (Maidenhead.valid(new_value)) {
-                        const [lat, lon] = Maidenhead.toLatLon(new_value);
-                        set_map_controls(state => {
-                            state.location = {displayed_locator: new_value, location: [lon, lat]};
-                        })
-                    } else if (new_value.length == 0) {
-                        reset_map()
-                    } else {
-                        set_map_controls(state => state.location.displayed_locator = new_value)
-                    }
-                }
-            }/>
+            <p className="rounded-lg bg-slate-200 p-2">{map_controls.location.displayed_locator}</p>
             <Button on_click={reset_map}>MyQTH</Button>
             <Night
                 is_active={map_controls.night}

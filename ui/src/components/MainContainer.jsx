@@ -98,7 +98,7 @@ function MainContainer() {
         {
             night: false,
             location: {
-                displayed_locator: "",
+                displayed_locator: "JJ00AA",
                 // Longitude, latitude
                 location: [0, 0]
             }

@@ -100,7 +100,7 @@ function SvgMap({
                 const [lon, lat] = projection.invert([x, y]);
                 const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
                 set_map_controls(state => {
-                    state.location = {displayed_locator: displayed_locator, location: [ lon, lat ]};
+                    state.location = {displayed_locator, location: [ lon, lat ]};
                 })
             }
         }}

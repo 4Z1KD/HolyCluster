@@ -41,8 +41,9 @@ function Settings({
             }
 
             set_map_controls(map_controls => {
-                if (map_controls.location.displayed_locator.length == 0 && is_locator_valid) {
+                if (is_locator_valid) {
                     const [lat, lon] = Maidenhead.toLatLon(temp_settings.locator);
+                    map_controls.location.displayed_locator = temp_settings.locator;
                     map_controls.location.location = [lon, lat];
                 }
             })
