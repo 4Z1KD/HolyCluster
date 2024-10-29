@@ -40,8 +40,9 @@ function BandSpots({
                             return <tr
                                 key={spot.id}
                                 style={{
-                                    backgroundColor: spot.id == hovered_spot ? band_light_colors[band] : "white",
+                                    backgroundColor: spot.id == hovered_spot ? band_light_colors[band] : "",
                                 }}
+                                className="odd:bg-white even:bg-slate-100"
                                 onMouseOver={() => set_hovered_spot(spot.id)}
                                 onMouseLeave={() => set_hovered_spot(null)}
                             >
