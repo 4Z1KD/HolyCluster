@@ -2,7 +2,7 @@ import SvgMap from "@/components/SvgMap.jsx";
 import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import Filters from "@/components/Filters.jsx";
-import TextualSpots from "@/components/TextualSpots.jsx";
+import SpotsTable from "@/components/SpotsTable.jsx";
 import { band_colors, modes } from "@/bands_and_modes.js";
 
 import Maidenhead from "maidenhead";
@@ -208,15 +208,14 @@ function MainContainer() {
                     />
                 }
             </div>
-            <div className="w-full h-full w-full space-y-2 text-center p-4 overflow-y-auto">
-                <TextualSpots
-                    filters={filters}
+            <div className="w-full h-full w-full space-y-2 text-center overflow-y-auto">
+                <SpotsTable
                     spots={filtered_spots}
                     hovered_spot={hovered_spot}
                     set_hovered_spot={set_hovered_spot}
                     on_spot_click={on_spot_click}
                     alerts={alerts_regex}
-                ></TextualSpots>
+                ></SpotsTable>
             </div>
         </div>
     </>;
