@@ -1,3 +1,5 @@
+import { useEffect, forwardRef, useRef } from "react";
+
 import { band_colors, band_light_colors } from "@/bands_and_modes.js";
 
 function Callsign({ callsign, is_alerted }) {
@@ -14,7 +16,7 @@ function Spot({
     hovered_spot,
     set_hovered_spot,
     on_spot_click,
-}) {
+}, ref) {
 
     const time = new Date(spot.time * 1000);
     const utc_hours = String(time.getUTCHours()).padStart(2, "0")
@@ -23,12 +25,12 @@ function Spot({
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
     return <tr
-        key={spot.id}
+        ref={ref}
         style={{
-            backgroundColor: spot.id == hovered_spot ? band_light_colors[spot.band] : "",
+            backgroundColor: spot.id == hovered_spot.id ? band_light_colors[spot.band] : "",
         }}
         className="odd:bg-white even:bg-slate-100"
-        onMouseEnter={() => set_hovered_spot(spot.id)}
+        onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
     >
         <td>{formatted_time}</td>
         <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
@@ -50,6 +52,8 @@ function Spot({
     </tr>;
 }
 
+Spot = forwardRef(Spot);
+
 function SpotsTable({
     spots,
     hovered_spot,
@@ -57,9 +61,17 @@ function SpotsTable({
     on_spot_click,
     alerts,
 }) {
+    const row_refs = useRef({});
+
+    useEffect(() => {
+        if (hovered_spot.id in row_refs.current && hovered_spot.source == "map") {
+            row_refs.current[hovered_spot.id].scrollIntoView({block: "center", behavior: "smooth"});
+        }
+    });
+
     return <table
         className="table-fixed w-full"
-        onMouseLeave={() => set_hovered_spot(null)}
+        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
     >
         <tbody className="divide-y divide-slate-200">
             <tr className="sticky top-0 bg-slate-300">
@@ -72,6 +84,8 @@ function SpotsTable({
             </tr>
             {spots
                 .map(spot => <Spot
+                        ref={element => row_refs.current[spot.id] = element}
+                        key={spot.id}
                         spot={spot}
                         alerts={alerts}
                         hovered_spot={hovered_spot}

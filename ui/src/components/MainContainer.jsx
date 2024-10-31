@@ -162,7 +162,7 @@ function MainContainer() {
         send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 
-    let [hovered_spot, set_hovered_spot] = useState(null);
+    let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
 
     // This is a debug variable that should be set from the dev console
     let [canvas, _] = useLocalStorage("canvas", false);

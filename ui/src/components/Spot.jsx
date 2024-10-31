@@ -29,7 +29,7 @@ function Spot({
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
-    const is_hovered = spot.id == hovered_spot;
+    const is_hovered = spot.id == hovered_spot.id;
     const dx_size = is_hovered ? 14 : 10;
 
     const color = band_colors.get(spot.band);
@@ -50,8 +50,8 @@ function Spot({
     }
 
     return <g
-        onMouseOver={() => set_hovered_spot(spot.id)}
-        onMouseLeave={() => set_hovered_spot(null)}
+        onMouseOver={() => set_hovered_spot({source: "map", id: spot.id})}
+        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
     >
         <path
             fill="none"

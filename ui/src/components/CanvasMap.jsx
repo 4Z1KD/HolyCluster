@@ -56,7 +56,7 @@ function draw_spot(
     { hovered_spot, transform, path_generator, projection, alerts }
 ) {
     const line = build_geojson_line(spot);
-    const is_hovered = spot.id == hovered_spot;
+    const is_hovered = spot.id == hovered_spot.id;
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
     // Render the arc of the spot
@@ -349,8 +349,8 @@ function CanvasMap({
                 }
             });
             context.restore();
-            if (found_spot !== hovered_spot) {
-                set_hovered_spot(found_spot);
+            if (found_spot !== hovered_spot.id) {
+                set_hovered_spot({source: "map", id: found_spot});
             }
         };
 
