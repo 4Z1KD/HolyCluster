@@ -26,7 +26,7 @@ function get_night_circle() {
 }
 
 function SvgMap({
-    spots = [],
+    spots,
     map_controls,
     set_map_controls,
     set_cat_to_spot,

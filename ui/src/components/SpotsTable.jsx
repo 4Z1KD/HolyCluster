@@ -64,8 +64,9 @@ function SpotsTable({
     const row_refs = useRef({});
 
     useEffect(() => {
-        if (hovered_spot.id in row_refs.current && hovered_spot.source == "map") {
-            row_refs.current[hovered_spot.id].scrollIntoView({block: "center", behavior: "smooth"});
+        const current_ref = row_refs.current[hovered_spot.id];
+        if (current_ref !== undefined && hovered_spot.source == "map") {
+            current_ref.scrollIntoView({block: "center", behavior: "instant"});
         }
     });
 
