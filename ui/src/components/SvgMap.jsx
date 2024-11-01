@@ -144,6 +144,7 @@ function SvgMap({
                 )
             })}
             {spots
+                .toReversed()
                 .map((spot, index) => {
                 return <Spot
                     key={index}
