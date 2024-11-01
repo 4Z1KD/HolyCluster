@@ -8,7 +8,7 @@ function Spot({
     spot,
     path_generator,
     projection,
-    on_spot_click,
+    set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
     alerts
@@ -65,7 +65,7 @@ function Spot({
             opacity="0"
             strokeWidth="8px"
             stroke="#FFFFFF"
-            onClick={() => on_spot_click(spot)}
+            onClick={() => set_cat_to_spot(spot)}
             d={path_generator(line)}
         />
         {is_alerted ?
@@ -85,7 +85,7 @@ function Spot({
             stroke="grey"
             cx={spotter_x}
             cy={spotter_y}
-            onClick={() => on_spot_click(spot)}>
+            onClick={() => set_cat_to_spot(spot)}>
         </circle>
         <rect
             x={dx_x - dx_size / 2}
@@ -95,7 +95,7 @@ function Spot({
             fill={light_color}
             stroke="grey"
             strokeWidth="1px"
-            onClick={() => on_spot_click(spot)}
+            onClick={() => set_cat_to_spot(spot)}
         />
         <title>
             DX: {spot.dx_callsign} ({spot.freq}{("continent_dx" in spot ? ", " + spot.continent_dx : "")}){"\n"}

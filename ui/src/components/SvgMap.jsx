@@ -29,7 +29,7 @@ function SvgMap({
     spots = [],
     map_controls,
     set_map_controls,
-    on_spot_click,
+    set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
     alerts,
@@ -150,7 +150,7 @@ function SvgMap({
                     spot={spot}
                     path_generator={path_generator}
                     projection={projection}
-                    on_spot_click={on_spot_click}
+                    set_cat_to_spot={set_cat_to_spot}
                     hovered_spot={hovered_spot}
                     set_hovered_spot={set_hovered_spot}
                     alerts={alerts}

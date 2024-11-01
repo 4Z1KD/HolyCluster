@@ -15,7 +15,7 @@ function Spot({
     alerts,
     hovered_spot,
     set_hovered_spot,
-    on_spot_click,
+    set_cat_to_spot,
 }, ref) {
 
     const time = new Date(spot.time * 1000);
@@ -36,7 +36,7 @@ function Spot({
         <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
         <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
         <td>
-            <div className="cursor-pointer" onClick={() => on_spot_click(spot)}>
+            <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
             </div>
         </td>
@@ -58,7 +58,7 @@ function SpotsTable({
     spots,
     hovered_spot,
     set_hovered_spot,
-    on_spot_click,
+    set_cat_to_spot,
     alerts,
 }) {
     const row_refs = useRef({});
@@ -90,7 +90,7 @@ function SpotsTable({
                         alerts={alerts}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
-                        on_spot_click={on_spot_click}
+                        set_cat_to_spot={set_cat_to_spot}
                     ></Spot>
                 )}
         </tbody>

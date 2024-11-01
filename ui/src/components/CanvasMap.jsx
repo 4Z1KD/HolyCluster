@@ -155,7 +155,7 @@ function CanvasMap({
     spots = [],
     map_controls,
     set_map_controls,
-    on_spot_click,
+    set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
     alerts,
