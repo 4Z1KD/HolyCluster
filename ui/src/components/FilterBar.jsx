@@ -6,6 +6,7 @@ import Spinner from "@/components/Spinner.jsx";
 import Settings from "@/components/Settings.jsx";
 
 import FilterOptions from "@/components/FilterOptions.jsx";
+import FilterButton from "@/components/FilterButton.jsx";
 
 import { band_colors, modes } from "@/bands_and_modes.js";
 
@@ -30,28 +31,7 @@ function FilterBar({
     set_map_controls,
     network_state,
 }) {
-    const box_container_style = [
-        "flex",
-        "flex-wrap",
-        "h-full",
-        "p-2",
-        "gap-3",
-    ].join(" ");
-    const box_style = [
-        // Related to the layout of the box itself
-        "min-w-12",
-        "max-w-18",
-        "text-center",
-        "text-base",
-        "font-bold",
-        "rounded-xl",
-        "border-slate-400",
-        "border-2",
-        "cursor-pointer",
-
-        // Related to the content of each box
-        "p-2",
-    ].join(" ");
+    const box_container_style = "flex flex-wrap h-full p-2 gap-3";
 
     // This function changes all the keys in the filter object.
     // For example: set_filter_keys("bands", true) will enable all bands.
@@ -73,9 +53,6 @@ function FilterBar({
         })
     }
     const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
-    const inactive_background_color = "#AAAAAA";
-    const active_text_color = "#000000";
-    const inactive_text_color = "#666666";
 
     return (
         <div className="flex flex-row justify-between min-h-16 border-b-solid border-b-sky border-b-2">
@@ -97,16 +74,13 @@ function FilterBar({
                         on_none_click={() => set_filter_keys("bands", false)}
                         align={align}
                     >
-                        <div
-                            className={box_style + " hover:brightness-125"}
-                            onClick={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                            style={{
-                                backgroundColor: filters.bands[band] ? color : inactive_background_color,
-                                color: filters.bands[band] ? active_text_color : inactive_text_color,
-                                userSelect: "none",
-                            }}>
-                            <span>{band}</span>
-                        </div>
+                        <FilterButton
+                            text={band}
+                            is_active={filters.bands[band]}
+                            color={color}
+                            on_click={_ => set_filters(state => state.bands[band] = !state.bands[band])}
+                            hover_brightness="125"
+                        />
                     </FilterOptions>;
                 })}
             </div>
@@ -119,16 +93,11 @@ function FilterBar({
                         on_none_click={() => set_filter_keys("modes", false)}
                         align="center"
                     >
-                        <div
-                            className={box_style + " hover:brightness-110"}
-                            onClick={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
-                            style={{
-                                backgroundColor: filters.modes[mode] ? "#D1FAE5" : inactive_background_color,
-                                color: filters.modes[mode] ? active_text_color : inactive_text_color,
-                                userSelect: "none",
-                            }}>
-                            <span>{mode}</span>
-                        </div>
+                        <FilterButton
+                            text={mode}
+                            is_active={filters.modes[mode]}
+                            on_click={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
+                        />
                     </FilterOptions>;
                 })}
             </div>
