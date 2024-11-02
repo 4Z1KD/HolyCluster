@@ -1,7 +1,4 @@
-import { useState } from "react";
-
-import Input from "@/components/Input.jsx";
-import Modal from "@/components/Modal.jsx";
+import CallsignsModal from "@/components/CallsignsModal.jsx";
 
 function Alert({ size, color }) {
     return <svg
@@ -20,108 +17,22 @@ function Alert({ size, color }) {
 
 function Alerts({ alerts, set_alerts }) {
     const color = alerts.length > 0 ? "#00CC00" : "#212121";
-    const [temp_alerts, set_temp_alerts] = useState([""])
-    const [pending_alert, set_pending_alert] = useState("")
-
-    const [is_help_displayed, set_is_help_displayed] = useState(false)
     const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
 
-    function reset_state() {
-        set_temp_alerts([])
-        set_pending_alert("")
-        set_is_help_displayed(false)
-    }
-
-    return <Modal
-        title={
-            <div className="flex justify-between items-center w-full">
-                <h3 className="text-3xl">Alerts</h3>
-                <div
-                    className="cursor-pointer"
-                    onClick={() => set_is_help_displayed(!is_help_displayed)}
-                >
-                    {
-                        !is_help_displayed
-                        ? <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 font-bold text-white">?</span>
-                        : <div>❌</div>
-                    }
-                </div>
-            </div>
-
-        }
+    return <CallsignsModal
+        callsigns={alerts}
+        set_callsigns={set_alerts}
         button={<Alert size="32px" color={color}></Alert>}
-        on_open={() => {
-            if (alerts.length > 0) {
-                set_temp_alerts(alerts);
-            }
-        }}
-        on_apply={() => {
-            let new_alerts;
-            if (pending_alert != "") {
-                new_alerts = temp_alerts.concat(pending_alert);
-            } else {
-                new_alerts = temp_alerts;
-            }
-
-            // Convert all patterns to uppercase and then remove all duplicated entries
-            new_alerts = [...new Set(new_alerts.map(alert => alert.toUpperCase()))];
-            new_alerts = new_alerts.filter(alert => alert.length > 0);
-
-            set_alerts(new_alerts)
-            reset_state()
-            return true;
-        }}
-        on_cancel={reset_state}
-    >
-        <div
-            className="mx-2 text-wrap w-80 cursor-pointer"
-            onClick={() => set_is_help_displayed(!is_help_displayed)}
-        >
-            {
-                is_help_displayed ? <small>
-                    You can highlight a pattern of a callsign. For example,<br/>
-                    Israeli stations: <code className={exmaple_pattern_classes}>4X*</code>,&nbsp;&nbsp;
-                                      <code className={exmaple_pattern_classes}>4Z*</code><br/>
-                    Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
-                </small> : ""
-            }
-        </div>
-        <button
-            className="flex items-center justify-center w-8 h-8 p-0 m-4 text-green-400 text-2xl font-bold leading-none rounded-full bg-slate-200"
-            onClick={() => {
-                set_temp_alerts(old_state => {
-                    const state = structuredClone(old_state);
-                    state.push("");
-                    return state;
-                })
-            }}
-        >
-            +
-        </button>
-        <div className="my-4 mx-2">
-            {temp_alerts.map((alert, index) => {
-                return <div key={index}>
-                    <Input value={alert} className="mb-2 mr-2" onChange={event => {
-                        set_temp_alerts(old_state => {
-                            const state = structuredClone(old_state);
-                            state[index] = event.target.value;
-                            return state;
-                        })
-                    }}></Input>
-                    <button
-                        onClick={() => {
-                            set_temp_alerts(old_state => {
-                                const state = structuredClone(old_state);
-                                state.splice(index, 1);
-                                return state;
-                            })
-                        }}
-                    >❌</button>
-                    <br/>
-                </div>
-            })}
-        </div>
-    </Modal>
+        title="Alerts"
+        help_text={
+            <small>
+                You can highlight a pattern of a callsign. For example,<br/>
+                Israeli stations: <code className={exmaple_pattern_classes}>4X*</code>,&nbsp;&nbsp;
+                                  <code className={exmaple_pattern_classes}>4Z*</code><br/>
+                Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
+            </small>
+        }
+    />
 }
 
 export default Alerts;
