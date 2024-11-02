@@ -79,9 +79,12 @@ function MainContainer() {
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
+            callsigns: [],
             time_limit: 3600,
         }
     );
+    const callsign_filters_regex = filters.callsigns.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
+
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
             const state = structuredClone(previous_state);
@@ -91,7 +94,7 @@ function MainContainer() {
     }
 
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
-    const alerts_regex = alerts.map(alert => new RegExp(`^${alert.replaceAll("*", ".*")}$`))
+    const alerts_regex = alerts.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
@@ -154,6 +157,11 @@ function MainContainer() {
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) < filters.time_limit)
         .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
+        .filter(spot => {
+            const are_filters_empty = callsign_filters_regex.length == 0;
+            const are_filters_matching = callsign_filters_regex.some(regex => spot.dx_callsign.match(regex));
+            return are_filters_empty || are_filters_matching;
+        })
         .slice(0, 100)
 
     let { send_message_to_radio, radio_status } = connect_to_radio();

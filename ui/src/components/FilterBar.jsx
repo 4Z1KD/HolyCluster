@@ -1,4 +1,5 @@
 import Alerts from "@/components/Alerts.jsx";
+import CallsignFilters from "@/components/CallsignFilters.jsx";
 import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
@@ -142,20 +143,24 @@ function FilterBar({
                     })}
                 </select>
                 {network_state == "connecting"
-                    ? <Spinner size="32" color="lightblue"></Spinner>
+                    ? <Spinner size="32" color="lightblue"/>
                     : <NetworkState
                         size="32"
                         color={network_state_colors[network_state]}
                         title={network_state}
                     />
                 }
-                <Alerts alerts={alerts} set_alerts={set_alerts}></Alerts>
+                <Alerts alerts={alerts} set_alerts={set_alerts}/>
+                <CallsignFilters
+                    filtered_callsigns={filters.callsigns}
+                    set_filtered_callsigns={callsigns => set_filters(state => state.callsigns = callsigns)}
+                />
                 <Settings
                     settings={settings}
                     set_settings={set_settings}
                     set_map_controls={set_map_controls}
-                ></Settings>
-                <Clock></Clock>
+                />
+                <Clock/>
             </div>
         </div>
     );
