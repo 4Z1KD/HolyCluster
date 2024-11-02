@@ -19,7 +19,7 @@ const spots_time_limits = {
     // "24 Hour": 86400,
 }
 
-function Filters({
+function FilterBar({
     filters,
     set_filters,
     alerts,
@@ -161,4 +161,4 @@ function Filters({
     );
 }
 
-export default Filters;
+export default FilterBar;

@@ -1,7 +1,7 @@
 import SvgMap from "@/components/SvgMap.jsx";
 import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
-import Filters from "@/components/Filters.jsx";
+import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import { band_colors, modes } from "@/bands_and_modes.js";
 
@@ -168,7 +168,7 @@ function MainContainer() {
     let [canvas, _] = useLocalStorage("canvas", false);
 
     return <>
-        <Filters
+        <FilterBar
             filters={filters}
             set_filters={set_filters}
             alerts={alerts}
