@@ -1,4 +1,3 @@
-import haversine from "haversine-distance";
 import { useState } from "react";
 
 import { to_radian } from "@/utils.js";
@@ -11,6 +10,7 @@ function Spot({
     set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
+    set_popup_position,
     alerts
 }) {
     const line = {
@@ -35,8 +35,6 @@ function Spot({
     const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
-    const distance = (haversine(spot.dx_loc, spot.spotter_loc) / 1000).toFixed();
-
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
     let style;
     if (is_alerted) {
@@ -50,7 +48,11 @@ function Spot({
     }
 
     return <g
-        onMouseOver={() => set_hovered_spot({source: "map", id: spot.id})}
+        onMouseOver={event => {
+            console.log(event)
+            set_popup_position({x: event.nativeEvent.layerX, y: event.nativeEvent.layerY});
+            set_hovered_spot({source: "map", id: spot.id});
+        }}
         onMouseLeave={() => set_hovered_spot({source: null, id: null})}
     >
         <path
@@ -97,12 +99,6 @@ function Spot({
             strokeWidth="1px"
             onClick={() => set_cat_to_spot(spot)}
         />
-        <title>
-            DX: {spot.dx_callsign} ({spot.freq}{("continent_dx" in spot ? ", " + spot.continent_dx : "")}){"\n"}
-            DX Country: {spot.dx_country + "\n"}
-            Spotter: {spot.spotter_callsign + "\n"}
-            Distance: {distance} KM
-        </title>
     </g>;
 }
 
