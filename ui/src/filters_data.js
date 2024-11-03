@@ -24,3 +24,12 @@ export const band_light_colors = Object.fromEntries(
 
 export const modes = ["SSB", "CW", "FT8", "FT4", "DIGITAL"];
 
+export const continents = [
+    "AS",
+    "AF",
+    "EU",
+    "NA",
+    "SA",
+    "AU",
+    "OC",
+];

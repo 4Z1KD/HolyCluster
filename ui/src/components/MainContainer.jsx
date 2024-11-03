@@ -3,6 +3,7 @@ import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
+import Continents from "@/components/Continents.jsx";
 import { band_colors, modes } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
@@ -225,6 +226,7 @@ function MainContainer() {
                     alerts={alerts_regex}
                 ></SpotsTable>
             </div>
+            <Continents/>
         </div>
     </>;
 }
