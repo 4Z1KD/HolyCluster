@@ -6,6 +6,7 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
+import { band_colors } from "@/bands_and_modes.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot.jsx";
@@ -193,11 +194,10 @@ function SvgMap({
                 transform: "translate(-50%, -105%)",
             }}>
                 <p className="text-gray-700 text-sm">
-                    <strong>DX:</strong> {hovered_spot_data.dx_callsign}
-                    ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/>
-                    <strong>DX Country:</strong> {hovered_spot_data.dx_country}<br/>
-                    <strong>Spotter:</strong> {hovered_spot_data.spotter_callsign}<br/>
-                    <strong>Distance:</strong> {hovered_spot_distance} KM
+                    <strong>DX:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
+                    <strong>DX Country:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
+                    <strong>Spotter:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
+                    <strong>Distance:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
                 </p>
             </div>
             : ""
