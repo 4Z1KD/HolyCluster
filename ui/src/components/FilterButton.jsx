@@ -15,7 +15,7 @@ function FilterButton({
         "text-center",
         "text-base",
         "font-bold",
-        "rounded-xl",
+        "rounded-lg",
         "border-slate-400",
         "border-2",
         "cursor-pointer",
