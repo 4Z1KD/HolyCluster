@@ -4,6 +4,7 @@ import MapControls from "@/components/MapControls.jsx";
 import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
+import Bands from "@/components/Bands.jsx";
 import { band_colors, modes } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
@@ -188,6 +189,7 @@ function MainContainer() {
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
+            <Bands filters={filters} set_filters={set_filters}/>
             <div className="w-full divide-y divide-slate-300">
                 <MapControls
                     home_locator={settings.locator}
