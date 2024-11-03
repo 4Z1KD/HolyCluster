@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { to_radian } from "@/utils.js";
-import { band_colors, band_light_colors } from "@/bands_and_modes.js";
+import { band_colors, band_light_colors } from "@/filters_data.js";
 
 function Spot({
     spot,
@@ -49,7 +49,6 @@ function Spot({
 
     return <g
         onMouseOver={event => {
-            console.log(event)
             set_popup_position({x: event.nativeEvent.layerX, y: event.nativeEvent.layerY});
             set_hovered_spot({source: "map", id: spot.id});
         }}

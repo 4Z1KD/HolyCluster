@@ -3,7 +3,7 @@ import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
 import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
-import { band_colors, modes } from "@/bands_and_modes.js";
+import { band_colors, modes } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";

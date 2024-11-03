@@ -6,7 +6,7 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { band_colors } from "@/bands_and_modes.js";
+import { band_colors } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot.jsx";
@@ -91,7 +91,6 @@ function SvgMap({
     const text_y = 30
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
-    console.log(hovered_spot)
     const [popup_position, set_popup_position] = useState({x: 0, y: 0});
 
 

@@ -6,7 +6,7 @@ import Maidenhead from "maidenhead";
 import { century, equationOfTime, declination } from "solar-calculator";
 
 import { to_radian, mod } from "@/utils.js";
-import { band_colors, band_light_colors } from "@/bands_and_modes.js";
+import { band_colors, band_light_colors } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);

@@ -8,7 +8,7 @@ import Settings from "@/components/Settings.jsx";
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 
-import { band_colors, modes } from "@/bands_and_modes.js";
+import { band_colors, modes } from "@/filters_data.js";
 
 const spots_time_limits = {
     "5 Minutes": 300,

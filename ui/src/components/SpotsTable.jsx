@@ -1,6 +1,6 @@
 import { useEffect, forwardRef, useRef } from "react";
 
-import { band_colors, band_light_colors } from "@/bands_and_modes.js";
+import { band_colors, band_light_colors } from "@/filters_data.js";
 
 function Callsign({ callsign, is_alerted }) {
     return <a
