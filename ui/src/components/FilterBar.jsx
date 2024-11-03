@@ -33,25 +33,6 @@ function FilterBar({
 }) {
     const box_container_style = "flex flex-wrap h-full p-2 gap-3";
 
-    // This function changes all the keys in the filter object.
-    // For example: set_filter_keys("bands", true) will enable all bands.
-    function set_filter_keys(filters_key, is_active) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = is_active;
-            })
-        })
-    }
-
-    // This function set only on filter on.
-    // For example: set_only_filter_keys("modes", "CW"), enables only CW.
-    function set_only_filter_keys(filters_key, selected_key) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = selected_key == key;
-            })
-        })
-    }
     const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
 
     return (
@@ -59,12 +40,19 @@ function FilterBar({
             <div className={box_container_style}>
                 <div className="w-12"></div>
                 {modes.map(mode => {
+                    let align;
+                    if (mode == "SSB") {
+                        align = "slightly-right";
+                    } else {
+                        align = "center";
+                    }
                     return <FilterOptions
                         key={mode}
-                        on_only_click={() => set_only_filter_keys("modes", mode)}
-                        on_all_click={() => set_filter_keys("modes", true)}
-                        on_none_click={() => set_filter_keys("modes", false)}
-                        align="center"
+                        set_filters={set_filters}
+                        filter_key="modes"
+                        filter_value={mode}
+                        orientation="horizontal"
+                        align={align}
                     >
                         <FilterButton
                             text={mode}
