@@ -34,12 +34,12 @@ function Spot({
     >
         <td>{formatted_time}</td>
         <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
-        <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
         <td>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
             </div>
         </td>
+        <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
         <td className="flex justify-center items-center">
             <p
                 className="w-fit px-3 rounded-xl"
@@ -71,15 +71,15 @@ function SpotsTable({
     });
 
     return <table
-        className="table-fixed w-full"
+        className="table-fixed w-[34rem]"
         onMouseLeave={() => set_hovered_spot({source: null, id: null})}
     >
         <tbody className="divide-y divide-slate-200">
             <tr className="sticky top-0 bg-slate-300">
                 <td>Time</td>
                 <td>DX</td>
-                <td>Spotter</td>
                 <td>Frequency</td>
+                <td>Spotter</td>
                 <td>Band</td>
                 <td>Mode</td>
             </tr>
