@@ -38,6 +38,7 @@ function SvgMap({
     alerts,
 }) {
     const svg_ref = useRef(null);
+    const svg_box_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
     const max_radius = 20000;
     const [radius_in_km, set_radius_in_km] = useState(max_radius);
@@ -64,7 +65,7 @@ function SvgMap({
     // Auto resize effect hook that updates the dimensions state
     useEffect(() => {
         const resize = () => {
-            const { width, height } = svg_ref.current.getBoundingClientRect();
+            const { width, height } = svg_box_ref.current.getBoundingClientRect();
             set_dimensions({ width, height });
         };
 
@@ -72,9 +73,9 @@ function SvgMap({
         window.addEventListener("resize", resize);
 
         return () => {
-          window.removeEventListener("resize", resize);
+            window.removeEventListener("resize", resize);
         };
-    }, [svg_ref]);
+    }, [svg_box_ref]);
 
     useEffect(() => {
         const svg = d3.select(svg_ref.current);
@@ -117,10 +118,10 @@ function SvgMap({
         }
     );
 
-    return <div className="relative">
+    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative">
         <svg
             ref={svg_ref}
-            className="aspect-square h-[calc(100%-4rem)] w-full"
+            className="h-full w-full"
             onClick={event => {
                 const dims = svg_ref.current.getBoundingClientRect();
                 const x = event.clientX - dims.left;
