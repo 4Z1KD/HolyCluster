@@ -2,9 +2,11 @@ import { useEffect, useState, useRef } from "react";
 
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
+import Maidenhead from "maidenhead";
+import { century, equationOfTime, declination } from "solar-calculator";
 
-import { to_radian } from "@/utils.js";
-import { band_colors, band_light_colors } from "@/bands_and_modes.js";
+import { to_radian, mod } from "@/utils.js";
+import { band_colors, band_light_colors } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -24,16 +26,38 @@ function build_geojson_line(spot) {
     };
 }
 
+function apply_context_transform(context, transform) {
+    context.setTransform(
+        transform.k, 0, 0,
+        transform.k, transform.x, transform.y,
+        1, 1, 1
+    );
+}
+
+function draw_night_circle(context, { path_generator }) {
+    const now = new Date();
+    const day = new Date(+now).setUTCHours(0, 0, 0, 0);
+    const t = century(now);
+    const longitude = (day - now) / 864e5 * 360 - 180;
+    const [sun_lon, sun_lat] = [longitude - equationOfTime(t) / 4, declination(t)];
+    const sun_antipode = [sun_lon + 180, -sun_lat];
+
+    const night_circle = d3.geoCircle().radius(90).center(sun_antipode)();
+
+    context.beginPath();
+    context.fillStyle = "rgba(0,0,128,0.2)";
+    path_generator(night_circle);
+    context.fill();
+}
+
 function draw_spot(
-    spot,
-    hovered_spot,
     context,
-    transform,
-    path_generator,
-    projection,
+    spot,
+    { hovered_spot, transform, path_generator, projection, alerts }
 ) {
     const line = build_geojson_line(spot);
-    const is_hovered = spot.id == hovered_spot;
+    const is_hovered = spot.id == hovered_spot.id;
+    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
     // Render the arc of the spot
     context.beginPath();
@@ -45,6 +69,11 @@ function draw_spot(
         context.lineWidth = 2;
     }
     context.lineWidth = context.lineWidth / transform.k;
+    if (is_alerted) {
+        context.setLineDash([10 / transform.k, 10 / transform.k])
+    } else {
+        context.setLineDash([])
+    }
     path_generator(line)
     context.stroke();
 
@@ -65,34 +94,75 @@ function draw_spot(
     context.fill();
     context.stroke();
 
-    const spotter_size = (is_hovered ? 16 : 12) / transform.k;
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const t = (Math.sin(to_radian(60)) * spotter_size) / 2;
+    const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
 
     context.beginPath();
 
     context.strokeStyle = "grey";
     context.fillStyle = band_light_colors[spot.band];
     context.lineWidth = 1 / transform.k;
-    context.moveTo(-spotter_size / 2 + spotter_x, t + spotter_y);
-    context.lineTo(spotter_size / 2 + spotter_x, t + spotter_y);
-    context.lineTo(spotter_x, -t + spotter_y);
-    context.closePath();
+
+    context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
     context.fill();
     context.stroke();
+}
+
+function draw_map_angles(context, { radius, center_x, center_y, dimensions, scale, degrees_diff = 15 }) {
+    if (dimensions.height < 300) {
+        return;
+    }
+
+    const angle_radius = radius + 25 * scale;
+    // Calculate the positions for angle labels
+    const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys())
+        .map(x => {
+            const angle_degrees = x * degrees_diff;
+            const angle_radians = to_radian(angle_degrees - 90);
+            return [
+                angle_degrees,
+                [
+                    Math.cos(angle_radians) * angle_radius + center_x,
+                    Math.sin(angle_radians) * angle_radius + center_y,
+                ],
+            ];
+        }
+    );
+
+    const font_size = Math.floor(20 * scale);
+    // Set font properties
+    context.font = font_size + "px Arial";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillStyle = "#000000";
+
+    // Draw each angle label on the canvas
+    angle_labels.forEach(([label, [x, y]]) => {
+        context.beginPath();
+        context.fillText(`${label}°`, x, y);
+    });
+}
+
+function draw_map_info_text(context, { spots, scale }) {
+    const font_size = 20;
+    context.font = `bold ${font_size}px Arial`;
+    context.fillStyle = "#000000";
+    context.beginPath();
+    context.fillText(`Spots: ${spots.length}`, font_size, 30);
 }
 
 function CanvasMap({
     spots = [],
     map_controls,
     set_map_controls,
-    on_spot_click,
+    set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
     alerts,
 }) {
     const canvas_ref = useRef(null);
-    const [dimensions, set_dimensions] = useState({ width: 837, height: 837 });
+    const div_ref = useRef(null);
+    const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
     const inner_padding = 50;
@@ -101,7 +171,23 @@ function CanvasMap({
     const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
 
-    const projection = d3["geoAzimuthalEquidistant"]()
+    useEffect(() => {
+        const resize = () => {
+            const { width, height } = div_ref.current.getBoundingClientRect();
+            // The height - 1 is a hack to prevent a scrollbar of the entire page to appear.
+            // I'm not sure why this happens.
+            set_dimensions({ width, height: height - 1 });
+        };
+
+        resize();
+        window.addEventListener("resize", resize);
+
+        return () => {
+          window.removeEventListener("resize", resize);
+        };
+    }, [div_ref]);
+
+    const projection = d3.geoAzimuthalEquidistant()
         .precision(0.1)
         .fitSize(
             [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
@@ -119,14 +205,6 @@ function CanvasMap({
             .projection(projection)
             .context(context);
 
-        function apply_context_transform(transform) {
-            context.setTransform(
-                transform.k, 0, 0,
-                transform.k, transform.x, transform.y,
-                1, 1, 1
-            );
-        }
-
         function draw_map(transform) {
             // Clear the map before rendering
             context.clearRect(0, 0, dimensions.width, dimensions.height);
@@ -138,12 +216,18 @@ function CanvasMap({
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.stroke();
 
+            // Heuristics for the scale of the map. This is good enough
+            const scale = Math.max(Math.min(dimensions.height / 900, 1.1), 0.5);
+
+            draw_map_info_text(context, { spots, scale });
+            draw_map_angles(context, { radius, center_x, center_y, dimensions, scale });
+
             // Clip the map content to the circle
             context.beginPath();
             context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
             context.clip();
 
-            apply_context_transform(transform);
+            apply_context_transform(context, transform);
             context.lineWidth = 1 / transform.k;
 
             // Render the graticule
@@ -164,14 +248,15 @@ function CanvasMap({
 
             spots.forEach(spot => {
                 draw_spot(
-                    spot,
-                    hovered_spot,
                     context,
-                    transform,
-                    path_generator,
-                    projection,
+                    spot,
+                    { hovered_spot, transform, path_generator, projection, alerts }
                 );
             })
+
+            if (map_controls.night) {
+                draw_night_circle(context, { path_generator });
+            }
 
             context.restore()
         }
@@ -179,6 +264,8 @@ function CanvasMap({
         draw_map(zoom_transform);
 
         let is_drawing = false;
+        let local_zoom_transform = zoom_transform;
+
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
             .translateExtent([[0, 0], [dimensions.width, dimensions.height]])
@@ -188,14 +275,62 @@ function CanvasMap({
                     is_drawing = true;
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        set_zoom_transform(transform)
+                        local_zoom_transform = transform;
                         draw_map(transform);
                         is_drawing = false;
                     })
                 }
-            }
-        );
-        d3.select(canvas).call(zoom);
+            })
+            .on("end", event => {
+                set_zoom_transform(local_zoom_transform)
+            });
+
+        let lon_start = null;
+        let current_lon = null;
+        let drag_start = null
+
+        const drag = d3.drag()
+            .on("start", event => {
+                drag_start = [event.x, event.y];
+                lon_start = projection.rotate()[0];
+            })
+            .on("drag", event => {
+                if (zoom_transform.k > 1) {
+                    // Panning logic: Adjust the zoom translation (transform.x, transform.y)
+                    const dx = (event.x - drag_start[0]) / zoom_transform.k;
+                    const dy = (event.y - drag_start[1]) / zoom_transform.k;
+
+                    // Update zoom translation (panning)
+                    local_zoom_transform = zoom_transform.translate(dx, dy);
+
+                } else {
+                    const dx = (event.x - drag_start[0]) / local_zoom_transform.k;
+                    current_lon = mod(lon_start + dx + 180, 360) - 180;
+
+                    const current_rotation = projection.rotate();
+                    projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
+                }
+
+                if (!is_drawing) {
+                    is_drawing = true;
+                    requestAnimationFrame(() => {
+                        context.clearRect(0, 0, dimensions.width, dimensions.height);
+                        draw_map(local_zoom_transform);
+                        is_drawing = false;
+                    });
+                }
+            })
+            .on("end", event => {
+                const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
+                if (zoom_transform != local_zoom_transform) {
+                    set_zoom_transform(local_zoom_transform);
+                }
+                set_map_controls(state => {
+                    state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
+                })
+            });
+
+        d3.select(canvas).call(drag).call(zoom);
 
         const handle_mouse_move = (event) => {
             const { offsetX, offsetY } = event;
@@ -205,7 +340,7 @@ function CanvasMap({
             spots.forEach(spot => {
                 const line = build_geojson_line(spot);
                 context.beginPath();
-                apply_context_transform(zoom_transform);
+                apply_context_transform(context, zoom_transform);
                 path_generator(line);
                 context.lineWidth = 8 / zoom_transform.k;
 
@@ -214,8 +349,8 @@ function CanvasMap({
                 }
             });
             context.restore();
-            if (found_spot !== hovered_spot) {
-                set_hovered_spot(found_spot);
+            if (found_spot !== hovered_spot.id) {
+                set_hovered_spot({source: "map", id: found_spot});
             }
         };
 
@@ -225,13 +360,24 @@ function CanvasMap({
         return () => {
             canvas.removeEventListener("mousemove", handle_mouse_move);
         };
-    }, [dxcc_map, spots, center_lon, center_lat, zoom_transform, hovered_spot]);
+    }, [
+        dxcc_map,
+        spots,
+        center_lon,
+        center_lat,
+        zoom_transform,
+        hovered_spot,
+        dimensions,
+        map_controls,
+    ]);
 
-    return <canvas
-        ref={canvas_ref}
-        width={dimensions.width}
-        height={dimensions.height}
-    />;
+    return <div ref={div_ref} className="aspect-square h-[calc(100%-4rem)] w-full">
+        <canvas
+            ref={canvas_ref}
+            width={dimensions.width}
+            height={dimensions.height}
+        />
+    </div>;
 }
 
 export default CanvasMap;

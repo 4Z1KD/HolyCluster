@@ -1,9 +1,11 @@
 import SvgMap from "@/components/SvgMap.jsx";
 import CanvasMap from "@/components/CanvasMap.jsx";
 import MapControls from "@/components/MapControls.jsx";
-import Filters from "@/components/Filters.jsx";
-import BandSpots from "@/components/BandSpots.jsx";
-import { band_colors, modes } from "@/bands_and_modes.js";
+import FilterBar from "@/components/FilterBar.jsx";
+import SpotsTable from "@/components/SpotsTable.jsx";
+import Continents from "@/components/Continents.jsx";
+import Bands from "@/components/Bands.jsx";
+import { band_colors, modes } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
@@ -39,7 +41,7 @@ function connect_to_radio() {
     }
 }
 
-function fetch_spots(set_spots, set_is_spots_failed) {
+function fetch_spots(set_spots, set_network_state) {
     let url;
     // For debugging purposes
     if (window.location.port == "5173") {
@@ -47,25 +49,29 @@ function fetch_spots(set_spots, set_is_spots_failed) {
     } else {
         url = "/spots"
     }
-    return fetch(url, {mode: "cors"})
-        .then(response => {
-            if (response == null || !response.ok) {
-                return Promise.reject(response)
-            } else {
-                return response.json()
-            }
-        })
-        .then(data => {
-            if (data == null) {
-                return Promise.reject(response)
-            } else {
-                set_spots(data)
-            }
-        })
-        .catch(_ => {
-            set_spots([])
-            set_is_spots_failed(true)
-        })
+    if (!navigator.onLine) {
+        set_network_state("disconnected")
+    } else {
+        return fetch(url, {mode: "cors"})
+            .then(response => {
+                if (response == null || !response.ok) {
+                    return Promise.reject(response)
+                } else {
+                    return response.json()
+                }
+            })
+            .then(data => {
+                if (data == null) {
+                    return Promise.reject(response)
+                } else {
+                    set_spots(data)
+                    set_network_state("connected")
+                }
+            })
+            .catch(_ => {
+                set_network_state("disconnected")
+            })
+    }
 }
 
 
@@ -75,9 +81,12 @@ function MainContainer() {
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
-            time_limit: 300,
+            callsigns: [],
+            time_limit: 3600,
         }
     );
+    const callsign_filters_regex = filters.callsigns.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
+
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
             const state = structuredClone(previous_state);
@@ -87,21 +96,32 @@ function MainContainer() {
     }
 
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
-    const alerts_regex = alerts.map(alert => new RegExp(`^${alert.replaceAll("*", ".*")}$`))
+    const alerts_regex = alerts.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
     const [map_controls, set_map_controls_inner] = useLocalStorage(
         "map_controls",
         {
             night: false,
             location: {
-                displayed_locator: "",
+                displayed_locator: "JJ00AA",
                 // Longitude, latitude
                 location: [0, 0]
             }
         }
     );
+
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
+            const state = structuredClone(previous_state);
+            change_func(state);
+            return state;
+        })
+    }
+
+    const [settings, set_settings_inner] = useLocalStorage("settings", { locator: "JJ00AA" });
+
+    const set_settings = (change_func) => {
+        set_settings_inner(previous_state => {
             const state = structuredClone(previous_state);
             change_func(state);
             return state;
@@ -111,97 +131,106 @@ function MainContainer() {
     const current_time = new Date().getTime() / 1000
 
     const [spots, set_spots] = useState([])
-    const [is_spots_failed, set_is_spots_failed] = useState(false)
+    const [network_state, set_network_state] = useState("connecting")
 
     useEffect(() => {
-        fetch_spots(set_spots, set_is_spots_failed)
-        setInterval(() => fetch_spots(set_spots, set_is_spots_failed), 30 * 1000)
+        fetch_spots(set_spots, set_network_state)
+        let interval_id = setInterval(() => fetch_spots(set_spots, set_network_state), 30 * 1000);
+
+        // Try to fetch again the spots when the device is connected to the internet
+        const handle_online = () => {
+            set_network_state("connecting");
+            fetch_spots(set_spots, set_network_state);
+        };
+        const handle_offline = () => {
+            set_network_state("disconnected");
+        };
+
+        window.addEventListener("online", handle_online);
+        window.addEventListener("offline", handle_offline);
+
+        return () => {
+            window.removeEventListener("online", handle_online);
+            window.removeEventListener("offline", handle_offline);
+            clearInterval(interval_id);
+        };
     }, [])
 
     const filtered_spots = spots
         .filter(spot => (current_time - spot.time) < filters.time_limit)
         .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
+        .filter(spot => {
+            const are_filters_empty = callsign_filters_regex.length == 0;
+            const are_filters_matching = callsign_filters_regex.some(regex => spot.dx_callsign.match(regex));
+            return are_filters_empty || are_filters_matching;
+        })
         .slice(0, 100)
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
-    function on_spot_click(spot) {
-        send_message_to_radio({mode: spot.mode, freq: spot.freq})
+    function set_cat_to_spot(spot) {
+        send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 
-    let [hovered_spot, set_hovered_spot] = useState(null);
+    let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
 
     // This is a debug variable that should be set from the dev console
     let [canvas, _] = useLocalStorage("canvas", false);
 
-    return (
-        <div className="mt-6 xl:mx-20 shadow-xl rounded-2xl border-solid border-slate-200 border-2 min-w-[740px]">
-            <Filters
-                filters={filters}
-                set_filters={set_filters}
-                alerts={alerts}
-                set_alerts={set_alerts}
-            />
-            <div className="flex max-lg:flex-wrap divide-x divide-slate-300">
-                <div className="w-full divide-y divide-slate-300">
-                    <MapControls
+    return <>
+        <FilterBar
+            filters={filters}
+            set_filters={set_filters}
+            alerts={alerts}
+            set_alerts={set_alerts}
+            settings={settings}
+            set_settings={set_settings}
+            set_map_controls={set_map_controls}
+            network_state={network_state}
+        />
+        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
+            <Bands filters={filters} set_filters={set_filters}/>
+            <div className="w-full divide-y divide-slate-300">
+                <MapControls
+                    home_locator={settings.locator}
+                    map_controls={map_controls}
+                    set_map_controls={set_map_controls}
+                    radio_status={radio_status}
+                />
+                {canvas ?
+                    <CanvasMap
+                        spots={filtered_spots}
                         map_controls={map_controls}
                         set_map_controls={set_map_controls}
-                        radio_status={radio_status}
+                        set_cat_to_spot={set_cat_to_spot}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
+                        alerts={alerts_regex}
                     />
-                    {canvas ?
-                        <CanvasMap
-                            spots={filtered_spots}
-                            map_controls={map_controls}
-                            set_map_controls={set_map_controls}
-                            on_spot_click={on_spot_click}
-                            hovered_spot={hovered_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            alerts={alerts_regex}
-                        />
-                        :
-                        <SvgMap
-                            spots={filtered_spots}
-                            map_controls={map_controls}
-                            set_map_controls={set_map_controls}
-                            on_spot_click={on_spot_click}
-                            hovered_spot={hovered_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            alerts={alerts_regex}
-                        />
-                    }
-                </div>
-                {is_spots_failed ?
-                    <div className="flex items-start justify-center w-full p-6">
-                        <p className="border-red-400 border bg-red-100 text-red-700 px-1 py-3 w-80 text-center rounded-md relative" role="alert">
-                            <strong className="font-bold">Error!</strong> <span className="block">Failed to get spots data.</span>
-                        </p>
-                    </div>
-                :
-                    <div className="md:columns-1 xl:columns-2 w-full gap-x-2 space-y-2 text-center p-4 overflow-x-auto">
-                    {
-                        [...band_colors].map(([band, color]) => {
-                            if (filters.bands[band]) {
-                                return <BandSpots
-                                    key={band}
-                                    band={band}
-                                    color={color}
-                                    spots={filtered_spots}
-                                    hovered_spot={hovered_spot}
-                                    set_hovered_spot={set_hovered_spot}
-                                    on_spot_click={on_spot_click}
-                                    alerts={alerts_regex}
-                                />;
-                            } else {
-                                return <></>
-                            }
-                        })
-                    }
-                    </div>
+                    :
+                    <SvgMap
+                        spots={filtered_spots}
+                        map_controls={map_controls}
+                        set_map_controls={set_map_controls}
+                        set_cat_to_spot={set_cat_to_spot}
+                        hovered_spot={hovered_spot}
+                        set_hovered_spot={set_hovered_spot}
+                        alerts={alerts_regex}
+                    />
                 }
             </div>
+            <div className="w-full h-full w-full space-y-2 text-center overflow-y-auto">
+                <SpotsTable
+                    spots={filtered_spots}
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
+                    set_cat_to_spot={set_cat_to_spot}
+                    alerts={alerts_regex}
+                ></SpotsTable>
+            </div>
+            <Continents/>
         </div>
-    );
+    </>;
 }
 
 export default MainContainer;

@@ -1,10 +1,13 @@
-import argparse
+from contextlib import asynccontextmanager
+import asyncio
 import logging
 import mimetypes
+import random
+import socket
+import webbrowser
 import os
 
 import fastapi
-from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 import httpx
 import uvicorn
@@ -14,8 +17,6 @@ import RadioController
 # This is a work around for a bug of mimetypes in the windows registry
 mimetypes.init()
 mimetypes.add_type("text/javascript", ".js")
-
-UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui/dist")
 
 logging.config.dictConfig({
     "version": 1,
@@ -38,16 +39,48 @@ logging.config.dictConfig({
         "": {"handlers": ["default"], "level": "INFO"},
     },
 })
-app = fastapi.FastAPI()
+
+logger = logging.getLogger(__name__)
+
+HOST = "localhost"
+# Port collision is very unlikely
+port = port = random.randint(10000, 60000)
 
 
-@app.on_event("startup")
-async def startup_event():
+async def start_webbrowser():
+    """Waiting until the server is listening to requests"""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    logger.info("Checking if the server is up")
+    while True:
+        result = sock.connect_ex((HOST, port))
+        if result == 0:
+            break
+        logger.info("The server is not listening...")
+        await asyncio.sleep(1)
+
+    logger.info("The server is up, openning browser")
+    sock.close()
+
+    webbrowser.open(f"http://{HOST}:{port}/")
+
+
+@asynccontextmanager
+async def lifespan(app: fastapi.FastAPI):
     if os.environ.get("DUMMY") is not None:
         app.state.radio_controller = RadioController.DummyRadioController()
     else:
         app.state.radio_controller = RadioController.OmnirigRadioController()
+
+    logger.info("Initializing radio")
     app.state.radio_controller.init_radio()
+
+    asyncio.create_task(start_webbrowser())
+
+    yield
+
+
+app = fastapi.FastAPI(lifespan=lifespan)
 
 
 @app.websocket("/radio")
@@ -57,35 +90,41 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
     while True:
         try:
             data = await websocket.receive_json()
-            app.state.radio_controller.set_mode(data["mode"])
-            app.state.radio_controller.set_frequency("A", data["freq"])
+            mode = data["mode"]
+            band = int(data["band"])
+            freq = data["freq"]
+            slot = "A"
+
+            if mode.upper() == "SSB":
+                if band in (160, 80, 40):
+                    mode = "LSB"
+                else:
+                    mode = "USB"
+
+            logger.info(f"Setting mode: {mode}")
+            app.state.radio_controller.set_mode(mode)
+
+            logger.info(f"Setting frequency: {freq} in slot {slot}")
+            app.state.radio_controller.set_frequency(slot, freq)
+
             await websocket.send_json({"result": "success"})
         except WebSocketDisconnect:
             break
 
 
-@app.get("/spots")
-async def spots(response: fastapi.Response):
+@app.get("/{path:path}")
+async def proxy_to_main_server(path: str, response: fastapi.Response):
     async with httpx.AsyncClient() as client:
-        result = await client.get("https://holycluster.iarc.org/spots")
+        result = await client.get(f"https://holycluster.iarc.org/{path}")
         response.body = result.content
         response.status_code = result.status_code
+        for (key, value) in result.headers.items():
+            response.headers[key] = value
         return response
 
 
-app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
-
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--host", type=str, default="0.0.0.0")
-    parser.add_argument("--port", type=int, default=7373)
-    return parser.parse_args()
-
-
 def main():
-    args = parse_args()
-    uvicorn.run(app, host=args.host, port=args.port)
+    uvicorn.run(app, host=HOST, port=port)
 
 
 if __name__ == "__main__":

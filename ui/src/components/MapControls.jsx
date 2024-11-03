@@ -1,16 +1,20 @@
 import Input from "@/components/Input.jsx";
 import Button from "@/components/Button.jsx";
 import Radio from "@/components/Radio.jsx";
+import Night from "@/components/Night.jsx";
 
 import Maidenhead from "maidenhead";
 
 function MapControls({
+    home_locator,
     map_controls,
     set_map_controls,
     radio_status,
 }) {
     function reset_map() {
-        set_map_controls(state => state.location = {displayed_locator: "", location: [ 0, 0 ]})
+        const locator = home_locator == "" ? "JJ00AA" : home_locator;
+        const [lat, lon] = Maidenhead.toLatLon(locator);
+        set_map_controls(state => state.location = {displayed_locator: locator, location: [lon, lat]})
     }
 
     const radio_status_to_color = {
@@ -21,36 +25,22 @@ function MapControls({
     }
 
     return (
-        <div className="flex flex-wrap justify-start place-items-center w-full h-auto p-3 gap-4">
-            <Input
-                value={map_controls.location.displayed_locator}
-                placeholder="Locator"
-                onChange={event => {
-                    const new_value = event.target.value;
-                    if (Maidenhead.valid(new_value)) {
-                        const [lat, lon] = Maidenhead.toLatLon(new_value);
-                        set_map_controls(state => {
-                            state.location = {displayed_locator: new_value, location: [lon, lat]};
-                        })
-                    } else if (new_value.length == 0) {
-                        reset_map()
-                    } else {
-                        set_map_controls(state => state.location.displayed_locator = new_value)
-                    }
-                }
-            }/>
-            <Button on_click={reset_map}>Reset</Button>
-            <div className="space-x-2">
-                <input
-                    type="checkbox"
-                    checked={map_controls.night}
-                    onChange={event => set_map_controls(state => state.night = event.target.checked)}
-                ></input>
-                <label className="text-slate-700">Show night</label>
-            </div>
+        <div className="flex flex-wrap justify-start place-items-center w-full h-16 p-3 gap-4">
+            <p className="rounded-lg bg-slate-200 p-2">{map_controls.location.displayed_locator}</p>
+            <Button on_click={reset_map}>MyQTH</Button>
+            <Night
+                is_active={map_controls.night}
+                size="32"
+                on_click={event => set_map_controls(state => state.night = !state.night)}
+            />
 
             <div className="ml-auto">
-                <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+                {
+                    // Remove this when we release the radio CAT control feature!!!
+                    radio_status != "unavailable" && radio_status != "unknown"
+                    ? <Radio color={radio_status_to_color[radio_status]} size="36"></Radio>
+                    : ""
+                }
             </div>
         </div>
     );
