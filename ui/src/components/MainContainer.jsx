@@ -173,6 +173,20 @@ function MainContainer() {
     }
 
     let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
+    let [pinned_spot, set_pinned_spot] = useState(null);
+
+    function on_escape_clicked(event) {
+        if (event.key == "Escape") {
+            set_pinned_spot(null)
+        }
+    }
+
+    useEffect(() => {
+        document.body.addEventListener("keydown", on_escape_clicked);
+        return () => {
+            document.body.removeEventListener("keydown", on_escape_clicked);
+        }
+    });
 
     // This is a debug variable that should be set from the dev console
     let [canvas, _] = useLocalStorage("canvas", false);
@@ -205,6 +219,8 @@ function MainContainer() {
                         set_cat_to_spot={set_cat_to_spot}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
+                        pinned_spot={pinned_spot}
+                        set_pinned_spot={set_pinned_spot}
                         alerts={alerts_regex}
                     />
                     :
@@ -215,6 +231,8 @@ function MainContainer() {
                         set_cat_to_spot={set_cat_to_spot}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
+                        pinned_spot={pinned_spot}
+                        set_pinned_spot={set_pinned_spot}
                         alerts={alerts_regex}
                     />
                 }
@@ -224,6 +242,8 @@ function MainContainer() {
                     spots={filtered_spots}
                     hovered_spot={hovered_spot}
                     set_hovered_spot={set_hovered_spot}
+                    pinned_spot={pinned_spot}
+                    set_pinned_spot={set_pinned_spot}
                     set_cat_to_spot={set_cat_to_spot}
                     alerts={alerts_regex}
                 ></SpotsTable>

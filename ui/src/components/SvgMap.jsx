@@ -35,6 +35,8 @@ function SvgMap({
     set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
+    pinned_spot,
+    set_pinned_spot,
     alerts,
 }) {
     const svg_ref = useRef(null);
@@ -112,6 +114,8 @@ function SvgMap({
                 set_cat_to_spot={set_cat_to_spot}
                 hovered_spot={hovered_spot}
                 set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
                 set_popup_position={set_popup_position}
                 alerts={alerts}
             />;
@@ -188,6 +192,7 @@ function SvgMap({
             className="absolute p-2 bg-white border border-gray-300 rounded shadow-lg"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
             onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+            onClick={() => set_pinned_spot(hovered_spot_data.id)}
             style={{
                 top: popup_position.y,
                 left: popup_position.x,
