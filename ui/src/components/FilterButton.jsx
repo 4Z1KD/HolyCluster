@@ -20,7 +20,8 @@ function FilterButton({
         "border-2",
         "cursor-pointer",
         `hover:brightness-${hover_brightness}`,
-        "p-2",
+        "py-2",
+        "px-1",
     ].join(" ");
 
     return <div
