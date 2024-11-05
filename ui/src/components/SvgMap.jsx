@@ -193,11 +193,11 @@ function SvgMap({
                 left: popup_position.x,
                 transform: "translate(-50%, -105%)",
             }}>
-                <p className="text-gray-700 text-sm">
-                    <strong>DX:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
-                    <strong>DX Country:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
-                    <strong>Spotter:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
-                    <strong>Distance:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
+                <p className="text-gray-700 text-sm font-bold">
+                    DX: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
+                    DX Country: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
+                    Spotter: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
+                    Distance: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
                 </p>
             </div>
             : ""
