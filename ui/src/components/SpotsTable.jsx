@@ -71,9 +71,9 @@ function SpotsTable({
         const hovered_ref = row_refs.current[hovered_spot.id];
         const pinned_ref = row_refs.current[pinned_spot];
 
-        if (pinned_ref !== undefined) {
+        if (pinned_ref != undefined) {
             pinned_ref.scrollIntoView({block: "center", behavior: "instant"});
-        } else if (hovered_ref !== undefined && hovered_spot.source == "map") {
+        } else if (hovered_ref != undefined && hovered_spot.source == "map") {
             hovered_ref.scrollIntoView({block: "center", behavior: "instant"});
         }
     });
