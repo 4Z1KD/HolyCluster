@@ -198,12 +198,12 @@ function SvgMap({
                 left: popup_position.x,
                 transform: "translate(-50%, -105%)",
             }}>
-                <p className="text-gray-700 text-sm font-bold">
+                <div className="text-gray-700 text-sm font-bold">
                     DX: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
                     DX Country: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
                     Spotter: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
                     Distance: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
-                </p>
+                </div>
             </div>
             : ""
         }
