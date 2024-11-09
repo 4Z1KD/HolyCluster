@@ -2,6 +2,9 @@ import { useState } from "react";
 
 import { to_radian } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
+import Plus from "./components/Plus.jsx";
+import Square from "./components/Square.jsx";
+import Triangle from "./components/Triangle.jsx";
 
 function Spot({
     spot,
@@ -47,12 +50,36 @@ function Spot({
         style = {};
     }
 
+
+    const Symbol = (spot) => {
+        switch (spot.spot.mode) {
+            case "SSB":
+                return <Plus dx_x={dx_x} dx_y={dx_y} dx_size={dx_size} light_color={light_color} handleClick={() => 
+                    set_cat_to_spot(spot)}/>
+            case "CW":
+                return <Triangle dx_x={dx_x} dx_y={dx_y} dx_size={dx_size} light_color={light_color} handleClick={() => 
+                    set_cat_to_spot(spot)}/>
+            default:
+              
+                return <rect
+                    x={dx_x - dx_size / 2}
+                    y={dx_y - dx_size / 2}
+                    width={dx_size}
+                    height={dx_size}
+                    fill={light_color}
+                    stroke="grey"
+                    strokeWidth="1px"
+                    onClick={() => set_cat_to_spot(spot)}
+                />
+        }
+    }
+
     return <g
         onMouseOver={event => {
-            set_popup_position({x: event.nativeEvent.layerX, y: event.nativeEvent.layerY});
-            set_hovered_spot({source: "map", id: spot.id});
+            set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY });
+            set_hovered_spot({ source: "map", id: spot.id });
         }}
-        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+        onMouseLeave={() => set_hovered_spot({ source: null, id: null })}
     >
         <path
             fill="none"
@@ -71,7 +98,7 @@ function Spot({
         />
         {is_alerted ?
             <style>
-            {`
+                {`
                 @keyframes dash {
                     to {
                         stroke-dashoffset: 0;
@@ -79,7 +106,7 @@ function Spot({
                 }
             `}
             </style>
-        : ""}
+            : ""}
         <circle
             r={is_hovered ? 5 : 3}
             fill={light_color}
@@ -88,16 +115,8 @@ function Spot({
             cy={spotter_y}
             onClick={() => set_cat_to_spot(spot)}>
         </circle>
-        <rect
-            x={dx_x - dx_size / 2}
-            y={dx_y - dx_size / 2}
-            width={dx_size}
-            height={dx_size}
-            fill={light_color}
-            stroke="grey"
-            strokeWidth="1px"
-            onClick={() => set_cat_to_spot(spot)}
-        />
+        <Symbol spot={spot}/>
+        
     </g>;
 }
 
