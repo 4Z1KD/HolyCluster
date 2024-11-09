@@ -270,15 +270,14 @@ function CanvasMap({
             .scaleExtent([1, 20])
             .translateExtent([[0, 0], [dimensions.width, dimensions.height]])
             .on("zoom", event => {
-                const { transform } = event;
                 if (!is_drawing) {
                     is_drawing = true;
                     requestAnimationFrame(() => {
                         context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        local_zoom_transform = transform;
-                        draw_map(transform);
+                        local_zoom_transform = event.transform;
+                        draw_map(local_zoom_transform);
                         is_drawing = false;
-                    })
+                    });
                 }
             })
             .on("end", event => {
@@ -322,9 +321,7 @@ function CanvasMap({
             })
             .on("end", event => {
                 const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
-                if (zoom_transform != local_zoom_transform) {
-                    set_zoom_transform(local_zoom_transform);
-                }
+                set_zoom_transform(local_zoom_transform);
                 set_map_controls(state => {
                     state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
                 })
