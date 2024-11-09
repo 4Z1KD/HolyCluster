@@ -78,33 +78,35 @@ function SpotsTable({
         }
     });
 
-    return <table
-        className="table-fixed w-[34rem]"
-        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
-    >
-        <tbody className="divide-y divide-slate-200">
-            <tr className="sticky top-0 bg-slate-300">
-                <td>Time</td>
-                <td>DX</td>
-                <td>Frequency</td>
-                <td>Spotter</td>
-                <td>Band</td>
-                <td>Mode</td>
-            </tr>
-            {spots
-                .map(spot => <Spot
-                        ref={element => row_refs.current[spot.id] = element}
-                        key={spot.id}
-                        spot={spot}
-                        alerts={alerts}
-                        hovered_spot={hovered_spot}
-                        pinned_spot={pinned_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        set_cat_to_spot={set_cat_to_spot}
-                    ></Spot>
-                )}
-        </tbody>
-    </table>;
+    return <div className="w-full h-full overflow-y-auto">
+        <table
+            className="table-fixed text-center w-[34rem]"
+            onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
+        >
+            <tbody className="divide-y divide-slate-200">
+                <tr className="sticky top-0 bg-slate-300">
+                    <td>Time</td>
+                    <td>DX</td>
+                    <td>Frequency</td>
+                    <td>Spotter</td>
+                    <td>Band</td>
+                    <td>Mode</td>
+                </tr>
+                {spots
+                    .map(spot => <Spot
+                            ref={element => row_refs.current[spot.id] = element}
+                            key={spot.id}
+                            spot={spot}
+                            alerts={alerts}
+                            hovered_spot={hovered_spot}
+                            pinned_spot={pinned_spot}
+                            set_hovered_spot={set_hovered_spot}
+                            set_cat_to_spot={set_cat_to_spot}
+                        ></Spot>
+                    )}
+            </tbody>
+        </table>
+    </div>;
 }
 
 export default SpotsTable;

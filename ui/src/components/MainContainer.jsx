@@ -269,17 +269,15 @@ function MainContainer() {
                     />
                 }
             </div>
-            <div className="w-full h-full w-full space-y-2 text-center overflow-y-auto">
-                <SpotsTable
-                    spots={filtered_spots}
-                    hovered_spot={hovered_spot}
-                    set_hovered_spot={set_hovered_spot}
-                    pinned_spot={pinned_spot}
-                    set_pinned_spot={set_pinned_spot}
-                    set_cat_to_spot={set_cat_to_spot}
-                    alerts={alerts_regex}
-                ></SpotsTable>
-            </div>
+            <SpotsTable
+                spots={filtered_spots}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
+                set_cat_to_spot={set_cat_to_spot}
+                alerts={alerts_regex}
+            />
             <Continents filters={filters} set_filters={set_filters}/>
         </div>
     </>;
