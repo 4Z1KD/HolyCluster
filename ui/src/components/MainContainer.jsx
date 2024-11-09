@@ -74,9 +74,20 @@ function fetch_spots(set_spots, set_network_state) {
     }
 }
 
+function use_object_local_storage(key, default_value) {
+    const [value, set_value] = useLocalStorage(key, default_value);
+
+    const merged_value = {...default_value, ...value};
+
+    if (JSON.stringify(value) !== JSON.stringify(merged_value)) {
+        set_value(merged_value);
+    }
+
+    return [merged_value, set_value];
+}
 
 function MainContainer() {
-    const [filters, set_filters_inner] = useLocalStorage(
+    const [filters, set_filters_inner] = use_object_local_storage(
         "filters",
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
@@ -98,7 +109,7 @@ function MainContainer() {
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
     const alerts_regex = alerts.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
-    const [map_controls, set_map_controls_inner] = useLocalStorage(
+    const [map_controls, set_map_controls_inner] = use_object_local_storage(
         "map_controls",
         {
             night: false,
@@ -119,7 +130,7 @@ function MainContainer() {
         })
     }
 
-    const [settings, set_settings_inner] = useLocalStorage(
+    const [settings, set_settings_inner] = use_object_local_storage(
         "settings",
         { locator: "JJ00AA", default_radius: 20000 }
     );
