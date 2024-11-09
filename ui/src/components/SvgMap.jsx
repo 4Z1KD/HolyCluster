@@ -43,7 +43,6 @@ function SvgMap({
     const svg_box_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
     const max_radius = 20000;
-    const [radius_in_km, set_radius_in_km] = useState(max_radius);
 
     const inner_padding = 50;
     const center_x = dimensions.width / 2;
@@ -60,7 +59,7 @@ function SvgMap({
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
-    projection.scale(max_radius / radius_in_km * projection.scale());
+    projection.scale(max_radius / map_controls.radius_in_km * projection.scale());
 
     const path_generator = d3.geoPath().projection(projection);
 
@@ -84,11 +83,14 @@ function SvgMap({
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
             .on("zoom", event => {
-                const radius_in_km = (21 - Math.round( event.transform.k)) * 1000;
-                set_radius_in_km(radius_in_km);
+                const radius_in_km = (21 - Math.round(event.transform.k)) * 1000;
+                set_map_controls(state => state.radius_in_km = radius_in_km)
             })
         svg.call(zoom);
-    }, [radius_in_km])
+
+        const k_from_radius_in_km = 21 - (map_controls.radius_in_km / 1000);
+        zoom.scaleTo(svg, k_from_radius_in_km);
+    }, [map_controls])
 
     const text_height = 20
     const text_y = 30
@@ -135,9 +137,7 @@ function SvgMap({
                 if (event.detail == 2 && distance_from_center <= radius) {
                     const [lon, lat] = projection.invert([x, y]);
                     const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
-                    set_map_controls(state => {
-                        state.location = {displayed_locator, location: [ lon, lat ]};
-                    })
+                    set_map_controls(state => state.location = { displayed_locator, location: [ lon, lat ] })
                 }
             }}
         >
@@ -149,7 +149,7 @@ function SvgMap({
             <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
             <g style={{font: `bold ${text_height}px sans-serif`, userSelect: "none"}}>
-                <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
+                <text x={text_height} y={text_y}>Radius: {Math.round(map_controls.radius_in_km)} KM</text>
                 <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
             </g>
 

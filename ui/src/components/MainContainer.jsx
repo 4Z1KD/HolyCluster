@@ -106,7 +106,8 @@ function MainContainer() {
                 displayed_locator: "JJ00AA",
                 // Longitude, latitude
                 location: [0, 0]
-            }
+            },
+            radius_in_km: 20000,
         }
     );
 
@@ -118,7 +119,10 @@ function MainContainer() {
         })
     }
 
-    const [settings, set_settings_inner] = useLocalStorage("settings", { locator: "JJ00AA" });
+    const [settings, set_settings_inner] = useLocalStorage(
+        "settings",
+        { locator: "JJ00AA", default_radius: 20000 }
+    );
 
     const set_settings = (change_func) => {
         set_settings_inner(previous_state => {
@@ -210,6 +214,7 @@ function MainContainer() {
                     map_controls={map_controls}
                     set_map_controls={set_map_controls}
                     radio_status={radio_status}
+                    default_radius={settings.default_radius}
                 />
                 {canvas ?
                     <CanvasMap
