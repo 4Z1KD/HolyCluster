@@ -120,9 +120,9 @@ function MainContainer() {
                 // Longitude, latitude
                 location: [0, 0]
             },
-            radius_in_km: 20000,
         }
     );
+    const [radius_in_km, set_radius_in_km] = useState(20000);
 
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
@@ -227,6 +227,7 @@ function MainContainer() {
             settings={settings}
             set_settings={set_settings}
             set_map_controls={set_map_controls}
+            set_radius_in_km={set_radius_in_km}
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
@@ -238,6 +239,7 @@ function MainContainer() {
                     set_map_controls={set_map_controls}
                     radio_status={radio_status}
                     default_radius={settings.default_radius}
+                    set_radius_in_km={set_radius_in_km}
                 />
                 {canvas ?
                     <CanvasMap
@@ -262,6 +264,8 @@ function MainContainer() {
                         pinned_spot={pinned_spot}
                         set_pinned_spot={set_pinned_spot}
                         alerts={alerts_regex}
+                        radius_in_km={radius_in_km}
+                        set_radius_in_km={set_radius_in_km}
                     />
                 }
             </div>

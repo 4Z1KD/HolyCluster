@@ -38,6 +38,8 @@ function SvgMap({
     pinned_spot,
     set_pinned_spot,
     alerts,
+    radius_in_km,
+    set_radius_in_km,
 }) {
     const svg_ref = useRef(null);
     const svg_box_ref = useRef(null);
@@ -59,7 +61,7 @@ function SvgMap({
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
-    projection.scale(max_radius / map_controls.radius_in_km * projection.scale());
+    projection.scale(max_radius / radius_in_km * projection.scale());
 
     const path_generator = d3.geoPath().projection(projection);
 
@@ -82,13 +84,10 @@ function SvgMap({
         const svg = d3.select(svg_ref.current);
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
-            .on("zoom", event => {
-                const radius_in_km = (21 - Math.round(event.transform.k)) * 1000;
-                set_map_controls(state => state.radius_in_km = radius_in_km)
-            })
+            .on("zoom", event => set_radius_in_km((21 - Math.round(event.transform.k)) * 1000))
         svg.call(zoom);
 
-        const k_from_radius_in_km = 21 - (map_controls.radius_in_km / 1000);
+        const k_from_radius_in_km = 21 - (radius_in_km / 1000);
         zoom.scaleTo(svg, k_from_radius_in_km);
     }, [map_controls])
 
@@ -149,7 +148,7 @@ function SvgMap({
             <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
 
             <g style={{font: `bold ${text_height}px sans-serif`, userSelect: "none"}}>
-                <text x={text_height} y={text_y}>Radius: {Math.round(map_controls.radius_in_km)} KM</text>
+                <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
                 <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
             </g>
 

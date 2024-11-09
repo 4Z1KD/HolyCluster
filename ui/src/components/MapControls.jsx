@@ -11,12 +11,13 @@ function MapControls({
     set_map_controls,
     radio_status,
     default_radius,
+    set_radius_in_km,
 }) {
     function reset_map() {
         const locator = home_locator == "" ? "JJ00AA" : home_locator;
         const [lat, lon] = Maidenhead.toLatLon(locator);
         set_map_controls(state => {
-            state.radius_in_km = default_radius;
+            set_radius_in_km(default_radius);
             state.location = { displayed_locator: locator, location: [ lon, lat ] };
         })
     }

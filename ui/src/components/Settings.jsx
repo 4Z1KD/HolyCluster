@@ -22,6 +22,7 @@ function Settings({
     settings,
     set_settings,
     set_map_controls,
+    set_radius_in_km,
 }) {
     const [temp_settings, set_temp_settings] = useState({locator: "", default_radius: 0})
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
@@ -42,7 +43,7 @@ function Settings({
                     map_controls.location.displayed_locator = temp_settings.locator;
                     map_controls.location.location = [lon, lat];
                     if (settings.default_radius != temp_settings.default_radius) {
-                        map_controls.radius_in_km = temp_settings.default_radius;
+                        set_radius_in_km(temp_settings.default_radius);
                     }
                 })
                 set_settings(settings => {
