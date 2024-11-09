@@ -29,6 +29,7 @@ function FilterBar({
     settings,
     set_settings,
     set_map_controls,
+    set_radius_in_km,
     network_state,
 }) {
     const box_container_style = "flex flex-wrap h-full p-2 gap-3";
@@ -89,6 +90,7 @@ function FilterBar({
                     settings={settings}
                     set_settings={set_settings}
                     set_map_controls={set_map_controls}
+                    set_radius_in_km={set_radius_in_km}
                 />
                 <Clock/>
             </div>

@@ -10,6 +10,8 @@ function Spot({
     set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
+    pinned_spot,
+    set_pinned_spot,
     set_popup_position,
     alerts
 }) {
@@ -29,7 +31,7 @@ function Spot({
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
-    const is_hovered = spot.id == hovered_spot.id;
+    const is_hovered = spot.id == hovered_spot.id || spot.id == pinned_spot;
     const dx_size = is_hovered ? 14 : 10;
 
     const color = band_colors.get(spot.band);
@@ -47,12 +49,24 @@ function Spot({
         style = {};
     }
 
+    function on_click(event) {
+        switch (event.detail) {
+            case 1:
+                set_pinned_spot(spot.id)
+                break;
+            case 2:
+                set_cat_to_spot(spot)
+                break;
+        }
+    }
+
     return <g
         onMouseOver={event => {
             set_popup_position({x: event.nativeEvent.layerX, y: event.nativeEvent.layerY});
             set_hovered_spot({source: "map", id: spot.id});
         }}
         onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+        onClick={on_click}
     >
         <path
             fill="none"
@@ -66,7 +80,6 @@ function Spot({
             opacity="0"
             strokeWidth="8px"
             stroke="#FFFFFF"
-            onClick={() => set_cat_to_spot(spot)}
             d={path_generator(line)}
         />
         {is_alerted ?
@@ -86,8 +99,7 @@ function Spot({
             stroke="grey"
             cx={spotter_x}
             cy={spotter_y}
-            onClick={() => set_cat_to_spot(spot)}>
-        </circle>
+        />
         <rect
             x={dx_x - dx_size / 2}
             y={dx_y - dx_size / 2}
@@ -96,7 +108,6 @@ function Spot({
             fill={light_color}
             stroke="grey"
             strokeWidth="1px"
-            onClick={() => set_cat_to_spot(spot)}
         />
     </g>;
 }

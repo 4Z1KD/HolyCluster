@@ -5,7 +5,7 @@ import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
 import Bands from "@/components/Bands.jsx";
-import { band_colors, modes } from "@/filters_data.js";
+import { band_colors, modes, continents } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
@@ -74,13 +74,26 @@ function fetch_spots(set_spots, set_network_state) {
     }
 }
 
+function use_object_local_storage(key, default_value) {
+    const [value, set_value] = useLocalStorage(key, default_value);
+
+    const merged_value = {...default_value, ...value};
+
+    if (JSON.stringify(value) !== JSON.stringify(merged_value)) {
+        set_value(merged_value);
+    }
+
+    return [merged_value, set_value];
+}
 
 function MainContainer() {
-    const [filters, set_filters_inner] = useLocalStorage(
+    const [filters, set_filters_inner] = use_object_local_storage(
         "filters",
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
+            dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
+            spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             callsigns: [],
             time_limit: 3600,
         }
@@ -98,7 +111,7 @@ function MainContainer() {
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
     const alerts_regex = alerts.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
-    const [map_controls, set_map_controls_inner] = useLocalStorage(
+    const [map_controls, set_map_controls_inner] = use_object_local_storage(
         "map_controls",
         {
             night: false,
@@ -106,9 +119,10 @@ function MainContainer() {
                 displayed_locator: "JJ00AA",
                 // Longitude, latitude
                 location: [0, 0]
-            }
+            },
         }
     );
+    const [radius_in_km, set_radius_in_km] = useState(20000);
 
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
@@ -118,7 +132,10 @@ function MainContainer() {
         })
     }
 
-    const [settings, set_settings_inner] = useLocalStorage("settings", { locator: "JJ00AA" });
+    const [settings, set_settings_inner] = use_object_local_storage(
+        "settings",
+        { locator: "JJ00AA", default_radius: 20000 }
+    );
 
     const set_settings = (change_func) => {
         set_settings_inner(previous_state => {
@@ -157,12 +174,22 @@ function MainContainer() {
     }, [])
 
     const filtered_spots = spots
-        .filter(spot => (current_time - spot.time) < filters.time_limit)
-        .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
         .filter(spot => {
+            const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
+            const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
             const are_filters_empty = callsign_filters_regex.length == 0;
             const are_filters_matching = callsign_filters_regex.some(regex => spot.dx_callsign.match(regex));
-            return are_filters_empty || are_filters_matching;
+
+            const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
+            const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
+
+            return (
+                is_in_time_limit
+                && is_dx_continent_active
+                && is_spotter_continent_active
+                && is_band_and_mode_active
+                && (are_filters_empty || are_filters_matching)
+            );
         })
         .slice(0, 100)
 
@@ -173,6 +200,20 @@ function MainContainer() {
     }
 
     let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
+    let [pinned_spot, set_pinned_spot] = useState(null);
+
+    function on_escape_clicked(event) {
+        if (event.key == "Escape") {
+            set_pinned_spot(null)
+        }
+    }
+
+    useEffect(() => {
+        document.body.addEventListener("keydown", on_escape_clicked);
+        return () => {
+            document.body.removeEventListener("keydown", on_escape_clicked);
+        }
+    });
 
     // This is a debug variable that should be set from the dev console
     let [canvas, _] = useLocalStorage("canvas", false);
@@ -186,6 +227,7 @@ function MainContainer() {
             settings={settings}
             set_settings={set_settings}
             set_map_controls={set_map_controls}
+            set_radius_in_km={set_radius_in_km}
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
@@ -196,6 +238,8 @@ function MainContainer() {
                     map_controls={map_controls}
                     set_map_controls={set_map_controls}
                     radio_status={radio_status}
+                    default_radius={settings.default_radius}
+                    set_radius_in_km={set_radius_in_km}
                 />
                 {canvas ?
                     <CanvasMap
@@ -205,6 +249,8 @@ function MainContainer() {
                         set_cat_to_spot={set_cat_to_spot}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
+                        pinned_spot={pinned_spot}
+                        set_pinned_spot={set_pinned_spot}
                         alerts={alerts_regex}
                     />
                     :
@@ -215,7 +261,11 @@ function MainContainer() {
                         set_cat_to_spot={set_cat_to_spot}
                         hovered_spot={hovered_spot}
                         set_hovered_spot={set_hovered_spot}
+                        pinned_spot={pinned_spot}
+                        set_pinned_spot={set_pinned_spot}
                         alerts={alerts_regex}
+                        radius_in_km={radius_in_km}
+                        set_radius_in_km={set_radius_in_km}
                     />
                 }
             </div>
@@ -224,11 +274,13 @@ function MainContainer() {
                     spots={filtered_spots}
                     hovered_spot={hovered_spot}
                     set_hovered_spot={set_hovered_spot}
+                    pinned_spot={pinned_spot}
+                    set_pinned_spot={set_pinned_spot}
                     set_cat_to_spot={set_cat_to_spot}
                     alerts={alerts_regex}
                 ></SpotsTable>
             </div>
-            <Continents/>
+            <Continents filters={filters} set_filters={set_filters}/>
         </div>
     </>;
 }
