@@ -53,7 +53,13 @@ function draw_night_circle(context, { path_generator }) {
 function draw_spot(
     context,
     spot,
-    { hovered_spot, transform, path_generator, projection, alerts }
+    {
+        hovered_spot,
+        transform,
+        path_generator,
+        projection,
+        alerts,
+    }
 ) {
     const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot.id;
@@ -108,7 +114,14 @@ function draw_spot(
     context.stroke();
 }
 
-function draw_map_angles(context, { radius, center_x, center_y, dimensions, scale, degrees_diff = 15 }) {
+function draw_map_angles(context, {
+    radius,
+    center_x,
+    center_y,
+    dimensions,
+    scale,
+    degrees_diff = 15,
+}) {
     if (dimensions.height < 300) {
         return;
     }
@@ -149,6 +162,83 @@ function draw_map_info_text(context, { spots, scale }) {
     context.fillStyle = "#000000";
     context.beginPath();
     context.fillText(`Spots: ${spots.length}`, font_size, 30);
+}
+
+function apply_zoom_and_drag_behaviors(context, {
+    zoom_transform,
+    set_zoom_transform,
+    set_map_controls,
+    dimensions,
+    draw_map,
+    projection,
+    canvas,
+    center_lat,
+}) {
+    let is_drawing = false;
+    let local_zoom_transform = zoom_transform;
+
+    const zoom = d3.zoom()
+        .scaleExtent([1, 20])
+        .translateExtent([[0, 0], [dimensions.width, dimensions.height]])
+        .on("zoom", event => {
+            if (!is_drawing) {
+                is_drawing = true;
+                requestAnimationFrame(() => {
+                    context.clearRect(0, 0, dimensions.width, dimensions.height);
+                    local_zoom_transform = event.transform;
+                    draw_map(local_zoom_transform);
+                    is_drawing = false;
+                });
+            }
+        })
+        .on("end", event => {
+            set_zoom_transform(local_zoom_transform)
+        });
+
+    let lon_start = null;
+    let current_lon = null;
+    let drag_start = null
+
+    const drag = d3.drag()
+        .on("start", event => {
+            drag_start = [event.x, event.y];
+            lon_start = projection.rotate()[0];
+        })
+        .on("drag", event => {
+            if (zoom_transform.k > 1) {
+                // Panning logic: Adjust the zoom translation (transform.x, transform.y)
+                const dx = (event.x - drag_start[0]) / zoom_transform.k;
+                const dy = (event.y - drag_start[1]) / zoom_transform.k;
+
+                // Update zoom translation (panning)
+                local_zoom_transform = zoom_transform.translate(dx, dy);
+
+            } else {
+                const dx = (event.x - drag_start[0]) / local_zoom_transform.k;
+                current_lon = mod(lon_start + dx + 180, 360) - 180;
+
+                const current_rotation = projection.rotate();
+                projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
+            }
+
+            if (!is_drawing) {
+                is_drawing = true;
+                requestAnimationFrame(() => {
+                    context.clearRect(0, 0, dimensions.width, dimensions.height);
+                    draw_map(local_zoom_transform);
+                    is_drawing = false;
+                });
+            }
+        })
+        .on("end", event => {
+            const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
+            set_zoom_transform(local_zoom_transform);
+            set_map_controls(state => {
+                state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
+            })
+        });
+
+    zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform);
 }
 
 function CanvasMap({
@@ -263,71 +353,16 @@ function CanvasMap({
 
         draw_map(zoom_transform);
 
-        let is_drawing = false;
-        let local_zoom_transform = zoom_transform;
-
-        const zoom = d3.zoom()
-            .scaleExtent([1, 20])
-            .translateExtent([[0, 0], [dimensions.width, dimensions.height]])
-            .on("zoom", event => {
-                if (!is_drawing) {
-                    is_drawing = true;
-                    requestAnimationFrame(() => {
-                        context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        local_zoom_transform = event.transform;
-                        draw_map(local_zoom_transform);
-                        is_drawing = false;
-                    });
-                }
-            })
-            .on("end", event => {
-                set_zoom_transform(local_zoom_transform)
-            });
-
-        let lon_start = null;
-        let current_lon = null;
-        let drag_start = null
-
-        const drag = d3.drag()
-            .on("start", event => {
-                drag_start = [event.x, event.y];
-                lon_start = projection.rotate()[0];
-            })
-            .on("drag", event => {
-                if (zoom_transform.k > 1) {
-                    // Panning logic: Adjust the zoom translation (transform.x, transform.y)
-                    const dx = (event.x - drag_start[0]) / zoom_transform.k;
-                    const dy = (event.y - drag_start[1]) / zoom_transform.k;
-
-                    // Update zoom translation (panning)
-                    local_zoom_transform = zoom_transform.translate(dx, dy);
-
-                } else {
-                    const dx = (event.x - drag_start[0]) / local_zoom_transform.k;
-                    current_lon = mod(lon_start + dx + 180, 360) - 180;
-
-                    const current_rotation = projection.rotate();
-                    projection.rotate([current_lon, current_rotation[1], current_rotation[2]]);
-                }
-
-                if (!is_drawing) {
-                    is_drawing = true;
-                    requestAnimationFrame(() => {
-                        context.clearRect(0, 0, dimensions.width, dimensions.height);
-                        draw_map(local_zoom_transform);
-                        is_drawing = false;
-                    });
-                }
-            })
-            .on("end", event => {
-                const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
-                set_zoom_transform(local_zoom_transform);
-                set_map_controls(state => {
-                    state.location = {displayed_locator: displayed_locator, location: [-current_lon, center_lat]};
-                })
-            });
-
-        zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform);
+        apply_zoom_and_drag_behaviors(context, {
+            zoom_transform,
+            set_zoom_transform,
+            set_map_controls,
+            dimensions,
+            draw_map,
+            projection,
+            canvas,
+            center_lat,
+        });
 
         const handle_mouse_move = (event) => {
             const { offsetX, offsetY } = event;
