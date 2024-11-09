@@ -327,7 +327,7 @@ function CanvasMap({
                 })
             });
 
-        d3.select(canvas).call(drag).call(zoom);
+        zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform);
 
         const handle_mouse_move = (event) => {
             const { offsetX, offsetY } = event;
