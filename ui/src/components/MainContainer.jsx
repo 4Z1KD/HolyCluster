@@ -5,7 +5,7 @@ import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
 import Bands from "@/components/Bands.jsx";
-import { band_colors, modes } from "@/filters_data.js";
+import { band_colors, modes, continents } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
@@ -92,6 +92,8 @@ function MainContainer() {
         {
             bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
+            dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
+            spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             callsigns: [],
             time_limit: 3600,
         }
@@ -172,12 +174,22 @@ function MainContainer() {
     }, [])
 
     const filtered_spots = spots
-        .filter(spot => (current_time - spot.time) < filters.time_limit)
-        .filter(spot => filters.bands[spot.band] && filters.modes[spot.mode])
         .filter(spot => {
+            const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
+            const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
             const are_filters_empty = callsign_filters_regex.length == 0;
             const are_filters_matching = callsign_filters_regex.some(regex => spot.dx_callsign.match(regex));
-            return are_filters_empty || are_filters_matching;
+
+            const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
+            const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
+
+            return (
+                is_in_time_limit
+                && is_dx_continent_active
+                && is_spotter_continent_active
+                && is_band_and_mode_active
+                && (are_filters_empty || are_filters_matching)
+            );
         })
         .slice(0, 100)
 
@@ -264,7 +276,7 @@ function MainContainer() {
                     alerts={alerts_regex}
                 ></SpotsTable>
             </div>
-            <Continents/>
+            <Continents filters={filters} set_filters={set_filters}/>
         </div>
     </>;
 }
