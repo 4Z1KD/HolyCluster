@@ -202,6 +202,7 @@ function SvgMap({
                     DX Country: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
                     Spotter: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
                     Distance: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
+                    <p><small>(Click to freeze)</small></p>
                 </div>
             </div>
             : ""
