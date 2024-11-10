@@ -122,7 +122,6 @@ function MainContainer() {
             },
         }
     );
-    const [radius_in_km, set_radius_in_km] = useState(20000);
 
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
@@ -136,6 +135,8 @@ function MainContainer() {
         "settings",
         { locator: "JJ00AA", default_radius: 20000 }
     );
+
+    const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
 
     const set_settings = (change_func) => {
         set_settings_inner(previous_state => {
