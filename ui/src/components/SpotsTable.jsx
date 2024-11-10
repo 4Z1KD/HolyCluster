@@ -11,9 +11,8 @@ const cell_classes = {
     mode: "w-12",
 }
 
-function Callsign({ callsign, is_alerted }) {
+function Callsign({ callsign }) {
     return <a
-        className={is_alerted ? "bg-emerald-100" : ""}
         href={"https://www.qrz.com/db/" + callsign}
         target="_blank"
     >{callsign}</a>
@@ -36,17 +35,24 @@ function Spot({
     const is_hovered = spot.id == hovered_spot.id || spot.id == pinned_spot;
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
+    let row_classes = "odd:bg-white even:bg-slate-100";
+    if (is_alerted) {
+        row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
+        console.log(row_classes);
+    }
+
     return <tr
         ref={ref}
         style={{
             backgroundColor: is_hovered ? band_light_colors[spot.band] : "",
+            outlineColor: is_alerted ? band_colors.get(spot.band) : "",
         }}
-        className="odd:bg-white even:bg-slate-100"
+        className={row_classes}
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
         onClick={() => set_pinned_spot(spot.id)}
     >
         <td className={cell_classes.time}>{formatted_time}</td>
-        <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
+        <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
