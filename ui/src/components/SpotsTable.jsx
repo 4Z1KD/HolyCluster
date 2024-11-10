@@ -15,6 +15,7 @@ function Spot({
     alerts,
     hovered_spot,
     pinned_spot,
+    set_pinned_spot,
     set_hovered_spot,
     set_cat_to_spot,
 }, ref) {
@@ -33,6 +34,7 @@ function Spot({
         }}
         className="odd:bg-white even:bg-slate-100"
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
+        onClick={() => set_pinned_spot(spot.id)}
     >
         <td>{formatted_time}</td>
         <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
@@ -100,6 +102,7 @@ function SpotsTable({
                             alerts={alerts}
                             hovered_spot={hovered_spot}
                             pinned_spot={pinned_spot}
+                            set_pinned_spot={set_pinned_spot}
                             set_hovered_spot={set_hovered_spot}
                             set_cat_to_spot={set_cat_to_spot}
                         ></Spot>
