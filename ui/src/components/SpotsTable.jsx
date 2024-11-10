@@ -2,6 +2,15 @@ import { useEffect, forwardRef, useRef } from "react";
 
 import { band_colors, band_light_colors } from "@/filters_data.js";
 
+const cell_classes = {
+    time: "w-12",
+    dx: "w-24",
+    freq: "w-12",
+    spotter: "w-24",
+    band: "w-12",
+    mode: "w-12",
+}
+
 function Callsign({ callsign, is_alerted }) {
     return <a
         className={is_alerted ? "bg-emerald-100" : ""}
@@ -36,15 +45,15 @@ function Spot({
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
         onClick={() => set_pinned_spot(spot.id)}
     >
-        <td>{formatted_time}</td>
-        <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
-        <td>
+        <td className={cell_classes.time}>{formatted_time}</td>
+        <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
+        <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
             </div>
         </td>
-        <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
-        <td className="flex justify-center items-center">
+        <td className={cell_classes.spotter}><Callsign callsign={spot.spotter_callsign}></Callsign></td>
+        <td className={cell_classes.band + "flex justify-center items-center"}>
             <p
                 className="w-fit px-3 rounded-xl"
                 style={{ backgroundColor: band_colors.get(spot.band) }}
@@ -52,7 +61,7 @@ function Spot({
                 <strong>{spot.band}</strong>
             </p>
         </td>
-        <td>{spot.mode}</td>
+        <td className={cell_classes.mode}>{spot.mode}</td>
     </tr>;
 }
 
@@ -80,19 +89,19 @@ function SpotsTable({
         }
     });
 
-    return <div className="w-full h-full overflow-y-auto">
+    return <div className="w-full h-full text-sm overflow-y-auto">
         <table
-            className="table-fixed text-center w-[34rem]"
+            className="max-w-[34rem] table-fixed text-center border-collapse"
             onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
         >
             <tbody className="divide-y divide-slate-200">
                 <tr className="sticky top-0 bg-slate-300">
-                    <td>Time</td>
-                    <td>DX</td>
-                    <td>Frequency</td>
-                    <td>Spotter</td>
-                    <td>Band</td>
-                    <td>Mode</td>
+                    <td className={cell_classes.time}>Time</td>
+                    <td className={cell_classes.dx}>DX</td>
+                    <td className={cell_classes.freq}>Freq</td>
+                    <td className={cell_classes.spotter}>Spotter</td>
+                    <td className={cell_classes.band}>Band</td>
+                    <td className={cell_classes.mode}>Mode</td>
                 </tr>
                 {spots
                     .map(spot => <Spot
