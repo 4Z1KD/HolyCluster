@@ -169,6 +169,7 @@ function MainContainer() {
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
     function set_cat_to_spot(spot) {
+        console.log("set_cat", spot)
         send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 

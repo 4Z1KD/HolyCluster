@@ -1,6 +1,6 @@
 
 
-const Square = (handleClick, dx_x, dx_size, dx_y, light_color) => {
+const Square = ({handleClick, dx_x, dx_size, dx_y, light_color}) => {
     return <rect
         x={dx_x - dx_size / 2}
         y={dx_y - dx_size / 2}

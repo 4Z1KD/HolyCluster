@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useMemo } from "react";
 
 import { to_radian } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
-import Plus from "./components/Plus.jsx";
+import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
 import Triangle from "./components/Triangle.jsx";
 
@@ -51,28 +51,43 @@ function Spot({
     }
 
 
-    const Symbol = (spot) => {
-        switch (spot.spot.mode) {
-            case "SSB":
-                return <Plus dx_x={dx_x} dx_y={dx_y} dx_size={dx_size} light_color={light_color} handleClick={() => 
-                    set_cat_to_spot(spot)}/>
-            case "CW":
-                return <Triangle dx_x={dx_x} dx_y={dx_y} dx_size={dx_size} light_color={light_color} handleClick={() => 
-                    set_cat_to_spot(spot)}/>
-            default:
-              
-                return <rect
-                    x={dx_x - dx_size / 2}
-                    y={dx_y - dx_size / 2}
-                    width={dx_size}
-                    height={dx_size}
-                    fill={light_color}
-                    stroke="grey"
-                    strokeWidth="1px"
-                    onClick={() => set_cat_to_spot(spot)}
-                />
-        }
+    let SymbolComponent;
+    if (spot.mode === "SSB") {
+        SymbolComponent = (
+            <Hexagon
+                dx_x={dx_x}
+                dx_y={dx_y}
+                dx_size={dx_size}
+                light_color={light_color}
+                handleClick={() => set_cat_to_spot(spot)}
+            />
+        );
+    } else if (spot.mode === "CW") {
+        SymbolComponent = (
+            <Triangle
+                dx_x={dx_x}
+                dx_y={dx_y}
+                dx_size={dx_size}
+                light_color={light_color}
+                handleClick={() => set_cat_to_spot(spot)}
+            />
+        );
+    } else {
+        SymbolComponent = (
+            <rect
+                x={dx_x - dx_size / 2}
+                y={dx_y - dx_size / 2}
+                width={dx_size}
+                height={dx_size}
+                fill={light_color}
+                stroke="grey"
+                strokeWidth="1px"
+                onClick={() => set_cat_to_spot(spot)}
+            />
+        );
     }
+
+
 
     return <g
         onMouseOver={event => {
@@ -115,8 +130,7 @@ function Spot({
             cy={spotter_y}
             onClick={() => set_cat_to_spot(spot)}>
         </circle>
-        <Symbol spot={spot}/>
-        
+        {SymbolComponent}
     </g>;
 }
 
