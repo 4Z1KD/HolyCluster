@@ -35,13 +35,16 @@ function SvgMap({
     set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
+    pinned_spot,
+    set_pinned_spot,
     alerts,
+    radius_in_km,
+    set_radius_in_km,
 }) {
     const svg_ref = useRef(null);
     const svg_box_ref = useRef(null);
     const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
     const max_radius = 20000;
-    const [radius_in_km, set_radius_in_km] = useState(max_radius);
 
     const inner_padding = 50;
     const center_x = dimensions.width / 2;
@@ -81,12 +84,12 @@ function SvgMap({
         const svg = d3.select(svg_ref.current);
         const zoom = d3.zoom()
             .scaleExtent([1, 20])
-            .on("zoom", event => {
-                const radius_in_km = (21 - Math.round( event.transform.k)) * 1000;
-                set_radius_in_km(radius_in_km);
-            })
+            .on("zoom", event => set_radius_in_km((21 - Math.round(event.transform.k)) * 1000))
         svg.call(zoom);
-    }, [radius_in_km])
+
+        const k_from_radius_in_km = 21 - (radius_in_km / 1000);
+        zoom.scaleTo(svg, k_from_radius_in_km);
+    }, [map_controls])
 
     const text_height = 20
     const text_y = 30
@@ -112,6 +115,8 @@ function SvgMap({
                 set_cat_to_spot={set_cat_to_spot}
                 hovered_spot={hovered_spot}
                 set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
                 set_popup_position={set_popup_position}
                 alerts={alerts}
             />;
@@ -131,9 +136,7 @@ function SvgMap({
                 if (event.detail == 2 && distance_from_center <= radius) {
                     const [lon, lat] = projection.invert([x, y]);
                     const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
-                    set_map_controls(state => {
-                        state.location = {displayed_locator, location: [ lon, lat ]};
-                    })
+                    set_map_controls(state => state.location = { displayed_locator, location: [ lon, lat ] })
                 }
             }}
         >
@@ -188,17 +191,19 @@ function SvgMap({
             className="absolute p-2 bg-white border border-gray-300 rounded shadow-lg"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
             onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+            onClick={() => set_pinned_spot(hovered_spot_data.id)}
             style={{
                 top: popup_position.y,
                 left: popup_position.x,
                 transform: "translate(-50%, -105%)",
             }}>
-                <p className="text-gray-700 text-sm">
-                    <strong>DX:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
-                    <strong>DX Country:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
-                    <strong>Spotter:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
-                    <strong>Distance:</strong> <p className="inline font-bold" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
-                </p>
+                <div className="text-gray-700 text-sm font-bold">
+                    DX: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_callsign} ({hovered_spot_data.freq}{("continent_dx" in hovered_spot_data ? ", " + hovered_spot_data.continent_dx : "")})<br/></p>
+                    DX Country: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
+                    Spotter: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
+                    Distance: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
+                    <p><small>(Click to freeze)</small></p>
+                </div>
             </div>
             : ""
         }

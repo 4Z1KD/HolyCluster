@@ -3,7 +3,7 @@ import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 
 function Bands({ filters, set_filters }) {
-    return <div className="text-center p-2 flex flex-col h-full gap-3">
+    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3">
         {[...band_colors].map(([band, color]) => {
             return <FilterOptions
                 key={band}
@@ -18,7 +18,9 @@ function Bands({ filters, set_filters }) {
                     is_active={filters.bands[band]}
                     color={color}
                     on_click={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                    hover_brightness="125"/>
+                    hover_brightness="125"
+                    size="small"
+                />
             </FilterOptions>;
         })}
     </div>;

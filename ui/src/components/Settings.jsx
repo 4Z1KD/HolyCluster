@@ -22,9 +22,12 @@ function Settings({
     settings,
     set_settings,
     set_map_controls,
+    set_radius_in_km,
 }) {
-    const [temp_settings, set_temp_settings] = useState({locator: ""})
+    const [temp_settings, set_temp_settings] = useState({locator: "", default_radius: 0})
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
+    const is_default_radius_valid = temp_settings.default_radius >= 1000 && temp_settings.default_radius <= 20000;
+    const is_settings_valid = is_locator_valid && is_default_radius_valid;
 
     return <Modal
         title={<h3 className="text-3xl">Settings</h3>}
@@ -33,34 +36,55 @@ function Settings({
             set_temp_settings(settings)
         }}
         on_apply={() => {
-            if (is_locator_valid) {
-                set_temp_settings({locator: ""});
-                set_settings(settings => {
-                        settings.locator = temp_settings.locator;
-                });
-            }
-
-            set_map_controls(map_controls => {
-                if (is_locator_valid) {
+            if (is_settings_valid) {
+                set_temp_settings({locator: "", default_radius: 0});
+                set_map_controls(map_controls => {
                     const [lat, lon] = Maidenhead.toLatLon(temp_settings.locator);
                     map_controls.location.displayed_locator = temp_settings.locator;
                     map_controls.location.location = [lon, lat];
-                }
-            })
+                    if (settings.default_radius != temp_settings.default_radius) {
+                        set_radius_in_km(temp_settings.default_radius);
+                    }
+                })
+                set_settings(settings => {
+                    settings.locator = temp_settings.locator;
+                    settings.default_radius = temp_settings.default_radius;
+                });
+            }
 
-            return is_locator_valid;
+            return is_settings_valid;
         }}
-        on_cancel={() => set_temp_settings({locator: ""})}
+        on_cancel={() => set_temp_settings({locator: "", default_radius: 0})}
     >
-        <div className="my-3 mx-2">
-            My locator: <Input
-                value={temp_settings.locator}
-                className={is_locator_valid ? "" : "bg-red-200"}
-                onChange={event => {
-                    set_temp_settings({locator: event.target.value});
-                }
-            }/>
-        </div>
+        <table className="my-3 mx-2">
+            <tbody>
+                <tr>
+                    <td>My locator:</td>
+                    <td>
+                        <Input
+                            value={temp_settings.locator}
+                            className={is_locator_valid ? "" : "bg-red-200"}
+                            onChange={event => {
+                                set_temp_settings({...temp_settings, locator: event.target.value});
+                            }
+                       }/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Default map radius:</td>
+                    <td>
+                        <Input
+                            value={temp_settings.default_radius}
+                            className={is_default_radius_valid ? "" : "bg-red-200"}
+                            type="number"
+                            onChange={event => {
+                                set_temp_settings({...temp_settings, default_radius: event.target.value});
+                            }
+                       }/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </Modal>
 };
 export default Settings;

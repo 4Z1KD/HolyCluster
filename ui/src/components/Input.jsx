@@ -1,5 +1,4 @@
-function Input(props) {
-    let { className, ...props_without_classes } = props;
+function Input({ className, type = "text", ...props_without_classes }) {
     if (className == null) {
         className = "";
     }
@@ -7,7 +6,7 @@ function Input(props) {
 
     return <input
         className={className}
-        type="text"
+        type={type}
         {...props_without_classes}
     />
 }

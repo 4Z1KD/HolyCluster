@@ -1,12 +1,28 @@
 import FilterButton from "@/components/FilterButton.jsx";
 import { continents } from "@/filters_data.js";
 
-function Continents({}) {
-    return <div className="w-32 text-center p-2 flex flex-col h-full gap-3">
+function Continents({ filters, set_filters }) {
+    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3 overflow-y-auto">
         <strong>DX</strong>
-        {continents.map(continent => <FilterButton text={continent} is_active={true} on_click={_ => {}}/>)}
+        {continents.map(continent => <FilterButton
+            key={continent}
+            text={continent}
+            is_active={filters.dx_continents[continent]}
+            on_click={_ => {
+                set_filters(state => state.dx_continents[continent] = !state.dx_continents[continent]);
+            }}
+            size="small"
+        />)}
         <strong>DE</strong>
-        {continents.map(continent => <FilterButton text={continent} is_active={true} on_click={_ => {}}/>)}
+        {continents.map(continent => <FilterButton
+            key={continent}
+            text={continent}
+            is_active={filters.spotter_continents[continent]}
+            on_click={_ =>  set_filters(state => {
+                state.spotter_continents[continent] = !state.spotter_continents[continent];
+            })}
+            size="small"
+        />)}
     </div>;
 }
 
