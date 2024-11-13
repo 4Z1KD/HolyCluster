@@ -52,7 +52,7 @@ function FilterBar({
                         set_filters={set_filters}
                         filter_key="modes"
                         filter_value={mode}
-                        orientation="horizontal"
+                        orientation="bottom"
                         align={align}
                     >
                         <FilterButton
