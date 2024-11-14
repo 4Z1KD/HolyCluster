@@ -3,7 +3,7 @@ import { useEffect, forwardRef, useRef } from "react";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 
 const cell_classes = {
-    time: "w-12",
+    time: "w-14",
     dx: "w-24",
     freq: "w-12",
     spotter: "w-24",
@@ -32,13 +32,13 @@ function Spot({
     const utc_hours = String(time.getUTCHours()).padStart(2, "0")
     const utc_minutes = String(time.getUTCMinutes()).padStart(2, "0");
     const formatted_time = utc_hours + ":" + utc_minutes;
-    const is_hovered = spot.id == hovered_spot.id || spot.id == pinned_spot;
+    const is_pinned = spot.id == pinned_spot;
+    const is_hovered = spot.id == hovered_spot.id || is_pinned;
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
 
     let row_classes = "odd:bg-white even:bg-slate-100";
     if (is_alerted) {
         row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
-        console.log(row_classes);
     }
 
     return <tr
@@ -51,7 +51,21 @@ function Spot({
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
         onClick={() => set_pinned_spot(spot.id)}
     >
-        <td className={cell_classes.time}>{formatted_time}</td>
+        <td className={cell_classes.time}>
+            {is_pinned
+                ? <span
+                    className="text-xs rounded-full px-1 border border-slate-700 bg-white text-red-500 font-bold cursor-pointer"
+                    onClick={event => {
+                        event.stopPropagation();
+                        return set_pinned_spot(null)
+                    }}
+                >
+                    X
+                </span>
+                : ""
+            }
+            {formatted_time}
+        </td>
         <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
