@@ -2,9 +2,17 @@ import { useEffect, forwardRef, useRef } from "react";
 
 import { band_colors, band_light_colors } from "@/filters_data.js";
 
-function Callsign({ callsign, is_alerted }) {
+const cell_classes = {
+    time: "w-14",
+    dx: "w-24",
+    freq: "w-12",
+    spotter: "w-24",
+    band: "w-12",
+    mode: "w-12",
+}
+
+function Callsign({ callsign }) {
     return <a
-        className={is_alerted ? "bg-emerald-100" : ""}
         href={"https://www.qrz.com/db/" + callsign}
         target="_blank"
     >{callsign}</a>
@@ -15,6 +23,7 @@ function Spot({
     alerts,
     hovered_spot,
     pinned_spot,
+    set_pinned_spot,
     set_hovered_spot,
     set_cat_to_spot,
 }, ref) {
@@ -23,26 +32,48 @@ function Spot({
     const utc_hours = String(time.getUTCHours()).padStart(2, "0")
     const utc_minutes = String(time.getUTCMinutes()).padStart(2, "0");
     const formatted_time = utc_hours + ":" + utc_minutes;
-    const is_hovered = spot.id == hovered_spot.id || spot.id == pinned_spot;
+    const is_pinned = spot.id == pinned_spot;
+    const is_hovered = spot.id == hovered_spot.id || is_pinned;
     const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+
+    let row_classes = "odd:bg-white even:bg-slate-100";
+    if (is_alerted) {
+        row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
+    }
 
     return <tr
         ref={ref}
         style={{
             backgroundColor: is_hovered ? band_light_colors[spot.band] : "",
+            outlineColor: is_alerted ? band_colors.get(spot.band) : "",
         }}
-        className="odd:bg-white even:bg-slate-100"
+        className={row_classes}
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
+        onClick={() => set_pinned_spot(spot.id)}
     >
-        <td>{formatted_time}</td>
-        <td><Callsign callsign={spot.dx_callsign} is_alerted={is_alerted}></Callsign></td>
-        <td>
+        <td className={cell_classes.time}>
+            {is_pinned
+                ? <span
+                    className="text-xs rounded-full px-1 border border-slate-700 bg-white text-red-500 font-bold cursor-pointer"
+                    onClick={event => {
+                        event.stopPropagation();
+                        return set_pinned_spot(null)
+                    }}
+                >
+                    X
+                </span>
+                : ""
+            }
+            {formatted_time}
+        </td>
+        <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
+        <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
             </div>
         </td>
-        <td><Callsign callsign={spot.spotter_callsign}></Callsign></td>
-        <td className="flex justify-center items-center">
+        <td className={cell_classes.spotter}><Callsign callsign={spot.spotter_callsign}></Callsign></td>
+        <td className={cell_classes.band + "flex justify-center items-center"}>
             <p
                 className="w-fit px-3 rounded-xl"
                 style={{ backgroundColor: band_colors.get(spot.band) }}
@@ -50,7 +81,7 @@ function Spot({
                 <strong>{spot.band}</strong>
             </p>
         </td>
-        <td>{spot.mode}</td>
+        <td className={cell_classes.mode}>{spot.mode}</td>
     </tr>;
 }
 
@@ -78,33 +109,36 @@ function SpotsTable({
         }
     });
 
-    return <table
-        className="table-fixed w-[34rem]"
-        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
-    >
-        <tbody className="divide-y divide-slate-200">
-            <tr className="sticky top-0 bg-slate-300">
-                <td>Time</td>
-                <td>DX</td>
-                <td>Frequency</td>
-                <td>Spotter</td>
-                <td>Band</td>
-                <td>Mode</td>
-            </tr>
-            {spots
-                .map(spot => <Spot
-                        ref={element => row_refs.current[spot.id] = element}
-                        key={spot.id}
-                        spot={spot}
-                        alerts={alerts}
-                        hovered_spot={hovered_spot}
-                        pinned_spot={pinned_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        set_cat_to_spot={set_cat_to_spot}
-                    ></Spot>
-                )}
-        </tbody>
-    </table>;
+    return <div className="w-full h-full text-sm overflow-y-auto">
+        <table
+            className="max-w-[34rem] table-fixed text-center border-collapse"
+            onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
+        >
+            <tbody className="divide-y divide-slate-200">
+                <tr className="sticky top-0 bg-slate-300">
+                    <td className={cell_classes.time}>Time</td>
+                    <td className={cell_classes.dx}>DX</td>
+                    <td className={cell_classes.freq}>Freq</td>
+                    <td className={cell_classes.spotter}>Spotter</td>
+                    <td className={cell_classes.band}>Band</td>
+                    <td className={cell_classes.mode}>Mode</td>
+                </tr>
+                {spots
+                    .map(spot => <Spot
+                            ref={element => row_refs.current[spot.id] = element}
+                            key={spot.id}
+                            spot={spot}
+                            alerts={alerts}
+                            hovered_spot={hovered_spot}
+                            pinned_spot={pinned_spot}
+                            set_pinned_spot={set_pinned_spot}
+                            set_hovered_spot={set_hovered_spot}
+                            set_cat_to_spot={set_cat_to_spot}
+                        ></Spot>
+                    )}
+            </tbody>
+        </table>
+    </div>;
 }
 
 export default SpotsTable;

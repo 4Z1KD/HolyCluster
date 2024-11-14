@@ -9,7 +9,7 @@ import { century, equationOfTime, declination } from "solar-calculator";
 import { band_colors } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
-import Spot from "@/components/Spot.jsx";
+import Spot from "@/components/Spot/index.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
@@ -202,6 +202,7 @@ function SvgMap({
                     DX Country: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.dx_country}<br/></p>
                     Spotter: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_data.spotter_callsign}<br/></p>
                     Distance: <p className="inline" style={{ color: band_colors.get(hovered_spot_data.band) }}>{hovered_spot_distance} KM</p>
+                    <p><small>(Click to freeze)</small></p>
                 </div>
             </div>
             : ""

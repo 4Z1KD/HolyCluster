@@ -26,7 +26,11 @@ function Settings({
 }) {
     const [temp_settings, set_temp_settings] = useState({locator: "", default_radius: 0})
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
-    const is_default_radius_valid = temp_settings.default_radius >= 1000 && temp_settings.default_radius <= 20000;
+    const is_default_radius_valid = (
+        temp_settings.default_radius >= 1000 &&
+        temp_settings.default_radius <= 20000 &&
+        temp_settings.default_radius % 1000 == 0
+    );
     const is_settings_valid = is_locator_valid && is_default_radius_valid;
 
     return <Modal
@@ -77,6 +81,9 @@ function Settings({
                             value={temp_settings.default_radius}
                             className={is_default_radius_valid ? "" : "bg-red-200"}
                             type="number"
+                            step="1000"
+                            min="1000"
+                            max="20000"
                             onChange={event => {
                                 set_temp_settings({...temp_settings, default_radius: event.target.value});
                             }

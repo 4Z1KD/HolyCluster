@@ -122,7 +122,6 @@ function MainContainer() {
             },
         }
     );
-    const [radius_in_km, set_radius_in_km] = useState(20000);
 
     const set_map_controls = (change_func) => {
         set_map_controls_inner(previous_state => {
@@ -136,6 +135,8 @@ function MainContainer() {
         "settings",
         { locator: "JJ00AA", default_radius: 20000 }
     );
+
+    const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
 
     const set_settings = (change_func) => {
         set_settings_inner(previous_state => {
@@ -196,6 +197,7 @@ function MainContainer() {
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
     function set_cat_to_spot(spot) {
+        console.log("set_cat", spot)
         send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 
@@ -269,17 +271,15 @@ function MainContainer() {
                     />
                 }
             </div>
-            <div className="w-full h-full w-full space-y-2 text-center overflow-y-auto">
-                <SpotsTable
-                    spots={filtered_spots}
-                    hovered_spot={hovered_spot}
-                    set_hovered_spot={set_hovered_spot}
-                    pinned_spot={pinned_spot}
-                    set_pinned_spot={set_pinned_spot}
-                    set_cat_to_spot={set_cat_to_spot}
-                    alerts={alerts_regex}
-                ></SpotsTable>
-            </div>
+            <SpotsTable
+                spots={filtered_spots}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
+                set_cat_to_spot={set_cat_to_spot}
+                alerts={alerts_regex}
+            />
             <Continents filters={filters} set_filters={set_filters}/>
         </div>
     </>;

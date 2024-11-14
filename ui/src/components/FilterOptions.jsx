@@ -11,15 +11,18 @@ function FilterOptions({
     children,
 }) {
     const [is_hovered, set_is_hovered] = useState(false);
-    const base_classes = "absolute flex left-1/2 z-50 bg-white border shadow-xl rounded-lg p-4";
+    const base_classes = "absolute flex z-50 bg-white border shadow-xl rounded-lg p-4";
     const align_options = {
         "right": "-translate-x-7",
         "slightly-right": "-translate-x-16",
         "center": "-translate-x-1/2",
     };
     const orientation_options = {
-        "vertical": "flex-col space-y-4 -translate-y-1/3 translate-x-8",
-        "horizontal": "space-x-4",
+        // The size of the parent, in this case, a small FilterButton is 3rem.
+        // For right orientation we take slightly more then the original size
+        "right": "flex-col space-y-4 -translate-y-1/2 left-[6.3rem]",
+        "left": "flex-col space-y-4 -translate-y-1/2 -left-[3.3rem]",
+        "bottom": "space-x-4 left-1/2",
     };
 
     // This function changes all the keys in the filter object.
@@ -48,7 +51,7 @@ function FilterOptions({
           onMouseEnter={() => set_is_hovered(true)}
           onMouseLeave={() => set_is_hovered(false)}
       >
-        {orientation == "horizontal" ? children : ""}
+        {children}
         {is_hovered && (
             <div className={`${base_classes} ${orientation_options[orientation]} ${align_options[align]}`}>
                 <Button
@@ -80,7 +83,6 @@ function FilterOptions({
                 </Button>
             </div>
         )}
-        {orientation == "vertical" ? children : ""}
       </div>
     );
 };
