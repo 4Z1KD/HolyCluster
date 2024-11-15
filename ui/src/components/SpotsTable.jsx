@@ -9,6 +9,7 @@ const cell_classes = {
     spotter: "w-24",
     band: "w-12",
     mode: "w-12",
+    comment: "w-80 text-left",
 }
 
 function Callsign({ callsign }) {
@@ -82,6 +83,7 @@ function Spot({
             </p>
         </td>
         <td className={cell_classes.mode}>{spot.mode}</td>
+        <td className={cell_classes.comment}>{spot.comment.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}</td>
     </tr>;
 }
 
@@ -119,6 +121,7 @@ function SpotsTable({
                     <td className={cell_classes.spotter}>Spotter</td>
                     <td className={cell_classes.band}>Band</td>
                     <td className={cell_classes.mode}>Mode</td>
+                    <td className={cell_classes.comment}>Comment</td>
                 </tr>
                 {spots
                     .map(spot => <Spot
