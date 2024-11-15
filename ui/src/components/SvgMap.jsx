@@ -95,7 +95,7 @@ function SvgMap({
     const text_y = 30
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
-    const [popup_position, set_popup_position] = useState({x: 0, y: 0});
+    const [popup_position, set_popup_position] = useState(null);
 
 
     let hovered_spot_data;
@@ -187,7 +187,7 @@ function SvgMap({
                 }
             </g>
         </svg>
-        {hovered_spot.source == "map" ? <div
+        {hovered_spot.source == "map" && popup_position != null ? <div
             className="absolute p-2 bg-white border border-gray-300 rounded shadow-lg"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
             onMouseLeave={() => set_hovered_spot({source: null, id: null})}

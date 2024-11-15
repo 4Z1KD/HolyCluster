@@ -64,9 +64,9 @@ function Spot({
     }
 
 
-    let SymbolComponent;
+    let symbol_component;
     if (spot.mode === "SSB") {
-        SymbolComponent = (
+        symbol_component = (
             <Hexagon
                 dx_x={dx_x}
                 dx_y={dx_y}
@@ -76,7 +76,7 @@ function Spot({
             />
         );
     } else if (spot.mode === "CW") {
-        SymbolComponent = (
+        symbol_component = (
             <Triangle
                 dx_x={dx_x}
                 dx_y={dx_y}
@@ -86,7 +86,7 @@ function Spot({
             />
         );
     } else {
-        SymbolComponent = (
+        symbol_component = (
             <rect
                 x={dx_x - dx_size / 2}
                 y={dx_y - dx_size / 2}
@@ -103,10 +103,7 @@ function Spot({
 
 
     return <g
-        onMouseOver={event => {
-            set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY });
-            set_hovered_spot({ source: "map", id: spot.id });
-        }}
+        onMouseOver={() => set_hovered_spot({ source: "map", id: spot.id })}
         onMouseLeave={() => set_hovered_spot({source: null, id: null})}
         onClick={on_click}
     >
@@ -143,7 +140,12 @@ function Spot({
             cy={spotter_y}
             onClick={() => set_cat_to_spot(spot)}>
         </circle>
-        {SymbolComponent}
+        <g
+            onMouseOver={event => set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY })}
+            onMouseLeave={event => set_popup_position(null)}
+        >
+            {symbol_component}
+        </g>
     </g>;
 }
 
