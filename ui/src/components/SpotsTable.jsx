@@ -108,7 +108,7 @@ function SpotsTable({
         }
     }, [hovered_spot]);
 
-    return <div className="w-full h-full text-sm overflow-y-auto">
+    return <div className="flex-grow min-w-[30rem] h-full text-sm overflow-y-auto">
         <table
             className="max-w-[34rem] table-fixed text-center border-collapse"
             onMouseLeave={_ => set_hovered_spot({source: null, id: null})}

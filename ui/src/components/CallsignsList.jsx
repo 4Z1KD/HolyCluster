@@ -1,52 +1,31 @@
 import { useState } from "react";
 
+import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
-import Modal from "@/components/Modal.jsx";
 
-function Alerts({ callsigns, set_callsigns, button, title, help_text }) {
-    const [temp_callsigns, set_temp_callsigns] = useState([""])
+function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
+    const [temp_callsigns, set_temp_callsigns] = useState(callsigns)
 
     const [is_help_displayed, set_is_help_displayed] = useState(false)
 
     function reset_state() {
-        set_temp_callsigns([])
-        set_is_help_displayed(false)
+        set_temp_callsigns(callsigns)
     }
 
-    return <Modal
-        title={
-            <div className="flex justify-between items-center w-full">
-                <h3 className="text-3xl">{title}</h3>
-                <div
-                    className="cursor-pointer"
-                    onClick={() => set_is_help_displayed(!is_help_displayed)}
-                >
-                    {
-                        !is_help_displayed
-                        ? <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 font-bold text-white">?</span>
-                        : <div>❌</div>
-                    }
-                </div>
+    return <div className="p-2">
+        <div className="flex justify-between items-center w-full">
+            <h3 className="text-3xl">{title}</h3>
+            <div
+                className="cursor-pointer"
+                onClick={() => set_is_help_displayed(!is_help_displayed)}
+            >
+                {
+                    !is_help_displayed
+                    ? <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 font-bold text-white">?</span>
+                    : <div>❌</div>
+                }
             </div>
-
-        }
-        button={button}
-        on_open={() => {
-            if (callsigns.length > 0) {
-                set_temp_callsigns(callsigns);
-            }
-        }}
-        on_apply={() => {
-            // Convert all patterns to uppercase and then remove all duplicated entries
-            let new_callsigns = [...new Set(temp_callsigns.map(callsign => callsign.toUpperCase()))];
-            new_callsigns = new_callsigns.filter(callsign => callsign.length > 0);
-
-            set_callsigns(new_callsigns)
-            reset_state()
-            return true;
-        }}
-        on_cancel={reset_state}
-    >
+        </div>
         <div
             className="mx-2 text-wrap w-80 cursor-pointer"
             onClick={() => set_is_help_displayed(!is_help_displayed)}
@@ -86,7 +65,22 @@ function Alerts({ callsigns, set_callsigns, button, title, help_text }) {
                 </div>
             })}
         </div>
-    </Modal>
+
+
+        <div className="flex items-center justify-around p-3">
+            <Button color="red" on_click={reset_state}>
+                Cancel
+            </Button>
+            <Button color="blue" on_click={() => {
+                // Convert all patterns to uppercase and then remove all duplicated entries
+                let new_callsigns = [...new Set(temp_callsigns.map(callsign => callsign.toUpperCase()))];
+                new_callsigns = new_callsigns.filter(callsign => callsign.length > 0);
+                set_callsigns(new_callsigns);
+            }}>
+                Apply
+            </Button>
+        </div>
+    </div>;
 }
 
-export default Alerts;
+export default CallsignsList;

@@ -5,6 +5,7 @@ import FilterBar from "@/components/FilterBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
 import Bands from "@/components/Bands.jsx";
+import CallsignsView from "@/components/CallsignsView.jsx";
 import { band_colors, modes, continents } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
@@ -279,6 +280,12 @@ function MainContainer() {
                 set_pinned_spot={set_pinned_spot}
                 set_cat_to_spot={set_cat_to_spot}
                 alerts={alerts_regex}
+            />
+            <CallsignsView
+                alerts={alerts}
+                set_alerts={set_alerts}
+                filters={filters}
+                set_filters={set_filters}
             />
             <Continents filters={filters} set_filters={set_filters}/>
         </div>

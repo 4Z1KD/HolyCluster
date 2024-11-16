@@ -1,5 +1,3 @@
-import Alerts from "@/components/Alerts.jsx";
-import CallsignFilters from "@/components/CallsignFilters.jsx";
 import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
@@ -81,11 +79,6 @@ function FilterBar({
                         title={network_state}
                     />
                 }
-                <Alerts alerts={alerts} set_alerts={set_alerts}/>
-                <CallsignFilters
-                    filtered_callsigns={filters.callsigns}
-                    set_filtered_callsigns={callsigns => set_filters(state => state.callsigns = callsigns)}
-                />
                 <Settings
                     settings={settings}
                     set_settings={set_settings}
