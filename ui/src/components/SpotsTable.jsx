@@ -63,9 +63,8 @@ function Spot({
                 >
                     X
                 </span>
-                : ""
+                : formatted_time
             }
-            {formatted_time}
         </td>
         <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
