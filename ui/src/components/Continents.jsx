@@ -11,14 +11,14 @@ function Continents({ filters, set_filters }) {
             return <>
                 <strong>{title[spot_type]}</strong>
                 {continents.map(continent => <FilterOptions
-                    key={continent}
+                    key={spot_type + "_" + continent}
                     set_filters={set_filters}
                     filter_key={filter_key}
                     filter_value={continent}
                     orientation="left"
                     align="center">
                         <FilterButton
-                            key={continent}
+                            key={spot_type + "_" + continent}
                             text={continent}
                             is_active={filters[filter_key][continent]}
                             on_click={_ => {
