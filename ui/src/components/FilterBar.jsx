@@ -30,9 +30,12 @@ function FilterBar({
     set_radius_in_km,
     network_state,
 }) {
+    const Hex = <svg fill="#000000" width="16" height="16" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+    <path d="M228,80.668V175.332a16.0255,16.0255,0,0,1-8.12695,13.9292l-84,47.47852a16.08782,16.08782,0,0,1-15.7461,0l-84-47.478A16.02688,16.02688,0,0,1,28,175.332V80.668a16.0255,16.0255,0,0,1,8.127-13.9292l84-47.47852a16.08654,16.08654,0,0,1,15.7461,0l84,47.478A16.02688,16.02688,0,0,1,228,80.668Z"/>
+  </svg>
     const box_container_style = "flex flex-wrap h-full p-2 gap-3";
 
-    const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
+    const network_state_colors = { "connected": "#00EE00", "disconnected": "#EE0000" };
 
     return (
         <div className="flex flex-row justify-between min-h-16 border-b-solid border-b-sky border-b-2">
@@ -54,9 +57,10 @@ function FilterBar({
                         align={align}
                     >
                         <FilterButton
+                            Svg={Hex}
                             text={mode}
                             is_active={filters.modes[mode]}
-                            on_click={_ =>  set_filters(state => state.modes[mode] = !state.modes[mode])}
+                            on_click={_ => set_filters(state => state.modes[mode] = !state.modes[mode])}
                         />
                     </FilterOptions>;
                 })}
@@ -72,7 +76,7 @@ function FilterBar({
                     })}
                 </select>
                 {network_state == "connecting"
-                    ? <Spinner size="32" color="lightblue"/>
+                    ? <Spinner size="32" color="lightblue" />
                     : <NetworkState
                         size="32"
                         color={network_state_colors[network_state]}
@@ -85,7 +89,7 @@ function FilterBar({
                     set_map_controls={set_map_controls}
                     set_radius_in_km={set_radius_in_km}
                 />
-                <Clock/>
+                <Clock />
             </div>
         </div>
     );
