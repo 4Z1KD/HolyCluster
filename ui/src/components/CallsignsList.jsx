@@ -8,6 +8,10 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
 
     const [is_help_displayed, set_is_help_displayed] = useState(false)
 
+    if (temp_callsigns.length == 0 || temp_callsigns[temp_callsigns.length - 1][0].length > 0) {
+        temp_callsigns.push(["", false]);
+    }
+
     function reset_state() {
         set_temp_callsigns(callsigns)
     }
@@ -32,23 +36,16 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
         >
             {is_help_displayed ? help_text : ""}
         </div>
-        <button
-            className="flex items-center justify-center w-8 h-8 p-0 m-4 text-green-400 text-2xl font-bold leading-none rounded-full bg-slate-200"
-            onClick={() => set_temp_callsigns(old_state => {
-                const state = structuredClone(old_state);
-                state.push(["", false]);
-                return state;
-            })}
-        >
-            +
-        </button>
         <div className="my-4 mx-2">
             {temp_callsigns.map(([callsign, is_suffix], index) => {
                 return <div className="flex justify-start w-full" key={index}>
                     <Input value={callsign} className="mb-2 mr-2" onChange={event => {
                         set_temp_callsigns(old_state => {
-                            const state = structuredClone(old_state);
+                            let state = structuredClone(old_state);
                             state[index] = [event.target.value, is_suffix];
+                            if (temp_callsigns.length - 1 == index && state[index].length > 0) {
+                                state.push(["", false]);
+                            }
                             return state;
                         })
                     }}></Input>
@@ -65,17 +62,20 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
                     >
                         {is_suffix ? "Sx" : "Px"}
                     </button>
-                    <div className="ml-auto">
-                        <button
-                            onClick={() => {
-                                set_temp_callsigns(old_state => {
-                                    const state = structuredClone(old_state);
-                                    state.splice(index, 1);
-                                    return state;
-                                })
-                            }}
-                        >❌</button>
-                    </div>
+                    {index != 0 || temp_callsigns.length > 1 ?
+                        <div className="ml-auto">
+                            <button
+                                onClick={() => {
+                                    set_temp_callsigns(old_state => {
+                                        const state = structuredClone(old_state);
+                                        state.splice(index, 1);
+                                        return state;
+                                    })
+                                }}
+                            >❌</button>
+                        </div>
+                        : ""
+                    }
                     <br/>
                 </div>
             })}
@@ -92,6 +92,11 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
                     .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
                     .filter(([callsign, _]) => callsign.length > 0)
                 )];
+                if (new_callsigns.length > 0) {
+                    if (new_callsigns[new_callsigns.length - 1][0].length > 0 || new_callsigns.length == 0) {
+                        new_callsigns.push(["", false]);
+                    }
+                }
 
                 set_temp_callsigns(new_callsigns);
                 set_callsigns(new_callsigns);
