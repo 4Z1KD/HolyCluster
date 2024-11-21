@@ -1,6 +1,7 @@
 import { useEffect, forwardRef, useRef } from "react";
 
 import { band_colors, band_light_colors } from "@/filters_data.js";
+import { is_matching_list } from "@/utils.js";
 
 const cell_classes = {
     time: "w-14",
@@ -35,7 +36,7 @@ function Spot({
     const formatted_time = utc_hours + ":" + utc_minutes;
     const is_pinned = spot.id == pinned_spot;
     const is_hovered = spot.id == hovered_spot.id || is_pinned;
-    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
 
     let row_classes = "odd:bg-white even:bg-slate-100";
     if (is_alerted) {

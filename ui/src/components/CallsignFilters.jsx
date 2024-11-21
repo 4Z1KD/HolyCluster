@@ -1,11 +1,11 @@
 import CallsignsList from "@/components/CallsignsList.jsx";
 
-function CallsignFilters({ filtered_callsigns, set_filtered_callsigns }) {
+function CallsignFilters({ callsigns, set_callsigns }) {
     const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
 
     return <CallsignsList
-        callsigns={filtered_callsigns}
-        set_callsigns={set_filtered_callsigns}
+        callsigns={callsigns}
+        set_callsigns={set_callsigns}
         title="Filters"
         help_text={
             <small>

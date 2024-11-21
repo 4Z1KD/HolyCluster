@@ -4,13 +4,12 @@ import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
 
 function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
-    const to_temp_callsigns = callsigns => callsigns.map(callsign => [callsign, false]);
-    const [temp_callsigns, set_temp_callsigns] = useState(to_temp_callsigns(callsigns))
+    const [temp_callsigns, set_temp_callsigns] = useState(callsigns);
 
     const [is_help_displayed, set_is_help_displayed] = useState(false)
 
     function reset_state() {
-        set_temp_callsigns(to_temp_callsigns(callsigns))
+        set_temp_callsigns(callsigns)
     }
 
     return <div className="p-2">
@@ -89,15 +88,12 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
             </Button>
             <Button color="blue" className="px-2 py-1" on_click={() => {
                 // Convert all patterns to uppercase and then remove all duplicated entries
-                let new_callsigns = [...new Set(temp_callsigns.map(([callsign, is_suffix]) => {
-                    callsign = callsign.toUpperCase();
-                    if (is_suffix) {
-                        return "*" + callsign;
-                    } else {
-                        return callsign + "*";
-                    }
-                }))];
-                new_callsigns = new_callsigns.filter(callsign => callsign.length > 0);
+                const new_callsigns = [...new Set(temp_callsigns
+                    .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
+                    .filter(([callsign, _]) => callsign.length > 0)
+                )];
+
+                set_temp_callsigns(new_callsigns);
                 set_callsigns(new_callsigns);
             }}>
                 Apply

@@ -5,7 +5,7 @@ import geojsonRewind from "@mapbox/geojson-rewind";
 import Maidenhead from "maidenhead";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { to_radian, mod } from "@/utils.js";
+import { to_radian, mod, is_matching_list } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
@@ -63,7 +63,7 @@ function draw_spot(
 ) {
     const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot.id;
-    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
 
     // Render the arc of the spot
     context.beginPath();

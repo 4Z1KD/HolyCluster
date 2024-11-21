@@ -6,6 +6,7 @@ import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
 import Bands from "@/components/Bands.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
+import { is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
@@ -99,7 +100,6 @@ function MainContainer() {
             time_limit: 3600,
         }
     );
-    const callsign_filters_regex = filters.callsigns.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
@@ -110,7 +110,6 @@ function MainContainer() {
     }
 
     const [alerts, set_alerts] = useLocalStorage("alerts", [])
-    const alerts_regex = alerts.map(regex => new RegExp(`^${regex.replaceAll("*", ".*")}$`))
 
     const [map_controls, set_map_controls_inner] = use_object_local_storage(
         "map_controls",
@@ -179,8 +178,8 @@ function MainContainer() {
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = callsign_filters_regex.length == 0;
-            const are_filters_matching = callsign_filters_regex.some(regex => spot.dx_callsign.match(regex));
+            const are_filters_empty = filters.callsigns.length == 0;
+            const are_filters_matching = is_matching_list(filters.callsigns, spot.dx_callsign);
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
@@ -198,7 +197,6 @@ function MainContainer() {
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
     function set_cat_to_spot(spot) {
-        console.log("set_cat", spot)
         send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
     }
 
@@ -254,7 +252,7 @@ function MainContainer() {
                         set_hovered_spot={set_hovered_spot}
                         pinned_spot={pinned_spot}
                         set_pinned_spot={set_pinned_spot}
-                        alerts={alerts_regex}
+                        alerts={alerts}
                     />
                     :
                     <SvgMap
@@ -266,7 +264,7 @@ function MainContainer() {
                         set_hovered_spot={set_hovered_spot}
                         pinned_spot={pinned_spot}
                         set_pinned_spot={set_pinned_spot}
-                        alerts={alerts_regex}
+                        alerts={alerts}
                         radius_in_km={radius_in_km}
                         set_radius_in_km={set_radius_in_km}
                     />
@@ -279,7 +277,7 @@ function MainContainer() {
                 pinned_spot={pinned_spot}
                 set_pinned_spot={set_pinned_spot}
                 set_cat_to_spot={set_cat_to_spot}
-                alerts={alerts_regex}
+                alerts={alerts}
             />
             <CallsignsView
                 alerts={alerts}
