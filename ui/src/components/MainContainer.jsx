@@ -100,6 +100,7 @@ function MainContainer() {
             time_limit: 3600,
         }
     );
+    const filters_callsigns = filters.callsigns.filter(([pattern, _]) => pattern.length > 0);
 
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
@@ -109,7 +110,8 @@ function MainContainer() {
         })
     }
 
-    const [alerts, set_alerts] = useLocalStorage("alerts", [])
+    let [alerts, set_alerts] = useLocalStorage("alerts", [])
+    alerts = alerts.filter(([pattern, _]) => pattern.length > 0);
 
     const [map_controls, set_map_controls_inner] = use_object_local_storage(
         "map_controls",
@@ -178,8 +180,8 @@ function MainContainer() {
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = filters.callsigns.length == 0;
-            const are_filters_matching = is_matching_list(filters.callsigns, spot.dx_callsign);
+            const are_filters_empty = filters_callsigns.length == 0;
+            const are_filters_matching = is_matching_list(filters_callsigns, spot.dx_callsign);
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
