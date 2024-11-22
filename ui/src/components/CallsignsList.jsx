@@ -16,6 +16,9 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
         set_temp_callsigns(callsigns)
     }
 
+    const button_base_classes = "flex items-center justify-center p-2 w-9 h-9 rounded-lg mr-2 ";
+    const button_inactive_classes = "border-2 border-slate-700 bg-slate-200";
+
     return <div className="p-2">
         <div className="flex justify-between items-center w-full">
             <h3 className="text-2xl">{title}</h3>
@@ -52,15 +55,24 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
                     <button
                         onClick={() => set_temp_callsigns(old_state => {
                             const state = structuredClone(old_state);
-                            state[index][1] = !state[index][1];
+                            state[index][1] = false;
                             return state;
                         })}
-                        className={(
-                            "flex items-center justify-center p-2 w-9 h-9 rounded-lg mr-2 "
-                            + (is_suffix ? "bg-indigo-500" : "bg-teal-500")
-                        )}
+                        className={button_base_classes + (!is_suffix ? "bg-indigo-500" : button_inactive_classes)}
+                        title="Prefix"
                     >
-                        {is_suffix ? "Sx" : "Px"}
+                        Px
+                    </button>
+                    <button
+                        onClick={() => set_temp_callsigns(old_state => {
+                            const state = structuredClone(old_state);
+                            state[index][1] = true;
+                            return state;
+                        })}
+                        className={button_base_classes + (is_suffix ? "bg-teal-500" : button_inactive_classes)}
+                        title="Suffix"
+                    >
+                        Sx
                     </button>
                     {index != 0 || temp_callsigns.length > 1 ?
                         <div className="ml-auto">
