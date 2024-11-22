@@ -1,11 +1,12 @@
 import CallsignsList from "@/components/CallsignsList.jsx";
+import Button from "@/components/Button.jsx";
 
-function CallsignFilters({ callsigns, set_callsigns }) {
+function CallsignFilters({ filters, set_filters }) {
     const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
 
     return <CallsignsList
-        callsigns={callsigns}
-        set_callsigns={set_callsigns}
+        callsigns={filters.callsigns}
+        set_callsigns={callsigns => set_filters(state => state.callsigns = callsigns)}
         title="Filters"
         help_text={
             <small>
@@ -15,6 +16,11 @@ function CallsignFilters({ callsigns, set_callsigns }) {
                 Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
             </small>
         }
+        pre={<Button
+            className="mb-2 w-20"
+            color={filters.callsigns_mode ? "emerald" : "amber"}
+            onClick={() => set_filters(state => state.callsigns_mode = !state.callsigns_mode)}
+        >{filters.callsigns_mode ? "Include" : "Exclude"}</Button>}
     />
 }
 

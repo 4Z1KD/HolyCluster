@@ -3,7 +3,7 @@ import { useState } from "react";
 import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
 
-function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
+function CallsignsList({ callsigns, set_callsigns, title, help_text, pre = "" }) {
     const [temp_callsigns, set_temp_callsigns] = useState(callsigns);
 
     const [is_help_displayed, set_is_help_displayed] = useState(false)
@@ -40,6 +40,7 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text }) {
             {is_help_displayed ? help_text : ""}
         </div>
         <div className="my-4 mx-2">
+            {pre}
             {temp_callsigns.map(([callsign, is_suffix], index) => {
                 return <div className="flex justify-start w-full" key={index}>
                     <Input value={callsign} className="mb-2 mr-2" onChange={event => {

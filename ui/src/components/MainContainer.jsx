@@ -97,6 +97,7 @@ function MainContainer() {
             dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             callsigns: [],
+            callsigns_mode: true, // true for include, false for exclude
             time_limit: 3600,
         }
     );
@@ -181,7 +182,7 @@ function MainContainer() {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
             const are_filters_empty = filters_callsigns.length == 0;
-            const are_filters_matching = is_matching_list(filters_callsigns, spot.dx_callsign);
+            const are_filters_matching = filters.callsigns_mode == is_matching_list(filters_callsigns, spot.dx_callsign);
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
