@@ -67,12 +67,15 @@ function Spot({
     let symbol_component;
     if (spot.mode === "SSB") {
         symbol_component = (
-            <Hexagon
-                dx_x={dx_x}
-                dx_y={dx_y}
-                dx_size={dx_size}
-                light_color={light_color}
-                handleClick={() => set_cat_to_spot(spot)}
+            <rect
+                x={dx_x - dx_size / 2}
+                y={dx_y - dx_size / 2}
+                width={dx_size}
+                height={dx_size}
+                fill={light_color}
+                stroke="grey"
+                strokeWidth="1px"
+                onClick={() => set_cat_to_spot(spot)}
             />
         );
     } else if (spot.mode === "CW") {
@@ -87,15 +90,12 @@ function Spot({
         );
     } else {
         symbol_component = (
-            <rect
-                x={dx_x - dx_size / 2}
-                y={dx_y - dx_size / 2}
-                width={dx_size}
-                height={dx_size}
-                fill={light_color}
-                stroke="grey"
-                strokeWidth="1px"
-                onClick={() => set_cat_to_spot(spot)}
+            <Hexagon
+                dx_x={dx_x}
+                dx_y={dx_y}
+                dx_size={dx_size}
+                light_color={light_color}
+                handleClick={() => set_cat_to_spot(spot)}
             />
         );
     }
@@ -104,7 +104,7 @@ function Spot({
 
     return <g
         onMouseOver={() => set_hovered_spot({ source: "map", id: spot.id })}
-        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+        onMouseLeave={() => set_hovered_spot({ source: null, id: null })}
         onClick={on_click}
     >
         <path
