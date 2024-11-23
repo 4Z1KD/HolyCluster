@@ -3,8 +3,9 @@ import FilterButton from "@/components/FilterButton.jsx";
 import { continents } from "@/filters_data.js";
 
 const title = { dx: "DX", spotter: "DE" };
+const button_color = { dx: "rgb(191 219 254)", spotter: "rgb(254 205 211)" };
 
-function ContinentColumn({ spot_type, filters, set_filters }) {
+function ContinentColumn({ spot_type, filters, set_filters, color }) {
     const filter_key = `${spot_type}_continents`;
 
     return <>
@@ -17,6 +18,7 @@ function ContinentColumn({ spot_type, filters, set_filters }) {
             orientation="left"
             align="center">
                 <FilterButton
+                    color={color}
                     text={continent}
                     is_active={filters[filter_key][continent]}
                     on_click={_ => {
@@ -25,6 +27,7 @@ function ContinentColumn({ spot_type, filters, set_filters }) {
                     size="small"/>
             </FilterOptions>
         )}
+        <div className="h-8"></div>
     </>;
 }
 
@@ -35,6 +38,7 @@ function Continents({ filters, set_filters }) {
             spot_type={spot_type}
             filters={filters}
             set_filters={set_filters}
+            color={button_color[spot_type]}
         />)}
     </div>;
 }
