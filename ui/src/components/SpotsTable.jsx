@@ -6,13 +6,34 @@ import { is_matching_list } from "@/utils.js";
 
 const cell_classes = {
     time: "w-14",
-    flag: "w-14",
+    flag: "min-w-[1rem]",
     dx: "w-24",
     freq: "w-12",
     spotter: "w-24",
     band: "w-12",
     mode: "w-12",
     comment: "w-80 text-left",
+}
+
+const dxcc_to_country_flag = {
+    "Czech Republic": "Czechia",
+    "Slovak Republic": "Slovakia",
+    "European Russia": "Russia",
+    "Kaliningrad": "Russia",
+    "Sardinia": "Italy",
+    "Madeira Islands": "Portugal",
+    "Virgin Islands": "United States Virgin Islands",
+    "St. Kitts and Nevis": "Saint Kitts and Nevis",
+    "Ceuta and Melilla": "Spain",
+    "Canary Islands": "Spain",
+    "Balearic Islands": "Spain",
+    "Rodriguez Island": "Mauritius",
+    "Reunion Island": "France",
+    "Aland Islands": "Åland Islands",
+    "East Malaysia": "Malaysia",
+    "West Malaysia": "Malaysia",
+    "St. Helena": "Saint Helena, Ascension and Tristan da Cunha",
+    "Bonaire": "Caribbean Netherlands",
 }
 
 function Callsign({ callsign }) {
@@ -45,6 +66,15 @@ function Spot({
         row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
     }
 
+    let flag;
+    if (dxcc_to_country_flag[spot.dx_country]) {
+        flag = flags[dxcc_to_country_flag[spot.dx_country]]
+    } else if (flags[spot.dx_country]) {
+        flag = flags[spot.dx_country]
+    } else {
+        flag = null;
+    }
+
     return <tr
         ref={ref}
         style={{
@@ -69,8 +99,9 @@ function Spot({
                 : formatted_time
             }
         </td>
+
         <td className={cell_classes.flag} title={spot.dx_country}>
-            { flags[spot.dx_country] ? flags[spot.dx_country] : ""}
+            { flag ? <img height="10" src={`data:image/webp;base64, ${flag}`}/> : ""}
         </td>
         <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
@@ -121,7 +152,7 @@ function SpotsTable({
             <tbody className="divide-y divide-slate-200">
                 <tr className="sticky top-0 bg-slate-300">
                     <td className={cell_classes.time}>Time</td>
-                    <td className={cell_classes.flag}>Flag</td>
+                    <td className={cell_classes.flag}></td>
                     <td className={cell_classes.dx}>DX</td>
                     <td className={cell_classes.freq}>Freq</td>
                     <td className={cell_classes.spotter}>Spotter</td>
