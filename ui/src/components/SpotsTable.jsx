@@ -23,6 +23,7 @@ const dxcc_to_country_flag = {
     "Kaliningrad": "Russia",
     "Sardinia": "Italy",
     "Madeira Islands": "Portugal",
+    "Azores": "Portugal",
     "Virgin Islands": "United States Virgin Islands",
     "St. Kitts and Nevis": "Saint Kitts and Nevis",
     "Ceuta and Melilla": "Spain",
@@ -39,6 +40,11 @@ const dxcc_to_country_flag = {
     "Chatham Islands": "New Zealand",
     "United Nations HQ": "United Nations",
     "Kure Island": "United States Minor Outlying Islands",
+    "Corsica": "France",
+    "North Cook Islands": "Cook Islands",
+    "Galapagos Islands": "Ecuador",
+    "Svalbard": "Norway",
+    "Crete": "Greece",
 }
 
 function Callsign({ callsign }) {
@@ -149,9 +155,9 @@ function SpotsTable({
         }
     }, [hovered_spot]);
 
-    return <div className="flex-grow min-w-[30rem] h-full text-sm overflow-y-auto">
+    return <div className="flex-grow min-w-[30rem] w-[80rem] h-full text-sm overflow-y-auto">
         <table
-            className="max-w-[34rem] table-fixed text-center border-collapse"
+            className="table-fixed text-center border-collapse"
             onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
         >
             <tbody className="divide-y divide-slate-200">
