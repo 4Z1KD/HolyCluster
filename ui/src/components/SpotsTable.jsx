@@ -1,10 +1,12 @@
 import { useEffect, forwardRef, useRef } from "react";
 
+import flags from "@/assets/flags.json";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 import { is_matching_list } from "@/utils.js";
 
 const cell_classes = {
     time: "w-14",
+    flag: "w-14",
     dx: "w-24",
     freq: "w-12",
     spotter: "w-24",
@@ -67,6 +69,9 @@ function Spot({
                 : formatted_time
             }
         </td>
+        <td className={cell_classes.flag} title={spot.dx_country}>
+            { flags[spot.dx_country] ? flags[spot.dx_country] : ""}
+        </td>
         <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
@@ -116,6 +121,7 @@ function SpotsTable({
             <tbody className="divide-y divide-slate-200">
                 <tr className="sticky top-0 bg-slate-300">
                     <td className={cell_classes.time}>Time</td>
+                    <td className={cell_classes.flag}>Flag</td>
                     <td className={cell_classes.dx}>DX</td>
                     <td className={cell_classes.freq}>Freq</td>
                     <td className={cell_classes.spotter}>Spotter</td>
