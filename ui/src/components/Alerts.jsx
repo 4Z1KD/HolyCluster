@@ -7,14 +7,6 @@ function Alerts({ alerts, set_alerts }) {
         callsigns={alerts}
         set_callsigns={set_alerts}
         title="Alerts"
-        help_text={
-            <small>
-                You can highlight a pattern of a callsign. For example,<br/>
-                Israeli stations: <code className={exmaple_pattern_classes}>4X*</code>,&nbsp;&nbsp;
-                                  <code className={exmaple_pattern_classes}>4Z*</code><br/>
-                Portable stations: <code className={exmaple_pattern_classes}>*/P</code><br/>
-            </small>
-        }
     />
 }
 

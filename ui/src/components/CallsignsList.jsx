@@ -3,10 +3,8 @@ import { useState } from "react";
 import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
 
-function CallsignsList({ callsigns, set_callsigns, title, help_text, pre = "" }) {
+function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
     const [temp_callsigns, set_temp_callsigns] = useState(callsigns);
-
-    const [is_help_displayed, set_is_help_displayed] = useState(false)
 
     if (temp_callsigns.length == 0 || temp_callsigns[temp_callsigns.length - 1][0].length > 0) {
         temp_callsigns.push(["", false]);
@@ -20,25 +18,7 @@ function CallsignsList({ callsigns, set_callsigns, title, help_text, pre = "" })
     const button_inactive_classes = "border-2 border-slate-700 bg-slate-200";
 
     return <div className="p-2">
-        <div className="flex justify-between items-center w-full">
-            <h3 className="text-2xl">{title}</h3>
-            <div
-                className="cursor-pointer"
-                onClick={() => set_is_help_displayed(!is_help_displayed)}
-            >
-                {
-                    !is_help_displayed
-                    ? <span className="inline-block text-center rounded-full bg-blue-600 w-6 h-6 font-bold text-white">?</span>
-                    : <div>❌</div>
-                }
-            </div>
-        </div>
-        <div
-            className="mx-2 text-wrap w-80 cursor-pointer"
-            onClick={() => set_is_help_displayed(!is_help_displayed)}
-        >
-            {is_help_displayed ? help_text : ""}
-        </div>
+        <h3 className="text-2xl text-center">{title}</h3>
         <div className="my-4 mx-2">
             {pre}
             {temp_callsigns.map(([callsign, is_suffix], index) => {
