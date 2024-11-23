@@ -27,7 +27,14 @@ function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
                         set_temp_callsigns(old_state => {
                             let state = structuredClone(old_state);
                             state[index] = [event.target.value, is_suffix];
-                            if (temp_callsigns.length - 1 == index && state[index].length > 0) {
+                            if (state[index][0].length == 0) {
+                                const last_non_empty_callsign = state.findLastIndex(
+                                    ([callsign, _]) => callsign.length > 0
+                                );
+                                if (index >= last_non_empty_callsign) {
+                                    state.splice(last_non_empty_callsign + 1);
+                                }
+                            } else if (temp_callsigns.length - 1 == index) {
                                 state.push(["", false]);
                             }
                             return state;
