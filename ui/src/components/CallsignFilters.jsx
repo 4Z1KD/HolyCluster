@@ -17,10 +17,10 @@ function CallsignFilters({ filters, set_filters }) {
             </small>
         }
         pre={<Button
-            className="mb-2 w-20"
+            className="mb-2 w-28"
             color={filters.callsigns_mode ? "emerald" : "amber"}
             onClick={() => set_filters(state => state.callsigns_mode = !state.callsigns_mode)}
-        >{filters.callsigns_mode ? "Include" : "Exclude"}</Button>}
+        >{filters.callsigns_mode ? "Show Only" : "Hide"}</Button>}
     />
 }
 
