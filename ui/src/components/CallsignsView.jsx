@@ -8,12 +8,9 @@ function CallsignsView({
     filters,
     set_filters,
 }) {
-    return <div className="flex flex-col divide-y divide-slate-300">
+    return <div className="flex flex-col divide-y divide-slate-300 w-60">
         <Alerts alerts={alerts} set_alerts={set_alerts}/>
-        <CallsignFilters
-            filtered_callsigns={filters.callsigns}
-            set_filtered_callsigns={callsigns => set_filters(state => state.callsigns = callsigns)}
-        />
+        <CallsignFilters filters={filters} set_filters={set_filters}/>
     </div>
 }
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { to_radian } from "@/utils.js";
+import { to_radian, is_matching_list } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
@@ -40,7 +40,7 @@ function Spot({
     const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
-    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
     let style;
     if (is_alerted) {
         style = {
