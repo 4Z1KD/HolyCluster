@@ -6,7 +6,7 @@ import { is_matching_list } from "@/utils.js";
 
 const cell_classes = {
     time: "w-14",
-    flag: "min-w-[1rem]",
+    flag: "min-w-[1.3rem]",
     dx: "w-24",
     freq: "w-12",
     spotter: "w-24",
@@ -19,6 +19,7 @@ const dxcc_to_country_flag = {
     "Czech Republic": "Czechia",
     "Slovak Republic": "Slovakia",
     "European Russia": "Russia",
+    "Asiatic Russia": "Russia",
     "Kaliningrad": "Russia",
     "Sardinia": "Italy",
     "Madeira Islands": "Portugal",
@@ -34,6 +35,10 @@ const dxcc_to_country_flag = {
     "West Malaysia": "Malaysia",
     "St. Helena": "Saint Helena, Ascension and Tristan da Cunha",
     "Bonaire": "Caribbean Netherlands",
+    "Curacao": "Caribbean Netherlands",
+    "Chatham Islands": "New Zealand",
+    "United Nations HQ": "United Nations",
+    "Kure Island": "United States Minor Outlying Islands",
 }
 
 function Callsign({ callsign }) {
@@ -101,7 +106,7 @@ function Spot({
         </td>
 
         <td className={cell_classes.flag} title={spot.dx_country}>
-            { flag ? <img height="10" src={`data:image/webp;base64, ${flag}`}/> : ""}
+            { flag ? <img className="m-auto" width="16" src={`data:image/webp;base64, ${flag}`}/> : ""}
         </td>
         <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
