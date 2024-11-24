@@ -63,7 +63,7 @@ function Settings({
         <table className="my-3 mx-2">
             <tbody>
                 <tr>
-                    <td>My locator:</td>
+                    <td>My locator:&nbsp;&nbsp;</td>
                     <td>
                         <Input
                             value={temp_settings.locator}
@@ -75,7 +75,7 @@ function Settings({
                     </td>
                 </tr>
                 <tr>
-                    <td>Default map radius:</td>
+                    <td>Default map radius:&nbsp;&nbsp;</td>
                     <td>
                         <Input
                             value={temp_settings.default_radius}
