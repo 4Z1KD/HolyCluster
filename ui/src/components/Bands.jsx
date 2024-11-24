@@ -3,7 +3,7 @@ import FilterButton from "@/components/FilterButton.jsx";
 import { band_colors } from "@/filters_data.js";
 
 function Bands({ filters, set_filters }) {
-    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3">
+    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3 bg-gray-200">
         {[...band_colors].map(([band, color]) => {
             return <FilterOptions
                 key={band}

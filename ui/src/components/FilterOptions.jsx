@@ -11,7 +11,7 @@ function FilterOptions({
     children,
 }) {
     const [is_hovered, set_is_hovered] = useState(false);
-    const base_classes = "absolute flex z-50 border border-gray-300 bg-gray-100 shadow-xl rounded-lg p-4";
+    const base_classes = "absolute flex z-50 border border-gray-500 bg-gray-100 shadow-xl rounded-lg p-4";
     const align_options = {
         "right": "-translate-x-7",
         "slightly-right": "-translate-x-16",

@@ -234,9 +234,9 @@ function MainContainer() {
             set_radius_in_km={set_radius_in_km}
             network_state={network_state}
         />
-        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap divide-x divide-slate-300">
+        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
             <Bands filters={filters} set_filters={set_filters}/>
-            <div className="w-full divide-y divide-slate-300">
+            <div className="w-full">
                 <MapControls
                     home_locator={settings.locator}
                     map_controls={map_controls}

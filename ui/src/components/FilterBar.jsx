@@ -35,7 +35,7 @@ function FilterBar({
     const network_state_colors = {"connected": "#00EE00", "disconnected": "#EE0000"};
 
     return (
-        <div className="flex flex-row justify-between min-h-16 border-b-solid border-b-sky border-b-2">
+        <div className="flex flex-row justify-between min-h-16 bg-gray-200">
             <div className={box_container_style}>
                 <div className="w-12"></div>
                 {modes.map(mode => {

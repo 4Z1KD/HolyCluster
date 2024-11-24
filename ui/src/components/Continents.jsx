@@ -32,7 +32,7 @@ function ContinentColumn({ spot_type, filters, set_filters, color }) {
 }
 
 function Continents({ filters, set_filters }) {
-    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3">
+    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3 bg-gray-200">
         {["dx", "spotter"].map(spot_type => <ContinentColumn
             key={spot_type}
             spot_type={spot_type}
