@@ -46,10 +46,10 @@ function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
                             state[index][1] = false;
                             return state;
                         })}
-                        className={button_base_classes + (!is_suffix ? "bg-indigo-500" : button_inactive_classes)}
+                        className={button_base_classes + (!is_suffix ? "bg-green-600 text-white" : button_inactive_classes)}
                         title="Prefix"
                     >
-                        Px
+                        Pfx
                     </button>
                     <button
                         onClick={() => set_temp_callsigns(old_state => {
@@ -57,10 +57,10 @@ function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
                             state[index][1] = true;
                             return state;
                         })}
-                        className={button_base_classes + (is_suffix ? "bg-teal-500" : button_inactive_classes)}
+                        className={button_base_classes + (is_suffix ? "bg-green-600 text-white" : button_inactive_classes)}
                         title="Suffix"
                     >
-                        Sx
+                        Sfx
                     </button>
                     {index != 0 || temp_callsigns.length > 1 ?
                         <div className="ml-auto">
