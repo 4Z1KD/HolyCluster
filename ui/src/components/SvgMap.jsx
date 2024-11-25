@@ -123,7 +123,7 @@ function SvgMap({
         }
     );
 
-    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative">
+    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative border">
         <svg
             ref={svg_ref}
             className="h-full w-full"
