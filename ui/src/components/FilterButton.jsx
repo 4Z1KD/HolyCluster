@@ -1,3 +1,5 @@
+import Triangle from "./Spot/components/Triangle";
+
 function FilterButton({
     text,
     is_active,
@@ -5,6 +7,7 @@ function FilterButton({
     color = "#D1FAE5",
     hover_brightness = "110",
     size = "normal",
+    Svg = null
 }) {
     const inactive_background_color = "#FFFFFF";
     const active_text_color = "#000000";
@@ -21,7 +24,7 @@ function FilterButton({
         `hover:brightness-${hover_brightness}`,
     ];
     if (size == "normal") {
-        box_style.push(...["py-2", "px-1", "min-w-12"])
+        box_style.push(...["py-2", "px-3", "min-w-12"])
     } else if (size == "small") {
         box_style.push(...["w-12"])
     }
@@ -39,7 +42,10 @@ function FilterButton({
             backgroundColor: is_active ? color : inactive_background_color,
             userSelect: "none",
         }}>
-        <span>{text}</span>
+        <span className="inline-flex items-center space-x-2">
+            {text} {Svg}
+        </span>
+
     </div>;
 }
 
