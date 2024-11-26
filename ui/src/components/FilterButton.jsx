@@ -7,7 +7,7 @@ function FilterButton({
     color = "#D1FAE5",
     hover_brightness = "110",
     size = "normal",
-    Svg = null
+    svg = null
 }) {
     const inactive_background_color = "#FFFFFF";
     const active_text_color = "#000000";
@@ -43,7 +43,7 @@ function FilterButton({
             userSelect: "none",
         }}>
         <span className="inline-flex items-center space-x-2">
-            {text} {Svg}
+            {text} {svg}
         </span>
 
     </div>;
