@@ -95,7 +95,7 @@ function SvgMap({
     const text_y = 30
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
-    const [popup_position, set_popup_position] = useState({x: 0, y: 0});
+    const [popup_position, set_popup_position] = useState(null);
 
 
     let hovered_spot_data;
@@ -123,7 +123,7 @@ function SvgMap({
         }
     );
 
-    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative">
+    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative border">
         <svg
             ref={svg_ref}
             className="h-full w-full"
@@ -145,8 +145,6 @@ function SvgMap({
                     <circle r={radius} cx={center_x} cy={center_y}/>
                 </clipPath>
             </defs>
-            <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
-
             <g style={{font: `bold ${text_height}px sans-serif`, userSelect: "none"}}>
                 <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
                 <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
@@ -186,8 +184,9 @@ function SvgMap({
                     /> : ""
                 }
             </g>
+            <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
         </svg>
-        {hovered_spot.source == "map" ? <div
+        {hovered_spot.source == "map" && popup_position != null ? <div
             className="absolute p-2 bg-white border border-gray-300 rounded shadow-lg"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
             onMouseLeave={() => set_hovered_spot({source: null, id: null})}

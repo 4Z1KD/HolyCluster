@@ -3,9 +3,16 @@ function Button({
     text_color = "white",
     on_click = () => {},
     children,
+    className,
     ...other_props
 }) {
-    const classes = [
+    let classes;
+    if (className == null) {
+        classes = "";
+    } else {
+        classes = className;
+    }
+    const builtin_classes = [
         `text-${text_color}`,
         `bg-${color}-600`,
         `active:bg-${color}-800`,
@@ -17,7 +24,7 @@ function Button({
     ].join(" ");
 
     return <button
-        className={classes}
+        className={`${builtin_classes} ${classes}`}
         onClick={on_click}
         {...other_props}
     >{children}</button>;

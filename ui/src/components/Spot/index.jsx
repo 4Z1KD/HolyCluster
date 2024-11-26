@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { to_radian } from "@/utils.js";
+import { to_radian, is_matching_list } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
@@ -40,7 +40,7 @@ function Spot({
     const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
-    const is_alerted = alerts.some(regex => spot.dx_callsign.match(regex));
+    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
     let style;
     if (is_alerted) {
         style = {
@@ -64,29 +64,9 @@ function Spot({
     }
 
 
-    let SymbolComponent;
+    let symbol_component;
     if (spot.mode === "SSB") {
-        SymbolComponent = (
-            <Hexagon
-                dx_x={dx_x}
-                dx_y={dx_y}
-                dx_size={dx_size}
-                light_color={light_color}
-                handleClick={() => set_cat_to_spot(spot)}
-            />
-        );
-    } else if (spot.mode === "CW") {
-        SymbolComponent = (
-            <Triangle
-                dx_x={dx_x}
-                dx_y={dx_y}
-                dx_size={dx_size}
-                light_color={light_color}
-                handleClick={() => set_cat_to_spot(spot)}
-            />
-        );
-    } else {
-        SymbolComponent = (
+        symbol_component = (
             <rect
                 x={dx_x - dx_size / 2}
                 y={dx_y - dx_size / 2}
@@ -98,16 +78,33 @@ function Spot({
                 onClick={() => set_cat_to_spot(spot)}
             />
         );
+    } else if (spot.mode === "CW") {
+        symbol_component = (
+            <Triangle
+                dx_x={dx_x}
+                dx_y={dx_y}
+                dx_size={dx_size}
+                light_color={light_color}
+                handleClick={() => set_cat_to_spot(spot)}
+            />
+        );
+    } else {
+        symbol_component = (
+            <Hexagon
+                dx_x={dx_x}
+                dx_y={dx_y}
+                dx_size={dx_size}
+                light_color={light_color}
+                handleClick={() => set_cat_to_spot(spot)}
+            />
+        );
     }
 
 
 
     return <g
-        onMouseOver={event => {
-            set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY });
-            set_hovered_spot({ source: "map", id: spot.id });
-        }}
-        onMouseLeave={() => set_hovered_spot({source: null, id: null})}
+        onMouseOver={() => set_hovered_spot({ source: "map", id: spot.id })}
+        onMouseLeave={() => set_hovered_spot({ source: null, id: null })}
         onClick={on_click}
     >
         <path
@@ -143,7 +140,12 @@ function Spot({
             cy={spotter_y}
             onClick={() => set_cat_to_spot(spot)}>
         </circle>
-        {SymbolComponent}
+        <g
+            onMouseOver={event => set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY })}
+            onMouseLeave={event => set_popup_position(null)}
+        >
+            {symbol_component}
+        </g>
     </g>;
 }
 

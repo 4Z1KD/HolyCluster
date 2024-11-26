@@ -30,7 +30,7 @@ function MapControls({
     }
 
     return (
-        <div className="flex flex-wrap justify-start place-items-center w-full h-16 p-3 gap-4">
+        <div className="flex flex-wrap justify-start place-items-center w-full h-16 p-3 gap-4 border">
             <p className="rounded-lg bg-slate-200 p-2">{map_controls.location.displayed_locator}</p>
             <Button on_click={reset_map}>MyQTH</Button>
             <Night

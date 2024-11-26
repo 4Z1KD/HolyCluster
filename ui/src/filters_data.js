@@ -22,7 +22,7 @@ export const band_light_colors = Object.fromEntries(
     [...band_colors].map(([band, color]) => [band, RGB_Linear_Shade(0.25, color)])
 );
 
-export const modes = ["SSB", "CW", "FT8", "FT4", "DIGITAL"];
+export const modes = ["SSB", "CW", "FT8", "FT4", "DIGI"];
 
 export const continents = [
     "AS",
