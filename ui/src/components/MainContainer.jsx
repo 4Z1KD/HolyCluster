@@ -66,7 +66,13 @@ function fetch_spots(set_spots, set_network_state) {
                 if (data == null) {
                     return Promise.reject(response)
                 } else {
-                    set_spots(data)
+                    set_spots(data.map(spot => {
+                        if (spot.mode == "DIGITAL") {
+                            console.log(spot);
+                            spot.mode = "DIGI";
+                        }
+                        return spot
+                    }))
                     set_network_state("connected")
                 }
             })
