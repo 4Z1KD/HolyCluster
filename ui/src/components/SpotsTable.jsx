@@ -49,6 +49,7 @@ const dxcc_to_country_flag = {
     "Galapagos Islands": "Ecuador",
     "Svalbard": "Norway",
     "Crete": "Greece",
+    "The Gambia": "Gambia",
 }
 
 function Callsign({ callsign }) {
