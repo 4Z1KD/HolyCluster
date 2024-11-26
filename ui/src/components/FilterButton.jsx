@@ -24,7 +24,7 @@ function FilterButton({
         `hover:brightness-${hover_brightness}`,
     ];
     if (size == "normal") {
-        box_style.push(...["py-2", "px-3", "min-w-12"])
+        box_style.push(...["py-2", "px-2", "min-w-12"])
     } else if (size == "small") {
         box_style.push(...["w-12"])
     }
@@ -43,7 +43,7 @@ function FilterButton({
             userSelect: "none",
         }}>
         <span className="inline-flex items-center space-x-2">
-            {text} {svg}
+            {text} <div className="ml-1">{svg}</div>
         </span>
 
     </div>;
