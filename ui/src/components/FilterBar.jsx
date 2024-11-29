@@ -89,6 +89,7 @@ function FilterBar({
                     </FilterOptions>;
                 })}
             </div>
+            <h1 className="text-4xl m-auto font-bold">The Holy Cluster</h1>
             <div className={box_container_style + " self-center px-4"}>
                 <select
                     className="rounded-lg px-4 py-2"
