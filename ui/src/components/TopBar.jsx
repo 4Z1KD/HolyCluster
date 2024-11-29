@@ -24,8 +24,6 @@ const spots_time_limits = {
 function TopBar({
     filters,
     set_filters,
-    alerts,
-    set_alerts,
     settings,
     set_settings,
     set_map_controls,

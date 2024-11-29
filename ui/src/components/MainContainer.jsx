@@ -106,7 +106,11 @@ function MainContainer() {
             time_limit: 3600,
         }
     );
-    const filters_callsigns = filters.callsigns.filter(([pattern, _]) => pattern.length > 0);
+    // Convert all patterns to uppercase and then remove all duplicated entries
+    const filters_callsigns = [...new Set(filters.callsigns
+        .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
+        .filter(([callsign, _]) => callsign.length > 0)
+    )];
 
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
@@ -231,8 +235,6 @@ function MainContainer() {
         <TopBar
             filters={filters}
             set_filters={set_filters}
-            alerts={alerts}
-            set_alerts={set_alerts}
             settings={settings}
             set_settings={set_settings}
             set_map_controls={set_map_controls}
