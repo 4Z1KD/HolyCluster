@@ -39,7 +39,7 @@ const Square = <svg className="ml-1" width="12" height="12" viewBox="0 0 16 16">
     <rect width="100" height="100"/>
 </svg>
 
-function FilterBar({
+function TopBar({
     filters,
     set_filters,
     alerts,
@@ -120,4 +120,4 @@ function FilterBar({
     );
 }
 
-export default FilterBar;
+export default TopBar;
