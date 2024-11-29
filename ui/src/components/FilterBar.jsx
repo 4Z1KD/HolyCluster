@@ -6,6 +6,8 @@ import Settings from "@/components/Settings.jsx";
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 
+import Icon from "@/icon.png";
+
 import { band_colors, modes } from "@/filters_data.js";
 
 const spots_time_limits = {
@@ -55,7 +57,7 @@ function FilterBar({
     return (
         <div className="flex flex-row justify-between min-h-16 border-2">
             <div className={box_container_style}>
-                <div className="w-12"></div>
+                <img className="object-contain max-h-12 w-10 m-auto" src={Icon}/>
                 {modes.map(mode => {
                     let align;
                     let symbol;

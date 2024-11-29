@@ -68,7 +68,6 @@ function fetch_spots(set_spots, set_network_state) {
                 } else {
                     set_spots(data.map(spot => {
                         if (spot.mode == "DIGITAL") {
-                            console.log(spot);
                             spot.mode = "DIGI";
                         }
                         return spot
