@@ -21,7 +21,7 @@ const Square = <svg className="ml-1" width="12" height="12" viewBox="0 0 16 16">
     <rect width="100" height="100"/>
 </svg>
 
-function Bands({ filters, set_filters }) {
+function LeftColumn({ filters, set_filters }) {
     const filter_group_classes = "p-1 flex flex-col text-center gap-2 bg-gray-100";
     return <div className="h-full flex flex-col items-center">
         <div className={filter_group_classes + " pb-4 border-b-2 border-slate-300"}>
@@ -81,4 +81,4 @@ function Bands({ filters, set_filters }) {
     </div>;
 }
 
-export default Bands;
+export default LeftColumn;

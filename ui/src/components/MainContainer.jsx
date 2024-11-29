@@ -4,7 +4,7 @@ import MapControls from "@/components/MapControls.jsx";
 import TopBar from "@/components/TopBar.jsx";
 import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
-import Bands from "@/components/Bands.jsx";
+import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
 import { is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
@@ -242,7 +242,7 @@ function MainContainer() {
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
-            <Bands filters={filters} set_filters={set_filters}/>
+            <LeftColumn filters={filters} set_filters={set_filters}/>
             <div className="w-full">
                 <MapControls
                     home_locator={settings.locator}
