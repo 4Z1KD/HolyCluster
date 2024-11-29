@@ -1,9 +1,10 @@
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
+import About from "@/components/About.jsx";
 import { band_colors } from "@/filters_data.js";
 
 function Bands({ filters, set_filters }) {
-    return <div className="w-32 p-2 flex flex-col text-center h-full gap-3 bg-gray-100">
+    return <div className="w-32 p-2 flex flex-col items-center text-center h-full gap-3 bg-gray-100">
         {[...band_colors].map(([band, color]) => {
             return <FilterOptions
                 key={band}
@@ -23,6 +24,7 @@ function Bands({ filters, set_filters }) {
                 />
             </FilterOptions>;
         })}
+        <div className="mt-auto"><About/></div>
     </div>;
 }
 
