@@ -22,58 +22,62 @@ const Square = <svg className="ml-1" width="12" height="12" viewBox="0 0 16 16">
 </svg>
 
 function Bands({ filters, set_filters }) {
-    return <div className="p-1 flex flex-col items-center text-center h-full gap-2 bg-gray-100">
-        {[...band_colors].map(([band, color]) => {
-            return <FilterOptions
-                key={band}
-                set_filters={set_filters}
-                filter_key="bands"
-                filter_value={band}
-                orientation="right"
-                align="center"
-            >
-                <FilterButton
-                    text={band + "m"}
-                    is_active={filters.bands[band]}
-                    color={color}
-                    on_click={_ => set_filters(state => state.bands[band] = !state.bands[band])}
-                    hover_brightness="125"
-                    size="small"
-                />
-            </FilterOptions>;
-        })}
-        {modes.map(mode => {
-            let align;
-            let symbol;
-            if (mode == "SSB") {
-                align = "slightly-right";
-                symbol = Square
-            } else {
-                align = "center";
-                if (mode == "CW") {
-                    symbol = Triangle
-                } else {
-                    symbol = Hex
-                }
-            }
-            return <FilterOptions
-                key={mode}
-                set_filters={set_filters}
-                filter_key="modes"
-                filter_value={mode}
-                orientation="right"
-                align="center"
-            >
-                <FilterButton
-                    text={<>{mode}<div className="ml-1">{symbol}</div></>}
-                    is_active={filters.modes[mode]}
-                    on_click={() => set_filters(state => state.modes[mode] = !state.modes[mode])}
-                    size="small"
-                />
-            </FilterOptions>;
-        })}
-
-        <div className="mt-auto"><About/></div>
+    const filter_group_classes = "p-1 flex flex-col text-center gap-2 bg-gray-100";
+    return <div className="h-full flex flex-col items-center">
+        <div className={filter_group_classes + " pb-4 border-b-2 border-slate-300"}>
+            {[...band_colors].map(([band, color]) => {
+                return <FilterOptions
+                    key={band}
+                    set_filters={set_filters}
+                    filter_key="bands"
+                    filter_value={band}
+                    orientation="right"
+                    align="center"
+                >
+                    <FilterButton
+                        text={band + "m"}
+                        is_active={filters.bands[band]}
+                        color={color}
+                        on_click={_ => set_filters(state => state.bands[band] = !state.bands[band])}
+                        hover_brightness="125"
+                        size="small"
+                    />
+                </FilterOptions>;
+            })}
+        </div>
+        <div className={filter_group_classes + " pt-4"}>
+            {modes.map(mode => {
+                 let align;
+                 let symbol;
+                 if (mode == "SSB") {
+                     align = "slightly-right";
+                     symbol = Square
+                 } else {
+                     align = "center";
+                     if (mode == "CW") {
+                         symbol = Triangle
+                     } else {
+                         symbol = Hex
+                     }
+                 }
+                 return <FilterOptions
+                     key={mode}
+                     set_filters={set_filters}
+                     filter_key="modes"
+                     filter_value={mode}
+                     orientation="right"
+                     align="center"
+                 >
+                     <FilterButton
+                         text={<>{mode}<div className="ml-1">{symbol}</div></>}
+                         is_active={filters.modes[mode]}
+                         on_click={() => set_filters(state => state.modes[mode] = !state.modes[mode])}
+                         size="small"
+                     />
+                 </FilterOptions>;
+             })}
+        </div>
+        <div className="mt-auto mb-2"><About/></div>
     </div>;
 }
 
