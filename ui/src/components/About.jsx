@@ -14,6 +14,8 @@ function About({}) {
     return <Modal
         title={<h3 className="text-3xl">About</h3>}
         button={<Info size="32"></Info>}
+        on_cancel={() => true}
+        cancel_text="close"
     >
         <div className="p-3 text-left">
         <p>
