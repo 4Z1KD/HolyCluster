@@ -7,7 +7,6 @@ function FilterButton({
     color = "#D1FAE5",
     hover_brightness = "110",
     size = "normal",
-    svg = null
 }) {
     const inactive_background_color = "#FFFFFF";
     const active_text_color = "#000000";
@@ -26,7 +25,7 @@ function FilterButton({
     if (size == "normal") {
         box_style.push(...["py-2", "px-2", "min-w-12"])
     } else if (size == "small") {
-        box_style.push(...["w-12"])
+        box_style.push(...["w-16"])
     }
 
     if (is_active) {
@@ -43,7 +42,7 @@ function FilterButton({
             userSelect: "none",
         }}>
         <span className="inline-flex items-center space-x-2">
-            {text} <div className="ml-1">{svg}</div>
+            {text}
         </span>
 
     </div>;

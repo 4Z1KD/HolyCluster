@@ -20,7 +20,7 @@ function FilterOptions({
     const orientation_options = {
         // The size of the parent, in this case, a small FilterButton is 3rem.
         // For right orientation we take slightly more then the original size
-        "right": "flex-col space-y-4 -translate-y-1/2 left-[6.3rem]",
+        "right": "flex-col space-y-4 -translate-y-1/2 left-[7.25rem]",
         "left": "flex-col space-y-4 -translate-y-1/2 -left-[3.3rem]",
         "bottom": "space-x-4 left-1/2",
     };
