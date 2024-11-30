@@ -45,22 +45,32 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                         set_callsigns(new_callsigns);
                     }}></Input>
                     <button
-                        onClick={() => set_callsigns(old_state => {
-                            const state = structuredClone(old_state);
-                            state[index][1] = false;
-                            return state;
-                        })}
+                        onClick={() => {
+                            console.log(callsigns);
+                            let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
+                                if (index == inner_index) {
+                                    is_suffix = false;
+                                }
+                                return [callsign, is_suffix];
+                            });
+                            set_callsigns(new_callsigns);
+                        }}
                         className={button_base_classes + (!is_suffix ? "bg-green-600 text-white" : button_inactive_classes)}
                         title="Prefix"
                     >
                         Pfx
                     </button>
                     <button
-                        onClick={() => set_callsigns(old_state => {
-                            const state = structuredClone(old_state);
-                            state[index][1] = true;
-                            return state;
-                        })}
+                        onClick={() => {
+                            console.log(callsigns);
+                            let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
+                                if (index == inner_index) {
+                                    is_suffix = true;
+                                }
+                                return [callsign, is_suffix];
+                            });
+                            set_callsigns(new_callsigns);
+                        }}
                         className={button_base_classes + (is_suffix ? "bg-green-600 text-white" : button_inactive_classes)}
                         title="Suffix"
                     >
