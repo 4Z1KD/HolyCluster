@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import X from "@/components/X.jsx";
 import Input from "@/components/Input.jsx";
 
 function CallsignsList({ callsigns, set_callsigns, title }) {
@@ -74,16 +75,14 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                         Sfx
                     </button>
                     {index != 0 || callsigns.length > 1 ?
-                        <div className="ml-auto">
-                            <button
-                                onClick={() => {
-                                    set_callsigns(old_state => {
-                                        const state = structuredClone(old_state);
-                                        state.splice(index, 1);
-                                        return state;
-                                    })
-                                }}
-                            >❌</button>
+                        <div>
+                            <X size="30" on_click={() => {
+                                set_callsigns(old_state => {
+                                    const state = structuredClone(old_state);
+                                    state.splice(index, 1);
+                                    return state;
+                                })
+                            }}/>
                         </div>
                         : ""
                     }

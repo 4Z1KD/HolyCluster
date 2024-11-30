@@ -1,3 +1,4 @@
+import X from "@/components/X.jsx";
 import { useEffect, forwardRef, useRef } from "react";
 
 import flags from "@/assets/flags.json";
@@ -100,15 +101,13 @@ function Spot({
     >
         <td className={cell_classes.time}>
             {is_pinned
-                ? <span
-                    className="text-xs rounded-full px-1 border border-slate-700 bg-white text-red-500 font-bold cursor-pointer"
-                    onClick={event => {
+                ? <X
+                    size="16"
+                    on_click={event => {
                         event.stopPropagation();
                         return set_pinned_spot(null)
                     }}
-                >
-                    X
-                </span>
+                />
                 : formatted_time
             }
         </td>
