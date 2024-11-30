@@ -193,15 +193,13 @@ function MainContainer() {
     }
 
     const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
-    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => {
-        return [band, spots.filter(spot => spot.band == band).length];
-    }));
+    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
 
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = (filters.include_callsigns.length+filters.exclude_callsigns.length) == 0;
+            const are_filters_empty = (filters.include_callsigns.length + filters.exclude_callsigns.length) == 0;
             const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign);
             const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign);
 
@@ -215,6 +213,9 @@ function MainContainer() {
                 && is_band_and_mode_active
                 && (are_filters_empty || (are_filters_including && are_filters_not_excluding))
             );
+            if (is_in_time_limit) {
+                spots_per_band_count[spot.band]++;
+            }
             if (!result && spot.is_alerted && is_in_time_limit) {
                 filtered_alerts_count[spot.band]++;
             }

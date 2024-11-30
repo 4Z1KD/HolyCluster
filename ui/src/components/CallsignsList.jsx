@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
 
 function CallsignsList({ callsigns, set_callsigns, title }) {
@@ -15,8 +14,8 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
         <h3 className="text-2xl text-center">{title}</h3>
         <div className="my-4 mx-2">
             {callsigns.map(([callsign, is_suffix], index) => {
-                return <div className="flex justify-start w-full" key={index}>
-                    <Input value={callsign} className="mb-2 mr-2" onChange={event => {
+                return <div className="flex justify-start items-center mb-2 space-x-2 w-full" key={index}>
+                    <Input value={callsign} onChange={event => {
                         let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
                             if (index == inner_index) {
                                 return [event.target.value, is_suffix];
@@ -46,7 +45,6 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                     }}></Input>
                     <button
                         onClick={() => {
-                            console.log(callsigns);
                             let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
                                 if (index == inner_index) {
                                     is_suffix = false;
@@ -62,7 +60,6 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                     </button>
                     <button
                         onClick={() => {
-                            console.log(callsigns);
                             let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
                                 if (index == inner_index) {
                                     is_suffix = true;
