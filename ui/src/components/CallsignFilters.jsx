@@ -3,7 +3,7 @@ import Button from "@/components/Button.jsx";
 
 function CallsignFilters({ filters, set_filters, is_show_only }) {
     const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
-    const callsigns = is_show_only ? filters.include_callsigns : filters.exclude_callsigns
+    const callsigns = is_show_only ? filters.include_callsigns : filters.exclude_callsigns;
 
     return <CallsignsList
         callsigns={callsigns}

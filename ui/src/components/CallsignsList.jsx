@@ -77,14 +77,11 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                     >
                         Sfx
                     </button>
-                    {index != 0 || callsigns.length > 1 ?
+                    {index != callsigns.length - 1 ?
                         <div>
                             <X size="30" on_click={() => {
-                                set_callsigns(old_state => {
-                                    const state = structuredClone(old_state);
-                                    state.splice(index, 1);
-                                    return state;
-                                })
+                                let new_callsigns = callsigns.filter((callsign, inner_index) => inner_index != index);
+                                set_callsigns(new_callsigns);
                             }}/>
                         </div>
                         : ""

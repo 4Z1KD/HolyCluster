@@ -195,7 +195,7 @@ function MainContainer() {
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = (filters.include_callsigns.length + filters.exclude_callsigns.length) == 0;
+            const are_filters_empty = (include_filters_callsigns.length + exclude_filters_callsigns.length) == 0;
             const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign);
             const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign);
 
