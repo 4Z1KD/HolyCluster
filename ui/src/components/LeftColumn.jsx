@@ -1,7 +1,7 @@
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 import About from "@/components/About.jsx";
-import { band_colors, modes } from "@/filters_data.js";
+import { band_colors, band_light_colors, modes } from "@/filters_data.js";
 
 const Hex = <svg fill="#000000" width="16" height="16" viewBox="0 0 256 256">
     <path d="M228,80.668V175.332a16.0255,16.0255,0,0,1-8.12695,13.9292l-84,47.47852a16.08782,16.08782,0,0,1-15.7461,0l-84-47.478A16.02688,16.02688,0,0,1,28,175.332V80.668a16.0255,16.0255,0,0,1,8.127-13.9292l84-47.47852a16.08654,16.08654,0,0,1,15.7461,0l84,47.478A16.02688,16.02688,0,0,1,228,80.668Z" />
@@ -21,9 +21,13 @@ const Square = <svg className="ml-1" width="12" height="12" viewBox="0 0 16 16">
     <rect width="100" height="100"/>
 </svg>
 
-function LeftColumn({ filters, set_filters }) {
-    const filter_group_classes = "p-1 flex flex-col text-center gap-2 bg-gray-100";
-    return <div className="h-full flex flex-col items-center">
+function LeftColumn({
+    filters,
+    set_filters,
+    filtered_alerts_count,
+}) {
+    const filter_group_classes = "p-1 flex flex-col text-center gap-2";
+    return <div className="h-full flex flex-col items-center bg-gray-100">
         <div className={filter_group_classes + " pb-4 border-b-2 border-slate-300"}>
             {[...band_colors].map(([band, color]) => {
                 return <FilterOptions
@@ -34,6 +38,18 @@ function LeftColumn({ filters, set_filters }) {
                     orientation="right"
                     align="center"
                 >
+                    {filtered_alerts_count[band] != 0 ?
+                        <span className="absolute left-12 flex w-4 -translate-y-1 translate-x-1">
+                            <span
+                                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 z-50"
+                                style={{ backgroundColor: band_light_colors[band] }}
+                            ></span>
+                            <span
+                                className="relative inline-flex border-1 border-green-800 justify-center rounded-full h-4 w-4 text-center text-[12px]"
+                                style={{ backgroundColor: band_light_colors[band] }}
+                            >{filtered_alerts_count[band]}</span>
+                        </span>
+                    : ""}
                     <FilterButton
                         text={band + "m"}
                         is_active={filters.bands[band]}

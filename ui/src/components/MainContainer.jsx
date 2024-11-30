@@ -190,6 +190,8 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
+    const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
+
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
@@ -200,13 +202,17 @@ function MainContainer() {
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
 
-            return (
+            const result = (
                 is_in_time_limit
                 && is_dx_continent_active
                 && is_spotter_continent_active
                 && is_band_and_mode_active
                 && (are_filters_empty || are_filters_matching)
             );
+            if (!result && spot.is_alerted && is_in_time_limit) {
+                filtered_alerts_count[spot.band]++;
+            }
+            return result;
         })
         .slice(0, 100)
 
@@ -246,7 +252,11 @@ function MainContainer() {
             network_state={network_state}
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
-            <LeftColumn filters={filters} set_filters={set_filters}/>
+            <LeftColumn
+                filters={filters}
+                set_filters={set_filters}
+                filtered_alerts_count={filtered_alerts_count}
+            />
             <div className="w-full">
                 <MapControls
                     home_locator={settings.locator}
