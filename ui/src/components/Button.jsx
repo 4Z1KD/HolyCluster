@@ -20,7 +20,7 @@ function Button({
         "font-medium",
         "rounded-lg",
         "text-sm",
-        "px-4 py-2"
+        "p-2",
     ].join(" ");
 
     return <button

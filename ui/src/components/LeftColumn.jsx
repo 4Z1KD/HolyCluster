@@ -21,10 +21,19 @@ const Square = <svg className="ml-1" width="12" height="12" viewBox="0 0 16 16">
     <rect width="100" height="100"/>
 </svg>
 
+const mode_to_symbol = {
+    SSB: Square,
+    CW: Triangle,
+    FT8: Hex,
+    FT4: Hex,
+    DIGI: Hex,
+}
+
 function LeftColumn({
     filters,
     set_filters,
     filtered_alerts_count,
+    spots_per_band_count,
 }) {
     const filter_group_classes = "p-1 flex flex-col text-center gap-2";
     return <div className="h-full flex flex-col items-center bg-gray-100">
@@ -36,7 +45,7 @@ function LeftColumn({
                     filter_key="bands"
                     filter_value={band}
                     orientation="right"
-                    align="center"
+                    text={spots_per_band_count[band]}
                 >
                     {filtered_alerts_count[band] != 0 ?
                         <span className="absolute left-12 flex w-4 -translate-y-1 translate-x-1">
@@ -63,29 +72,15 @@ function LeftColumn({
         </div>
         <div className={filter_group_classes + " pt-4"}>
             {modes.map(mode => {
-                 let align;
-                 let symbol;
-                 if (mode == "SSB") {
-                     align = "slightly-right";
-                     symbol = Square
-                 } else {
-                     align = "center";
-                     if (mode == "CW") {
-                         symbol = Triangle
-                     } else {
-                         symbol = Hex
-                     }
-                 }
                  return <FilterOptions
                      key={mode}
                      set_filters={set_filters}
                      filter_key="modes"
                      filter_value={mode}
                      orientation="right"
-                     align="center"
                  >
                      <FilterButton
-                         text={<>{mode}<div className="ml-1">{symbol}</div></>}
+                         text={<>{mode}<div className="ml-1">{mode_to_symbol[mode]}</div></>}
                          is_active={filters.modes[mode]}
                          on_click={() => set_filters(state => state.modes[mode] = !state.modes[mode])}
                          size="small"

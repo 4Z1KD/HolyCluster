@@ -191,6 +191,9 @@ function MainContainer() {
     }
 
     const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
+    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => {
+        return [band, spots.filter(spot => spot.band == band).length];
+    }));
 
     const filtered_spots = spots
         .filter(spot => {
@@ -256,6 +259,7 @@ function MainContainer() {
                 filters={filters}
                 set_filters={set_filters}
                 filtered_alerts_count={filtered_alerts_count}
+                spots_per_band_count={spots_per_band_count}
             />
             <div className="w-full">
                 <MapControls

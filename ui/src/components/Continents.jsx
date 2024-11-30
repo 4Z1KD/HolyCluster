@@ -15,8 +15,7 @@ function ContinentColumn({ spot_type, filters, set_filters, color }) {
             set_filters={set_filters}
             filter_key={filter_key}
             filter_value={continent}
-            orientation="left"
-            align="center">
+            orientation="left">
                 <FilterButton
                     color={color}
                     text={continent}

@@ -3,9 +3,6 @@ import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
 import Settings from "@/components/Settings.jsx";
 
-import FilterOptions from "@/components/FilterOptions.jsx";
-import FilterButton from "@/components/FilterButton.jsx";
-
 import Icon from "@/icon.png";
 
 import { modes } from "@/filters_data.js";
