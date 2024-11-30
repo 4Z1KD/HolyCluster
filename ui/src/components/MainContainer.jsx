@@ -107,12 +107,8 @@ function MainContainer() {
         }
     );
 
-    const include_filters_callsigns = filters.include_callsigns
-        .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
-        .filter(([pattern, _]) => pattern.length > 0);
-    const exclude_filters_callsigns = filters.exclude_callsigns
-        .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
-        .filter(([pattern, _]) => pattern.length > 0);
+    const include_filters_callsigns = filters.include_callsigns.filter(([pattern, _]) => pattern.length > 0);
+    const exclude_filters_callsigns = filters.exclude_callsigns.filter(([pattern, _]) => pattern.length > 0);
 
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
