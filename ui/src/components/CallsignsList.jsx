@@ -3,7 +3,7 @@ import { useState } from "react";
 import Button from "@/components/Button.jsx";
 import Input from "@/components/Input.jsx";
 
-function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
+function CallsignsList({ callsigns, set_callsigns, title }) {
     if (callsigns.length == 0 || callsigns[callsigns.length - 1][0].length > 0) {
         callsigns.push(["", false]);
     }
@@ -14,7 +14,6 @@ function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
     return <div className="p-2">
         <h3 className="text-2xl text-center">{title}</h3>
         <div className="my-4 mx-2">
-            {pre}
             {callsigns.map(([callsign, is_suffix], index) => {
                 return <div className="flex justify-start w-full" key={index}>
                     <Input value={callsign} className="mb-2 mr-2" onChange={event => {
@@ -44,7 +43,6 @@ function CallsignsList({ callsigns, set_callsigns, title, pre = "" }) {
                         }
 
                         set_callsigns(new_callsigns);
-                        const endTime = performance.now()
                     }}></Input>
                     <button
                         onClick={() => set_callsigns(old_state => {

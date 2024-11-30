@@ -10,7 +10,9 @@ function CallsignsView({
 }) {
     return <div className="flex flex-col divide-y divide-slate-300 w-60">
         <Alerts alerts={alerts} set_alerts={set_alerts}/>
-        <CallsignFilters filters={filters} set_filters={set_filters}/>
+        <CallsignFilters filters={filters} set_filters={set_filters} is_show_only={true}/>
+        <CallsignFilters filters={filters} set_filters={set_filters} is_show_only={false}/>
+
     </div>
 }
 

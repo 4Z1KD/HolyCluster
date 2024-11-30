@@ -101,16 +101,18 @@ function MainContainer() {
             modes: Object.fromEntries(modes.map(mode => [mode, true])),
             dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-            callsigns: [],
-            callsigns_mode: true, // true for include, false for exclude
+            include_callsigns: [],
+            exclude_callsigns: [],
             time_limit: 3600,
         }
     );
-    // Convert all patterns to uppercase and then remove all duplicated entries
-    const filters_callsigns = [...new Set(filters.callsigns
+
+    const include_filters_callsigns = filters.include_callsigns
         .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
-        .filter(([callsign, _]) => callsign.length > 0)
-    )];
+        .filter(([pattern, _]) => pattern.length > 0);
+    const exclude_filters_callsigns = filters.exclude_callsigns
+        .map(([callsign, is_suffix]) => [callsign.toUpperCase(), is_suffix])
+        .filter(([pattern, _]) => pattern.length > 0);
 
     const set_filters = (change_func) => {
         set_filters_inner(previous_state => {
@@ -199,8 +201,9 @@ function MainContainer() {
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = filters_callsigns.length == 0;
-            const are_filters_matching = filters.callsigns_mode == is_matching_list(filters_callsigns, spot.dx_callsign);
+            const are_filters_empty = (filters.include_callsigns.length+filters.exclude_callsigns.length) == 0;
+            const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign);
+            const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign);
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
@@ -210,7 +213,7 @@ function MainContainer() {
                 && is_dx_continent_active
                 && is_spotter_continent_active
                 && is_band_and_mode_active
-                && (are_filters_empty || are_filters_matching)
+                && (are_filters_empty || (are_filters_including && are_filters_not_excluding))
             );
             if (!result && spot.is_alerted && is_in_time_limit) {
                 filtered_alerts_count[spot.band]++;
