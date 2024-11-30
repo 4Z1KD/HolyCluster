@@ -2,7 +2,6 @@ import { useEffect, forwardRef, useRef } from "react";
 
 import flags from "@/assets/flags.json";
 import { band_colors, band_light_colors } from "@/filters_data.js";
-import { is_matching_list } from "@/utils.js";
 
 const cell_classes = {
     time: "w-14",
@@ -61,7 +60,6 @@ function Callsign({ callsign }) {
 
 function Spot({
     spot,
-    alerts,
     hovered_spot,
     pinned_spot,
     set_pinned_spot,
@@ -75,10 +73,9 @@ function Spot({
     const formatted_time = utc_hours + ":" + utc_minutes;
     const is_pinned = spot.id == pinned_spot;
     const is_hovered = spot.id == hovered_spot.id || is_pinned;
-    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
 
     let row_classes = "odd:bg-white even:bg-slate-100";
-    if (is_alerted) {
+    if (spot.is_alerted) {
         row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
     }
 
@@ -95,7 +92,7 @@ function Spot({
         ref={ref}
         style={{
             backgroundColor: is_hovered ? band_light_colors[spot.band] : "",
-            outlineColor: is_alerted ? band_colors.get(spot.band) : "",
+            outlineColor: spot.is_alerted ? band_colors.get(spot.band) : "",
         }}
         className={row_classes}
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
@@ -148,7 +145,6 @@ function SpotsTable({
     pinned_spot,
     set_pinned_spot,
     set_cat_to_spot,
-    alerts,
 }) {
     const row_refs = useRef({});
 
@@ -181,7 +177,6 @@ function SpotsTable({
                             ref={element => row_refs.current[spot.id] = element}
                             key={spot.id}
                             spot={spot}
-                            alerts={alerts}
                             hovered_spot={hovered_spot}
                             pinned_spot={pinned_spot}
                             set_pinned_spot={set_pinned_spot}

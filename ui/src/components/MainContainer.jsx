@@ -186,6 +186,10 @@ function MainContainer() {
         };
     }, [])
 
+    for (const spot of spots) {
+        spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
+    }
+
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
@@ -262,7 +266,6 @@ function MainContainer() {
                         set_hovered_spot={set_hovered_spot}
                         pinned_spot={pinned_spot}
                         set_pinned_spot={set_pinned_spot}
-                        alerts={alerts}
                     />
                     :
                     <SvgMap
@@ -274,7 +277,6 @@ function MainContainer() {
                         set_hovered_spot={set_hovered_spot}
                         pinned_spot={pinned_spot}
                         set_pinned_spot={set_pinned_spot}
-                        alerts={alerts}
                         radius_in_km={radius_in_km}
                         set_radius_in_km={set_radius_in_km}
                     />
@@ -287,7 +289,6 @@ function MainContainer() {
                 pinned_spot={pinned_spot}
                 set_pinned_spot={set_pinned_spot}
                 set_cat_to_spot={set_cat_to_spot}
-                alerts={alerts}
             />
             <CallsignsView
                 alerts={alerts}

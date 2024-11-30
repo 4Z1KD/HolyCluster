@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { to_radian, is_matching_list } from "@/utils.js";
+import { to_radian } from "@/utils.js";
 import { band_colors, band_light_colors } from "@/filters_data.js";
 import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
@@ -16,7 +16,6 @@ function Spot({
     pinned_spot,
     set_pinned_spot,
     set_popup_position,
-    alerts
 }) {
     const line = {
         type: "LineString",
@@ -40,9 +39,8 @@ function Spot({
     const color = band_colors.get(spot.band);
     const light_color = band_light_colors[spot.band];
 
-    const is_alerted = is_matching_list(alerts, spot.dx_callsign);
     let style;
-    if (is_alerted) {
+    if (spot.is_alerted) {
         style = {
             strokeDasharray: 5,
             strokeDashoffset: 50,
@@ -121,7 +119,7 @@ function Spot({
             stroke="#FFFFFF"
             d={path_generator(line)}
         />
-        {is_alerted ?
+        {spot.is_alerted ?
             <style>
                 {`
                 @keyframes dash {

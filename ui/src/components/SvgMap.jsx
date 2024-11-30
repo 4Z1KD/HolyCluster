@@ -37,7 +37,6 @@ function SvgMap({
     set_hovered_spot,
     pinned_spot,
     set_pinned_spot,
-    alerts,
     radius_in_km,
     set_radius_in_km,
 }) {
@@ -118,7 +117,6 @@ function SvgMap({
                 pinned_spot={pinned_spot}
                 set_pinned_spot={set_pinned_spot}
                 set_popup_position={set_popup_position}
-                alerts={alerts}
             />;
         }
     );
