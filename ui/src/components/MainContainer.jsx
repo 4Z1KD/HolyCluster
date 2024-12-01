@@ -199,9 +199,11 @@ function MainContainer() {
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
-            const are_filters_empty = (include_filters_callsigns.length + exclude_filters_callsigns.length) == 0;
-            const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign);
-            const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign);
+
+            const are_include_filters_empty = include_filters_callsigns.length == 0;
+            const are_exclude_filters_empty = exclude_filters_callsigns.length == 0;
+            const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign) || are_include_filters_empty;
+            const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign) || are_exclude_filters_empty;
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
@@ -211,7 +213,8 @@ function MainContainer() {
                 && is_dx_continent_active
                 && is_spotter_continent_active
                 && is_band_and_mode_active
-                && (are_filters_empty || (are_filters_including && are_filters_not_excluding))
+                && are_filters_including
+                && are_filters_not_excluding
             );
             if (is_in_time_limit) {
                 spots_per_band_count[spot.band]++;
@@ -221,7 +224,7 @@ function MainContainer() {
             }
             return result;
         })
-        .slice(0, 100)
+        .slice(0, 100);
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
