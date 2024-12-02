@@ -89,16 +89,6 @@ function FilterOptions({
                     >
                         ALL
                     </Button>
-                    <Button
-                        color="red"
-                        className="w-16 p-2"
-                        on_click={() => {
-                            set_filter_keys(filter_key, false);
-                            set_is_hovered(false);
-                        }}
-                    >
-                      NONE
-                    </Button>
                 </div>
             </div>
         )}
