@@ -48,8 +48,7 @@ function LeftColumn({
                     {spots_per_band_count[band] != 0 ?
                         <span className="absolute left-12 flex w-4 -translate-y-1 translate-x-1">
                             <span
-                                className="relative inline-flex border-1 border-green-800 justify-center rounded-full h-4 w-4 text-center text-[12px]"
-                                style={{ backgroundColor: band_light_colors[band] }}
+                                className="relative inline-flex border-1 bg-red-600 text-white font-bold justify-center rounded-full h-4 w-4 text-center text-[12px]"
                             >{spots_per_band_count[band]}</span>
                         </span>
                     : ""}
