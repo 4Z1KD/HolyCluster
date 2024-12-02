@@ -2,13 +2,11 @@
 
 ### An ongoing effort to visualize the ham radio cluster
 
-![image](https://github.com/4Z1KD/HolyCluster/assets/24712835/e50cbdb7-22a5-4142-a200-1548b975a692)
-
 ## Prerequisites ⚙️
 
 * A computer running Linux, macOS, or Windows
-*  `git`
-*  `python3`
+* `git`
+* `python3`
 * `node`, `npm`
 
 ## Installation 🛠
@@ -23,9 +21,13 @@
     python -m venv venv_HolyCluster
     ```
 3. Activate the virtual environment
-    * Windows: `\venv_HolyCluster\Scripts\activate.bat`
+    * Windows: `.\venv_HolyCluster\Scripts\activate.bat`
     * Linux and macOS: `source venv_HolyCluster/bin/activate`
 4. Install the project (`-e` is for development mode)
+    ```bash
+    pip install -e '.[omnirig]'
+    ```
+    For linux systems, install without omnirig:
     ```bash
     pip install -e .
     ```
@@ -40,17 +42,21 @@ To deactivate the virtual environment, run `deactivate`.
 
 ## Usage 💾
 
-For now, the recommended way to run the application is by starting the client side server. Run this in the project's root directory:
+For developing frontend related features:
 ```bash
-uvicorn --reload ClientSideServer:app
+cd ui
+npm run dev
+```
+
+For development of CAT control related features, execute in the virtualenv:
+```bash
+python src/ClientSideServer.py
 ```
 
 For systems without `omnirig` installed, execute
 ```bash
-DUMMY=1 uvicorn --reload ClientSideServer:app
+DUMMY=1 python src/ClientSideServer.py
 ```
-
-Then visit the main page at <http://localhost:8000/index.html>.
 
 In the future, the application will be compiled into an executable 💾
 
