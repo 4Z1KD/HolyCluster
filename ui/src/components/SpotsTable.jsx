@@ -9,8 +9,8 @@ const cell_classes = {
     flag: "min-w-[1.3rem]",
     dx: "w-24",
     freq: "w-12",
-    spotter: "w-24",
     band: "w-12",
+    spotter: "w-24",
     mode: "w-12",
     comment: "w-80 text-left",
 }
@@ -121,7 +121,6 @@ function Spot({
                 {spot.freq}
             </div>
         </td>
-        <td className={cell_classes.spotter}><Callsign callsign={spot.spotter_callsign}></Callsign></td>
         <td className={cell_classes.band + "flex justify-center items-center"}>
             <p
                 className="w-fit px-3 rounded-xl"
@@ -130,6 +129,7 @@ function Spot({
                 <strong>{spot.band}</strong>
             </p>
         </td>
+        <td className={cell_classes.spotter}><Callsign callsign={spot.spotter_callsign}></Callsign></td>
         <td className={cell_classes.mode}>{spot.mode}</td>
         <td className={cell_classes.comment}>{spot.comment.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}</td>
     </tr>;
@@ -166,8 +166,8 @@ function SpotsTable({
                     <td className={cell_classes.flag}></td>
                     <td className={cell_classes.dx}>DX</td>
                     <td className={cell_classes.freq}>Freq</td>
-                    <td className={cell_classes.spotter}>Spotter</td>
                     <td className={cell_classes.band}>Band</td>
+                    <td className={cell_classes.spotter}>Spotter</td>
                     <td className={cell_classes.mode}>Mode</td>
                     <td className={cell_classes.comment}>Comment</td>
                 </tr>
