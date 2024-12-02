@@ -84,17 +84,24 @@ function fetch_spots(set_spots, set_network_state) {
 function use_object_local_storage(key, default_value) {
     const [current_value, set_value] = useLocalStorage(key, default_value);
 
-    useEffect(() => {
-        if (Object.keys(default_value) != Object.keys(current_value)) {
-            const merged_value = Object.fromEntries(Object.entries(default_value).map(([key, value]) => {
-                return [key, current_value[key] || value];
-            }));
+    const should_update = Object.keys(default_value) != Object.keys(current_value);
 
+    let merged_value;
+    if (should_update) {
+        merged_value = Object.fromEntries(Object.entries(default_value).map(([key, value]) => {
+            return [key, current_value[key] || value];
+        }));
+    } else {
+        merged_value = current_value;
+    }
+
+    useEffect(() => {
+        if (should_update) {
             set_value(merged_value);
         }
     }, [current_value]);
 
-    return [current_value, set_value];
+    return [merged_value, set_value];
 }
 
 function MainContainer() {
