@@ -7,5 +7,7 @@ dependencies = [
     "fastapi",
     "httpx",
     "uvicorn",
-    "omnipyrig",
 ]
+
+[project.optional-dependencies]
+omnirig = ["omnipyrig"]
