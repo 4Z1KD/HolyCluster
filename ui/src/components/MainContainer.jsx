@@ -275,7 +275,7 @@ function MainContainer() {
                 set_filters={set_filters}
                 spots_per_band_count={spots_per_band_count}
             />
-            <div className="w-full">
+            <div className="relative w-full">
                 <MapControls
                     home_locator={settings.locator}
                     map_controls={map_controls}
