@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 HOST = "localhost"
 # Port collision is very unlikely
-port = port = random.randint(10000, 60000)
+port = random.randint(10000, 60000)
 
 
 async def start_webbrowser():

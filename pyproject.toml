@@ -1,5 +1,5 @@
 [project]
-name = "HolyCluster"
+name = "holycluster"
 requires-python = ">= 3.8"
 version = "0.1.0"
 dependencies = [
