@@ -199,7 +199,6 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
-    const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
     const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
 
     const filtered_spots = spots
@@ -223,15 +222,17 @@ function MainContainer() {
                 && are_filters_including
                 && are_filters_not_excluding
             );
-            if (is_in_time_limit) {
+            if (result) {
                 spots_per_band_count[spot.band]++;
-            }
-            if (!result && spot.is_alerted && is_in_time_limit) {
-                filtered_alerts_count[spot.band]++;
             }
             return result;
         })
         .slice(0, 100);
+
+    // Limit the count for 2 digit display
+    for (const band in spots_per_band_count) {
+        spots_per_band_count[band] = Math.min(spots_per_band_count[band], 99);
+    }
 
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
@@ -272,7 +273,6 @@ function MainContainer() {
             <LeftColumn
                 filters={filters}
                 set_filters={set_filters}
-                filtered_alerts_count={filtered_alerts_count}
                 spots_per_band_count={spots_per_band_count}
             />
             <div className="w-full">

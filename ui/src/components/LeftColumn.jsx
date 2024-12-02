@@ -32,7 +32,6 @@ const mode_to_symbol = {
 function LeftColumn({
     filters,
     set_filters,
-    filtered_alerts_count,
     spots_per_band_count,
 }) {
     const filter_group_classes = "p-1 flex flex-col text-center gap-2";
@@ -45,18 +44,13 @@ function LeftColumn({
                     filter_key="bands"
                     filter_value={band}
                     orientation="right"
-                    text={spots_per_band_count[band]}
                 >
-                    {filtered_alerts_count[band] != 0 ?
+                    {spots_per_band_count[band] != 0 ?
                         <span className="absolute left-12 flex w-4 -translate-y-1 translate-x-1">
-                            <span
-                                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 z-50"
-                                style={{ backgroundColor: band_light_colors[band] }}
-                            ></span>
                             <span
                                 className="relative inline-flex border-1 border-green-800 justify-center rounded-full h-4 w-4 text-center text-[12px]"
                                 style={{ backgroundColor: band_light_colors[band] }}
-                            >{filtered_alerts_count[band]}</span>
+                            >{spots_per_band_count[band]}</span>
                         </span>
                     : ""}
                     <FilterButton

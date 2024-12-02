@@ -9,7 +9,6 @@ function FilterOptions({
     align,
     orientation,
     children,
-    text,
 }) {
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
@@ -31,10 +30,6 @@ function FilterOptions({
         "left": ["-translate-y-1/2", "-translate-x-[5.6rem]"],
     };
     classes.push(...orientation_options[orientation]);
-
-    if (text != null) {
-        classes.push("pt-1");
-    }
 
     classes = classes.join(" ");
 
@@ -67,7 +62,6 @@ function FilterOptions({
         {children}
         {is_hovered && (
             <div className={classes}>
-                {text != null ? <div><strong>{text}</strong></div> : ""}
                 <div className="space-y-4">
                     <Button
                         color="blue"
