@@ -121,7 +121,7 @@ function Spot({
                 {spot.freq}
             </div>
         </td>
-        <td className={cell_classes.band + "flex justify-center items-center"}>
+        <td className={cell_classes.band + " flex justify-center items-center"}>
             <p
                 className="w-fit px-3 rounded-xl"
                 style={{ backgroundColor: band_colors.get(spot.band) }}
