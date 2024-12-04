@@ -8,8 +8,8 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
         callsigns.push(["", false]);
     }
 
-    const button_base_classes = "flex items-center justify-center p-2 w-6 h-6 rounded-md mr-2 text-xs font-bold ";
-    const button_inactive_classes = "border-2 border-slate-700 bg-slate-200";
+    const button_base_classes = "flex border border-gray-700 items-center justify-center p-2 w-7 h-7 rounded-md mr-2 text-xs font-bold ";
+    const button_inactive_classes = "border border-gray-400 bg-slate-200";
 
     return <div className="p-1">
         <h3 className="text-2xl text-center">{title}</h3>
@@ -17,7 +17,7 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
             {callsigns.map(([callsign, is_suffix], index) => {
                 return <div className="flex justify-start items-center mb-1 space-x-2 w-full" key={index}>
                     <Input
-                        className="h-6 text-sm"
+                        className="h-7 text-sm"
                         value={callsign}
                         onChange={event => {
                             let new_callsigns = callsigns.map(([callsign, is_suffix], inner_index) => {
@@ -79,7 +79,7 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
                     </button>
                     {index != callsigns.length - 1 ?
                         <div>
-                            <X size="30" on_click={() => {
+                            <X size="24" on_click={() => {
                                 let new_callsigns = callsigns.filter((callsign, inner_index) => inner_index != index);
                                 set_callsigns(new_callsigns);
                             }}/>
