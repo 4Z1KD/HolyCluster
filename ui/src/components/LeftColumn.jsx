@@ -46,9 +46,9 @@ function LeftColumn({
                     orientation="right"
                 >
                     {spots_per_band_count[band] != 0 ?
-                        <span className="absolute left-12 flex w-4 -translate-y-1 translate-x-1">
+                        <span className="absolute left-12 flex w-5 -translate-y-1 translate-x-1 z-10">
                             <span
-                                className="relative inline-flex border-1 bg-red-600 text-white font-bold justify-center items-center rounded-full h-4 w-4 text-center text-[12px]"
+                                className="relative inline-flex border border-gray-900 bg-red-600 text-white font-bold justify-center items-center rounded-full h-5 w-5 text-center text-[12px]"
                             >{spots_per_band_count[band]}</span>
                         </span>
                     : ""}
