@@ -18,7 +18,7 @@ function FilterButton({
         "text-base",
         "font-bold",
         "rounded-lg",
-        "border-2",
+        "border",
         "cursor-pointer",
         `hover:brightness-${hover_brightness}`,
     ];
@@ -29,9 +29,9 @@ function FilterButton({
     }
 
     if (is_active) {
-        box_style.push("border-slate-400");
-    } else {
         box_style.push("border-slate-700");
+    } else {
+        box_style.push("border-slate-400");
     }
 
     return <div
