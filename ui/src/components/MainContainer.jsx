@@ -105,6 +105,7 @@ function use_object_local_storage(key, default_value) {
 }
 
 function MainContainer() {
+    const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
     const [filters, set_filters_inner] = use_object_local_storage(
         "filters",
         {
@@ -268,12 +269,15 @@ function MainContainer() {
             set_map_controls={set_map_controls}
             set_radius_in_km={set_radius_in_km}
             network_state={network_state}
+            toggled_ui={toggled_ui}
+            set_toggled_ui={set_toggled_ui}
         />
         <div className="flex h-[calc(100%-4rem)]">
             <LeftColumn
                 filters={filters}
                 set_filters={set_filters}
                 spots_per_band_count={spots_per_band_count}
+                toggled_ui={toggled_ui}
             />
             <div className="relative w-full">
                 <MapControls
@@ -323,8 +327,13 @@ function MainContainer() {
                 set_alerts={set_alerts}
                 filters={filters}
                 set_filters={set_filters}
+                toggled_ui={toggled_ui}
             />
-            <Continents filters={filters} set_filters={set_filters}/>
+            <Continents
+                filters={filters}
+                set_filters={set_filters}
+                toggled_ui={toggled_ui}
+            />
         </div>
     </>;
 }

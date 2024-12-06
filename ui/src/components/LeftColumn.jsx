@@ -33,9 +33,10 @@ function LeftColumn({
     filters,
     set_filters,
     spots_per_band_count,
+    toggled_ui,
 }) {
     const filter_group_classes = "p-1 flex flex-col text-center gap-2";
-    return <div className="hidden xl:flex h-full flex-col items-center bg-gray-100">
+    return <div className={(toggled_ui.left ? "hidden" : "") + " xl:flex h-full flex-col items-center bg-gray-100"}>
         <div className={filter_group_classes + " pb-4 border-b-2 border-slate-300"}>
             {[...band_colors].map(([band, color]) => {
                 return <FilterOptions
