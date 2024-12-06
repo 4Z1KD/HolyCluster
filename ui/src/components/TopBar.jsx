@@ -68,7 +68,7 @@ function TopBar({
                     set_radius_in_km={set_radius_in_km}
                 />
                 <Clock/>
-                <div className="p-2 hidden max-xl:block">
+                <div className="p-2 hidden max-2xl:block">
                     <OpenMenu size="32" on_click={() => set_toggled_ui({...toggled_ui, right: !toggled_ui.right})}/>
                 </div>
             </div>
