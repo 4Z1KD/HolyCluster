@@ -123,7 +123,7 @@ function Spot({
         </td>
         <td className={cell_classes.band + " flex justify-center items-center"}>
             <p
-                className="w-fit px-3 rounded-xl border border-gray-700"
+                className="px-1 rounded-xl border border-gray-700"
                 style={{ backgroundColor: band_colors.get(spot.band) }}
             >
                 <strong>{spot.band}</strong>
