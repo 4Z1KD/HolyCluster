@@ -257,7 +257,7 @@ function MainContainer() {
     });
 
     // This is a debug variable that should be set from the dev console
-    let [canvas, _] = useLocalStorage("canvas", false);
+    const [canvas, _] = useLocalStorage("canvas", false);
 
     return <>
         <TopBar
@@ -269,7 +269,7 @@ function MainContainer() {
             set_radius_in_km={set_radius_in_km}
             network_state={network_state}
         />
-        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
+        <div className="flex h-[calc(100%-4rem)]">
             <LeftColumn
                 filters={filters}
                 set_filters={set_filters}

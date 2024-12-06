@@ -27,7 +27,7 @@ function TopBar({
     set_radius_in_km,
     network_state,
 }) {
-    const box_container_style = "flex flex-wrap h-full p-2 gap-3";
+    const box_container_style = "flex h-full p-2 gap-3";
 
     const network_state_colors = { "connected": "#00EE00", "disconnected": "#EE0000" };
 

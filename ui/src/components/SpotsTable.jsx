@@ -6,13 +6,13 @@ import { band_colors, band_light_colors } from "@/filters_data.js";
 
 const cell_classes = {
     time: "w-14",
-    flag: "min-w-[1.3rem]",
+    flag: "min-w-[1.3rem] hidden md:table-cell",
     dx: "w-24",
     freq: "w-12",
-    band: "w-12",
+    band: "w-12 hidden md:table-cell",
     spotter: "w-24",
-    mode: "w-12",
-    comment: "w-80 text-left",
+    mode: "w-12 lg:w-[14rem]",
+    comment: "w-[40rem] text-left hidden lg:table-cell",
 }
 
 const dxcc_to_country_flag = {
@@ -155,36 +155,38 @@ function SpotsTable({
         }
     }, [hovered_spot]);
 
-    return <div className="flex-grow min-w-[30rem] w-[80rem] h-full text-sm overflow-y-auto border-4">
-        <table
-            className="table-fixed text-center border-collapse"
-            onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
-        >
-            <tbody className="divide-y divide-slate-200">
-                <tr className="sticky top-0 bg-slate-300">
-                    <td className={cell_classes.time}>Time</td>
-                    <td className={cell_classes.flag}></td>
-                    <td className={cell_classes.dx}>DX</td>
-                    <td className={cell_classes.freq}>Freq</td>
-                    <td className={cell_classes.band}>Band</td>
-                    <td className={cell_classes.spotter}>Spotter</td>
-                    <td className={cell_classes.mode}>Mode</td>
-                    <td className={cell_classes.comment}>Comment</td>
-                </tr>
-                {spots
-                    .map(spot => <Spot
-                            ref={element => row_refs.current[spot.id] = element}
-                            key={spot.id}
-                            spot={spot}
-                            hovered_spot={hovered_spot}
-                            pinned_spot={pinned_spot}
-                            set_pinned_spot={set_pinned_spot}
-                            set_hovered_spot={set_hovered_spot}
-                            set_cat_to_spot={set_cat_to_spot}
-                        ></Spot>
-                    )}
-            </tbody>
-        </table>
+    return <div className="text-sm h-full overflow-x-visible border-4">
+        <div className="overflow-y-scroll h-full w-full">
+           <table
+                className="text-center border-collapse"
+                onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
+            >
+               <tbody className="divide-y divide-slate-200">
+                   <tr className="sticky top-0 bg-slate-300">
+                       <td className={cell_classes.time}>Time</td>
+                       <td className={cell_classes.flag}></td>
+                       <td className={cell_classes.dx}>DX</td>
+                       <td className={cell_classes.freq}>Freq</td>
+                       <td className={cell_classes.band}>Band</td>
+                       <td className={cell_classes.spotter}>Spotter</td>
+                       <td className={cell_classes.mode}>Mode</td>
+                       <td className={cell_classes.comment}>Comment</td>
+                   </tr>
+                   {spots
+                       .map(spot => <Spot
+                               ref={element => row_refs.current[spot.id] = element}
+                               key={spot.id}
+                               spot={spot}
+                               hovered_spot={hovered_spot}
+                               pinned_spot={pinned_spot}
+                               set_pinned_spot={set_pinned_spot}
+                               set_hovered_spot={set_hovered_spot}
+                               set_cat_to_spot={set_cat_to_spot}
+                           ></Spot>
+                       )}
+               </tbody>
+            </table>
+        </div>
     </div>;
 }
 
