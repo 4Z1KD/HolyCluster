@@ -200,8 +200,6 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
-    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
-
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
@@ -223,12 +221,15 @@ function MainContainer() {
                 && are_filters_including
                 && are_filters_not_excluding
             );
-            if (result) {
-                spots_per_band_count[spot.band]++;
-            }
             return result;
         })
         .slice(0, 100);
+
+    const spots_per_band_count = Object.fromEntries(
+        Array
+            .from(band_colors.keys())
+            .map(band => [band, filtered_spots.filter(spot => spot.band == band).length])
+    );
 
     // Limit the count for 2 digit display
     for (const band in spots_per_band_count) {
