@@ -42,7 +42,7 @@ function TopBar({
             <div className={box_container_style}>
                 <img className="object-contain max-h-12 w-10 m-auto" src={Icon}/>
             </div>
-            <h1 className="text-4xl m-auto font-bold">The Holy Cluster</h1>
+            <h1 className="hidden md:block text-4xl m-auto font-bold">The Holy Cluster</h1>
             <div className={box_container_style}>
                 <select
                     className="rounded-lg px-4 py-2"
