@@ -322,7 +322,7 @@ function MainContainer() {
             toggled_ui={toggled_ui}
             set_toggled_ui={set_toggled_ui}
         />
-        <div className="flex h-[calc(100%-4rem)]">
+        <div className="flex relative h-[calc(100%-4rem)]">
             <LeftColumn
                 filters={filters}
                 set_filters={set_filters}
