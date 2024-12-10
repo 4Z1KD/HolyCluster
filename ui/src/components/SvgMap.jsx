@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { useMeasure } from "@uidotdev/usehooks";
 
 import * as d3 from "d3";
 import haversine from "haversine-distance";
@@ -41,20 +42,20 @@ function SvgMap({
     set_radius_in_km,
 }) {
     const svg_ref = useRef(null);
-    const svg_box_ref = useRef(null);
-    const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+    // const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+    const [svg_box_ref, {width, height}] = useMeasure();
     const max_radius = 20000;
 
     const inner_padding = 50;
-    const center_x = dimensions.width / 2;
-    const center_y = dimensions.height / 2;
+    const center_x = width / 2;
+    const center_y = height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
 
     const projection = d3["geoAzimuthalEquidistant"]()
         .precision(0.1)
         .fitSize(
-            [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
+            [width - inner_padding * 2, height - inner_padding * 2],
             dxcc_map
         )
         .rotate([-center_lon, -center_lat, 0])
@@ -63,21 +64,6 @@ function SvgMap({
     projection.scale(max_radius / radius_in_km * projection.scale());
 
     const path_generator = d3.geoPath().projection(projection);
-
-    // Auto resize effect hook that updates the dimensions state
-    useEffect(() => {
-        const resize = () => {
-            const { width, height } = svg_box_ref.current.getBoundingClientRect();
-            set_dimensions({ width, height });
-        };
-
-        resize();
-        window.addEventListener("resize", resize);
-
-        return () => {
-            window.removeEventListener("resize", resize);
-        };
-    }, [svg_box_ref]);
 
     useEffect(() => {
         const svg = d3.select(svg_ref.current);
@@ -121,7 +107,7 @@ function SvgMap({
         }
     );
 
-    return <div ref={svg_box_ref} className="h-[calc(100%-4rem)] w-full relative border">
+    return <div ref={svg_box_ref} className="h-full w-full relative">
         <svg
             ref={svg_ref}
             className="h-full w-full"

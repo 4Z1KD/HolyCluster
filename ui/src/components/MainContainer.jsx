@@ -6,13 +6,14 @@ import SpotsTable from "@/components/SpotsTable.jsx";
 import Continents from "@/components/Continents.jsx";
 import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
+import Tabs from "@/components/Tabs.jsx";
 import { is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
 
 
 function connect_to_radio() {
@@ -105,6 +106,7 @@ function use_object_local_storage(key, default_value) {
 }
 
 function MainContainer() {
+    const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
     const [filters, set_filters_inner] = use_object_local_storage(
         "filters",
         {
@@ -199,8 +201,6 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
-    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
-
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
@@ -222,12 +222,15 @@ function MainContainer() {
                 && are_filters_including
                 && are_filters_not_excluding
             );
-            if (result) {
-                spots_per_band_count[spot.band]++;
-            }
             return result;
         })
         .slice(0, 100);
+
+    const spots_per_band_count = Object.fromEntries(
+        Array
+            .from(band_colors.keys())
+            .map(band => [band, filtered_spots.filter(spot => spot.band == band).length])
+    );
 
     // Limit the count for 2 digit display
     for (const band in spots_per_band_count) {
@@ -257,7 +260,55 @@ function MainContainer() {
     });
 
     // This is a debug variable that should be set from the dev console
-    let [canvas, _] = useLocalStorage("canvas", false);
+    const [canvas, _] = useLocalStorage("canvas", false);
+
+
+    const is_sm_device = useMediaQuery("only screen and (max-width : 768px)");
+
+    const map = <div className="relative h-full w-full">
+        <MapControls
+            home_locator={settings.locator}
+            map_controls={map_controls}
+            set_map_controls={set_map_controls}
+            radio_status={radio_status}
+            default_radius={settings.default_radius}
+            set_radius_in_km={set_radius_in_km}
+        />
+        {canvas ?
+            <CanvasMap
+                spots={filtered_spots}
+                map_controls={map_controls}
+                set_map_controls={set_map_controls}
+                set_cat_to_spot={set_cat_to_spot}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
+            />
+            :
+            <SvgMap
+                spots={filtered_spots}
+                map_controls={map_controls}
+                set_map_controls={set_map_controls}
+                set_cat_to_spot={set_cat_to_spot}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                pinned_spot={pinned_spot}
+                set_pinned_spot={set_pinned_spot}
+                radius_in_km={radius_in_km}
+                set_radius_in_km={set_radius_in_km}
+            />
+        }
+    </div>;
+
+    const table = <SpotsTable
+        spots={filtered_spots}
+        hovered_spot={hovered_spot}
+        set_hovered_spot={set_hovered_spot}
+        pinned_spot={pinned_spot}
+        set_pinned_spot={set_pinned_spot}
+        set_cat_to_spot={set_cat_to_spot}
+    />;
 
     return <>
         <TopBar
@@ -268,63 +319,31 @@ function MainContainer() {
             set_map_controls={set_map_controls}
             set_radius_in_km={set_radius_in_km}
             network_state={network_state}
+            toggled_ui={toggled_ui}
+            set_toggled_ui={set_toggled_ui}
         />
-        <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
+        <div className="flex relative h-[calc(100%-4rem)]">
             <LeftColumn
                 filters={filters}
                 set_filters={set_filters}
                 spots_per_band_count={spots_per_band_count}
+                toggled_ui={toggled_ui}
             />
-            <div className="relative w-full">
-                <MapControls
-                    home_locator={settings.locator}
-                    map_controls={map_controls}
-                    set_map_controls={set_map_controls}
-                    radio_status={radio_status}
-                    default_radius={settings.default_radius}
-                    set_radius_in_km={set_radius_in_km}
-                />
-                {canvas ?
-                    <CanvasMap
-                        spots={filtered_spots}
-                        map_controls={map_controls}
-                        set_map_controls={set_map_controls}
-                        set_cat_to_spot={set_cat_to_spot}
-                        hovered_spot={hovered_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        pinned_spot={pinned_spot}
-                        set_pinned_spot={set_pinned_spot}
-                    />
-                    :
-                    <SvgMap
-                        spots={filtered_spots}
-                        map_controls={map_controls}
-                        set_map_controls={set_map_controls}
-                        set_cat_to_spot={set_cat_to_spot}
-                        hovered_spot={hovered_spot}
-                        set_hovered_spot={set_hovered_spot}
-                        pinned_spot={pinned_spot}
-                        set_pinned_spot={set_pinned_spot}
-                        radius_in_km={radius_in_km}
-                        set_radius_in_km={set_radius_in_km}
-                    />
-                }
-            </div>
-            <SpotsTable
-                spots={filtered_spots}
-                hovered_spot={hovered_spot}
-                set_hovered_spot={set_hovered_spot}
-                pinned_spot={pinned_spot}
-                set_pinned_spot={set_pinned_spot}
-                set_cat_to_spot={set_cat_to_spot}
-            />
+            { is_sm_device
+                ? <Tabs map={map} table={table}></Tabs>
+                : <>{map}{table}</>}
             <CallsignsView
                 alerts={alerts}
                 set_alerts={set_alerts}
                 filters={filters}
                 set_filters={set_filters}
+                toggled_ui={toggled_ui}
             />
-            <Continents filters={filters} set_filters={set_filters}/>
+            <Continents
+                filters={filters}
+                set_filters={set_filters}
+                toggled_ui={toggled_ui}
+            />
         </div>
     </>;
 }
