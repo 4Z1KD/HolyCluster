@@ -203,6 +203,11 @@ function MainContainer() {
 
     const filtered_spots = spots
         .filter(spot => {
+            // Alerted spots are displayed, no matter what.
+            if (spot.is_alerted) {
+                return true;
+            }
+
             const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
 
