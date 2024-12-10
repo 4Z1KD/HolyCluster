@@ -1,19 +1,48 @@
 function ConnectionState({ size, color, title }) {
-  return <svg
-    width={size}
-    height={size}
-    className="h-full"
-    viewBox="0 0 48 48"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <title>{title}</title>
-    <g>
-      <path fill={color} d="M24,25a15.1,15.1,0,0,0-11.7,5.5A2,2,0,0,0,15.4,33,11.5,11.5,0,0,1,24,29a11.5,11.5,0,0,1,8.6,4,2,2,0,1,0,3.1-2.5A15.1,15.1,0,0,0,24,25Z"/>
-      <path fill={color} d="M24,17A22.9,22.9,0,0,0,7.5,23.9a2,2,0,0,0-.2,2.6,1.9,1.9,0,0,0,3,.2,19.3,19.3,0,0,1,27.4,0,1.9,1.9,0,0,0,3-.2,2,2,0,0,0-.2-2.6A22.9,22.9,0,0,0,24,17Z"/>
-      <path fill={color} d="M45.4,17.4a31.5,31.5,0,0,0-42.8,0,2.1,2.1,0,0,0-.2,2.7h0a1.9,1.9,0,0,0,3,.2,27.3,27.3,0,0,1,37.2,0,1.9,1.9,0,0,0,3-.2h0A2.1,2.1,0,0,0,45.4,17.4Z"/>
-      <circle fill={color} cx="24" cy="38" r="5"/>
-    </g>
-  </svg>
+  const connectedIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M10 18a2 2 0 0 0 4 0m-4 0a2 2 0 0 1 4 0m-4 0H3m11 0h7M5 9.897c0-1.714 1.46-3.104 3.26-3.104.275-1.22 1.255-2.215 2.572-2.611 1.317-.396 2.77-.134 3.811.69 1.042.822 1.514 2.08 1.239 3.3h.693A2.42 2.42 0 0 1 19 10.586 2.42 2.42 0 0 1 16.575 13H8.26C6.46 13 5 11.61 5 9.897Z"
+      />
+      <path stroke={color} strokeWidth="2" d="M12 16v-3" />
+    </svg>
+  );
+
+  const disconnectedIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M10 18a2 2 0 0 0 4 0m-4 0a2 2 0 0 1 4 0m-4 0H3m11 0h7M5 9.897c0-1.714 1.46-3.104 3.26-3.104.275-1.22 1.255-2.215 2.572-2.611 1.317-.396 2.77-.134 3.811.69 1.042.822 1.514 2.08 1.239 3.3h.693A2.42 2.42 0 0 1 19 10.586 2.42 2.42 0 0 1 16.575 13H8.26C6.46 13 5 11.61 5 9.897Z"
+      />
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeWidth="2"
+        d="m6.245 15.255 11.51-11.51"
+      />
+    </svg>
+  );
+
+  return title === "connected" ? connectedIcon : disconnectedIcon;
 }
 
 export default ConnectionState;

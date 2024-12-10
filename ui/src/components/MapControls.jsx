@@ -35,7 +35,7 @@ function MapControls({
             <Button on_click={reset_map}>MyQTH</Button>
             <Night
                 is_active={map_controls.night}
-                size="32"
+                size="40"
                 on_click={event => set_map_controls(state => state.night = !state.night)}
             />
 

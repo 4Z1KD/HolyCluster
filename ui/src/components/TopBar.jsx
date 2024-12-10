@@ -44,6 +44,7 @@ function TopBar({
             </div>
             <h1 className="text-4xl m-auto font-bold">The Holy Cluster</h1>
             <div className={box_container_style}>
+            <Clock/>
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}
@@ -56,7 +57,7 @@ function TopBar({
                 {network_state == "connecting"
                     ? <Spinner size="32" color="lightblue"/>
                     : <NetworkState
-                        size="32"
+                        size="40"
                         color={network_state_colors[network_state]}
                         title={network_state}
                     />
@@ -67,7 +68,7 @@ function TopBar({
                     set_map_controls={set_map_controls}
                     set_radius_in_km={set_radius_in_km}
                 />
-                <Clock/>
+                
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu size="32" on_click={() => set_toggled_ui({...toggled_ui, right: !toggled_ui.right})}/>
                 </div>
