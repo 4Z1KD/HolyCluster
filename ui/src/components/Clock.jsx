@@ -14,7 +14,7 @@ function clock() {
         return number.toString().padStart(2, "0");
     }
     return <div className="flex items-center text-center font-bold text-xl min-w-24">
-        {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}:${pad(time.getUTCSeconds())}z`}
+        {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}z`}
     </div>
 }
 

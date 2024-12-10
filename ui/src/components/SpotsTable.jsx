@@ -6,13 +6,13 @@ import { band_colors, band_light_colors } from "@/filters_data.js";
 
 const cell_classes = {
     time: "w-14",
-    flag: "min-w-[1.3rem] hidden md:table-cell",
+    flag: "w-[1.3rem] md:min-w-[1.3rem]",
     dx: "w-24",
     freq: "w-12",
     band: "w-12 hidden md:table-cell",
     spotter: "w-24",
     mode: "w-12 lg:w-[14rem]",
-    comment: "w-[40rem] text-left hidden lg:table-cell",
+    comment: "w-[40rem] text-left hidden xl:table-cell",
 }
 
 const dxcc_to_country_flag = {
@@ -158,7 +158,7 @@ function SpotsTable({
     return <div className="text-sm h-full overflow-x-visible border-4">
         <div className="overflow-y-scroll h-full w-full">
            <table
-                className="text-center border-collapse"
+                className="max-md:table-fixed max-md:w-full text-center border-collapse"
                 onMouseLeave={_ => set_hovered_spot({source: null, id: null})}
             >
                <tbody className="divide-y divide-slate-200">
