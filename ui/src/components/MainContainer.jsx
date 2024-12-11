@@ -89,8 +89,8 @@ function use_object_local_storage(key, default_value) {
 
     let merged_value;
     if (should_update) {
-        merged_value = Object.fromEntries(Object.entries(default_value).map(([key, value]) => {
-            return [key, current_value[key] || value];
+        merged_value = Object.fromEntries(Object.entries(default_value).map(([key, default_value]) => {
+            return [key, current_value[key] != null ? current_value[key] : default_value];
         }));
     } else {
         merged_value = current_value;
@@ -116,6 +116,8 @@ function MainContainer() {
             spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
             include_callsigns: [],
             exclude_callsigns: [],
+            is_include_filters_active: true,
+            is_exclude_filters_active: true,
             time_limit: 3600,
         }
     );
@@ -213,8 +215,12 @@ function MainContainer() {
 
             const are_include_filters_empty = include_filters_callsigns.length == 0;
             const are_exclude_filters_empty = exclude_filters_callsigns.length == 0;
-            const are_filters_including = is_matching_list(include_filters_callsigns, spot.dx_callsign) || are_include_filters_empty;
-            const are_filters_not_excluding = !is_matching_list(exclude_filters_callsigns, spot.dx_callsign) || are_exclude_filters_empty;
+            const are_filters_including = (
+                is_matching_list(include_filters_callsigns, spot.dx_callsign) || are_include_filters_empty
+            ) || !filters.is_include_filters_active;
+            const are_filters_not_excluding = (
+                !is_matching_list(exclude_filters_callsigns, spot.dx_callsign) || are_exclude_filters_empty
+            ) || !filters.is_exclude_filters_active;
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];

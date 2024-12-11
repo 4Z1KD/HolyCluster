@@ -12,7 +12,7 @@ function CallsignsList({ callsigns, set_callsigns, title }) {
     const button_inactive_classes = "border border-gray-400 bg-slate-200";
 
     return <div className="p-1">
-        <h3 className="text-2xl text-center">{title}</h3>
+        {title}
         <div className="my-4 mx-2">
             {callsigns.map(([callsign, is_suffix], index) => {
                 return <div className="flex justify-start items-center mb-1 space-x-2 w-full" key={index}>

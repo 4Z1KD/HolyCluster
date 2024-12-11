@@ -6,7 +6,7 @@ function Alerts({ alerts, set_alerts }) {
     return <CallsignsList
         callsigns={alerts}
         set_callsigns={set_alerts}
-        title="Alerts"
+        title={<h3 className="text-2xl p-1">Alerts</h3>}
     />
 }
 
