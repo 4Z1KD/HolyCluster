@@ -129,7 +129,7 @@ function SvgMap({
                     <circle r={radius} cx={center_x} cy={center_y}/>
                 </clipPath>
             </defs>
-            <g style={{font: `bold ${text_height}px sans-serif`, userSelect: "none"}}>
+            <g className="font-medium text-lg select-none">
                 <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
                 <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
             </g>

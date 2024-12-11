@@ -13,7 +13,7 @@ function clock() {
     function pad(number) {
         return number.toString().padStart(2, "0");
     }
-    return <div className="flex items-center text-center font-bold text-xl min-w-24">
+    return <div className="flex items-center text-center font-bold text-xl min-w-18">
         {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}z`}
     </div>
 }
