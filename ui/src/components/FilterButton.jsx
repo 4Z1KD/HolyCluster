@@ -16,9 +16,7 @@ function FilterButton({
         "max-w-18",
         "text-center",
         "text-base",
-        "font-bold",
-        "rounded-md",
-        "border",
+        "rounded-full",
         "cursor-pointer",
         `hover:brightness-${hover_brightness}`,
     ];

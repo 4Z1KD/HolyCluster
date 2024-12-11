@@ -36,6 +36,8 @@ class OmnirigRadioController:
             "USB": 2,
             "LSB": 1,
             "FT8": 12,
+            "FT4": 12,
+            "DIGI": 12,
             "CW": 3,
         }
         self.omni_client.setMode(mode_to_number[mode])

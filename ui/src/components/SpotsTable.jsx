@@ -95,7 +95,7 @@ function Spot({
             backgroundColor: is_hovered ? band_light_colors[spot.band] : "",
             outlineColor: spot.is_alerted ? band_colors.get(spot.band) : "",
         }}
-        className={row_classes}
+        className={row_classes + " h-7"}
         onMouseEnter={() => set_hovered_spot({source: "table", id: spot.id})}
         onClick={() => set_pinned_spot(spot.id)}
     >
@@ -115,7 +115,7 @@ function Spot({
         <td className={cell_classes.flag} title={spot.dx_country}>
             { flag ? <img className="m-auto" width="16" src={`data:image/webp;base64, ${flag}`}/> : ""}
         </td>
-        <td className={cell_classes.dx + " font-bold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
+        <td className={cell_classes.dx + " font-semibold"}><Callsign callsign={spot.dx_callsign}></Callsign></td>
         <td className={cell_classes.freq}>
             <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
                 {spot.freq}
@@ -123,10 +123,10 @@ function Spot({
         </td>
         <td className={cell_classes.band + " flex justify-center items-center"}>
             <p
-                className="px-1 rounded-xl border border-gray-700"
+                className="px-1 rounded-full"
                 style={{ backgroundColor: band_colors.get(spot.band) }}
             >
-                <strong>{spot.band}</strong>
+                <div className="font-medium">{spot.band}</div>
             </p>
         </td>
         <td className={cell_classes.spotter}><Callsign callsign={spot.spotter_callsign}></Callsign></td>
