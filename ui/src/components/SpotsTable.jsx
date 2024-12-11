@@ -150,7 +150,7 @@ function SpotsTable({
     useEffect(() => {
         const hovered_ref = row_refs.current[hovered_spot.id];
 
-        if (hovered_ref != undefined && hovered_spot.source == "map") {
+        if (hovered_ref != undefined && hovered_spot.source == "map" && pinned_spot == undefined) {
             hovered_ref.scrollIntoView({block: "center", behavior: "instant"});
         }
     }, [hovered_spot]);
