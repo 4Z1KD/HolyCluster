@@ -1,4 +1,5 @@
 import { to_radian } from "@/utils.js";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 function MapAngles({
     radius,
@@ -19,7 +20,9 @@ function MapAngles({
             ]
         })
 
-    return <g>
+    const is_max_md_device = useMediaQuery("only screen and (min-width : 768px)");
+
+    return is_max_md_device ? <g>
         {angle_labels.map(([label, [x, y]]) => <text
             key={label}
             dominantBaseline="middle"
@@ -28,7 +31,7 @@ function MapAngles({
             y={y}
             fontSize="20px"
         >{label}°</text>)}
-    </g>;
+    </g> : "";
 
 }
 

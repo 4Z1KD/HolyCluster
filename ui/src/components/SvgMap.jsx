@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useMeasure } from "@uidotdev/usehooks";
+import { useMeasure, useMediaQuery } from "@uidotdev/usehooks";
 
 import * as d3 from "d3";
 import haversine from "haversine-distance";
@@ -46,7 +46,8 @@ function SvgMap({
     const [svg_box_ref, {width, height}] = useMeasure();
     const max_radius = 20000;
 
-    const inner_padding = 50;
+    const is_max_md_device = useMediaQuery("only screen and (min-width : 768px)");
+    const inner_padding = is_max_md_device ? 50 : 5;
     const center_x = width / 2;
     const center_y = height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;

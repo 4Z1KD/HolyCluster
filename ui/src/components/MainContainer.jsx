@@ -274,7 +274,7 @@ function MainContainer() {
     const [canvas, _] = useLocalStorage("canvas", false);
 
 
-    const is_sm_device = useMediaQuery("only screen and (max-width : 768px)");
+    const is_md_device = useMediaQuery("only screen and (max-width : 768px)");
 
     const map = <div className="relative h-full w-full">
         <MapControls
@@ -340,7 +340,7 @@ function MainContainer() {
                 spots_per_band_count={spots_per_band_count}
                 toggled_ui={toggled_ui}
             />
-            { is_sm_device
+            { is_md_device
                 ? <Tabs map={map} table={table}></Tabs>
                 : <>{map}{table}</>}
             <CallsignsView
