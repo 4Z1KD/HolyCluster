@@ -6,7 +6,7 @@ import Maidenhead from "maidenhead";
 import { century, equationOfTime, declination } from "solar-calculator";
 
 import { to_radian, mod } from "@/utils.js";
-import { band_colors, band_light_colors } from "@/filters_data.js";
+import { band_colors, band_light_colors, map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -327,7 +327,7 @@ function CanvasMap({
             dxcc_map.features.forEach(feature => {
                 context.beginPath();
                 path_generator(feature);
-                context.fillStyle = "#def7cf";
+                context.fillStyle = map_land_color;
                 context.strokeStyle = "#777777";
                 context.fill();
                 context.stroke();
