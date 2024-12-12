@@ -7,7 +7,7 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { band_colors } from "@/filters_data.js";
+import { band_colors, map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot/index.jsx";
@@ -150,7 +150,7 @@ function SvgMap({
                 {dxcc_map.features.map(shape => {
                     return (
                         <path
-                            fill="#def7cf"
+                            fill={map_land_color}
                             stroke="#777"
                             pointerEvents="none"
                             key={shape.properties.dxcc_name}
