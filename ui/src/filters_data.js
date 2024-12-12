@@ -53,4 +53,4 @@ export const continents = [
     "OC",
 ];
 
-export const map_land_color = "#C2C2C2";
+export const map_land_color = "#D7D7D7";
