@@ -1,7 +1,7 @@
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 import About from "@/components/About.jsx";
-import { band_colors, band_light_colors, modes } from "@/filters_data.js";
+import { band_colors, band_text_colors, band_light_colors, modes } from "@/filters_data.js";
 
 const Hex = <svg fill="#000000" width="16" height="16" viewBox="0 0 256 256">
     <path d="M228,80.668V175.332a16.0255,16.0255,0,0,1-8.12695,13.9292l-84,47.47852a16.08782,16.08782,0,0,1-15.7461,0l-84-47.478A16.02688,16.02688,0,0,1,28,175.332V80.668a16.0255,16.0255,0,0,1,8.127-13.9292l84-47.47852a16.08654,16.08654,0,0,1,15.7461,0l84,47.478A16.02688,16.02688,0,0,1,228,80.668Z" />
@@ -58,6 +58,7 @@ function LeftColumn({
                         text={band + "m"}
                         is_active={filters.bands[band]}
                         color={color}
+                        text_color={band_text_colors[band]}
                         on_click={_ => set_filters(state => state.bands[band] = !state.bands[band])}
                         hover_brightness="125"
                         size="small"

@@ -5,6 +5,7 @@ function FilterButton({
     is_active,
     on_click,
     color = "#D1FAE5",
+    text_color = "#000000",
     hover_brightness = "110",
     size = "normal",
 }) {
@@ -37,6 +38,7 @@ function FilterButton({
         onClick={on_click}
         style={{
             backgroundColor: is_active ? color : inactive_background_color,
+            color: text_color,
             userSelect: "none",
         }}>
         <span className="inline-flex items-center space-x-2">

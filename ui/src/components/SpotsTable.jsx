@@ -2,7 +2,7 @@ import X from "@/components/X.jsx";
 import { useEffect, forwardRef, useRef } from "react";
 
 import flags from "@/assets/flags.json";
-import { band_colors, band_light_colors } from "@/filters_data.js";
+import { band_colors, band_text_colors, band_light_colors } from "@/filters_data.js";
 
 const cell_classes = {
     time: "w-14",
@@ -124,7 +124,10 @@ function Spot({
         <td className={cell_classes.band + " flex justify-center items-center"}>
             <p
                 className="px-1 rounded-full font-medium"
-                style={{ backgroundColor: band_colors.get(spot.band) }}
+                style={{
+                    backgroundColor: band_colors.get(spot.band),
+                    color: band_text_colors[spot.band],
+                }}
             >
                 {spot.band}
             </p>
