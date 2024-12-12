@@ -205,12 +205,12 @@ function MainContainer() {
 
     const filtered_spots = spots
         .filter(spot => {
+            const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             // Alerted spots are displayed, no matter what.
-            if (spot.is_alerted) {
+            if (spot.is_alerted && is_in_time_limit) {
                 return true;
             }
 
-            const is_in_time_limit = (current_time - spot.time) < filters.time_limit;
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
 
             const are_include_filters_empty = include_filters_callsigns.length == 0;
