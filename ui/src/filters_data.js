@@ -17,13 +17,13 @@ export const bright_text_color = "white";
 export const dark_text_color = "black";
 
 export const band_text_colors = {
-    4: dark_text_color,
+    4: bright_text_color,
     6: dark_text_color,
     10: dark_text_color,
     12: dark_text_color,
     15: dark_text_color,
     17: dark_text_color,
-    20: dark_text_color,
+    20: bright_text_color,
     30: dark_text_color,
     40: dark_text_color,
     60: bright_text_color,
