@@ -8,6 +8,7 @@ import webbrowser
 import os
 
 import fastapi
+from fastapi.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 import httpx
 import uvicorn
@@ -112,7 +113,6 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
             break
 
 
-@app.get("/{path:path}")
 async def proxy_to_main_server(path: str, response: fastapi.Response):
     async with httpx.AsyncClient() as client:
         result = await client.get(f"https://holycluster.iarc.org/{path}")
@@ -121,6 +121,19 @@ async def proxy_to_main_server(path: str, response: fastapi.Response):
         for (key, value) in result.headers.items():
             response.headers[key] = value
         return response
+
+
+if os.environ.get("LOCAL_UI") is not None:
+    @app.get("/spots")
+    async def proxy_spots_request(response: fastapi.Response):
+        return await proxy_to_main_server("spots", response)
+
+    UI_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ui/dist")
+    app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="static")
+else:
+    @app.get("/{path:path}")
+    async def proxy_all_requests(path: str, response: fastapi.Response):
+        return await proxy_to_main_server(path, response)
 
 
 def main():
