@@ -16,18 +16,16 @@ import SpotPopup from "@/components/SpotPopup.jsx";
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
 function get_sun_coordinates() {
-    const now = new Date
-    const day = new Date(+now).setUTCHours(0, 0, 0, 0)
-    const t = century(now)
-    const longitude = (day - now) / 864e5 * 360 - 180
-    return [longitude - equationOfTime(t) / 4, declination(t)]
+    const now = new Date();
+    const day = new Date(+now).setUTCHours(0, 0, 0, 0);
+    const t = century(now);
+    const longitude = ((day - now) / 864e5) * 360 - 180;
+    return [longitude - equationOfTime(t) / 4, declination(t)];
 }
 
 function get_night_circle() {
-    const antipode = ([longitude, latitude]) => [longitude + 180, -latitude]
-    return d3.geoCircle()
-        .radius(90)
-        .center(antipode(get_sun_coordinates()))()
+    const antipode = ([longitude, latitude]) => [longitude + 180, -latitude];
+    return d3.geoCircle().radius(90).center(antipode(get_sun_coordinates()))();
 }
 
 function SvgMap({
@@ -44,7 +42,7 @@ function SvgMap({
 }) {
     const svg_ref = useRef(null);
     // const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
-    const [svg_box_ref, {width, height}] = useMeasure();
+    const [svg_box_ref, { width, height }] = useMeasure();
     const max_radius = 20000;
 
     const is_max_md_device = useMediaQuery("only screen and (min-width : 768px)");
@@ -56,45 +54,41 @@ function SvgMap({
 
     const projection = d3["geoAzimuthalEquidistant"]()
         .precision(0.1)
-        .fitSize(
-            [width - inner_padding * 2, height - inner_padding * 2],
-            dxcc_map
-        )
+        .fitSize([width - inner_padding * 2, height - inner_padding * 2], dxcc_map)
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
-    projection.scale(max_radius / radius_in_km * projection.scale());
+    projection.scale((max_radius / radius_in_km) * projection.scale());
 
     const path_generator = d3.geoPath().projection(projection);
 
     useEffect(() => {
         const svg = d3.select(svg_ref.current);
-        const zoom = d3.zoom()
+        const zoom = d3
+            .zoom()
             .scaleExtent([1, 20])
-            .on("zoom", event => set_radius_in_km((21 - Math.round(event.transform.k)) * 1000))
+            .on("zoom", event => set_radius_in_km((21 - Math.round(event.transform.k)) * 1000));
         svg.call(zoom);
 
-        const k_from_radius_in_km = 21 - (radius_in_km / 1000);
+        const k_from_radius_in_km = 21 - radius_in_km / 1000;
         zoom.scaleTo(svg, k_from_radius_in_km);
-    }, [map_controls])
+    }, [map_controls]);
 
-    const text_height = 20
-    const text_y = 30
+    const text_height = 20;
+    const text_y = 30;
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
     const [popup_position, set_popup_position] = useState(null);
 
-
     let hovered_spot_data;
     let hovered_spot_distance;
-    const rendered_spots = spots
-        .toReversed()
-        .map((spot, index) => {
-            if (spot.id == hovered_spot.id) {
-                hovered_spot_data = spot;
-                hovered_spot_distance = (haversine(spot.dx_loc, spot.spotter_loc) / 1000).toFixed();
-            }
-            return <Spot
+    const rendered_spots = spots.toReversed().map((spot, index) => {
+        if (spot.id == hovered_spot.id) {
+            hovered_spot_data = spot;
+            hovered_spot_distance = (haversine(spot.dx_loc, spot.spotter_loc) / 1000).toFixed();
+        }
+        return (
+            <Spot
                 key={index}
                 spot={spot}
                 path_generator={path_generator}
@@ -105,83 +99,97 @@ function SvgMap({
                 pinned_spot={pinned_spot}
                 set_pinned_spot={set_pinned_spot}
                 set_popup_position={set_popup_position}
-            />;
-        }
-    );
-
-    return <div ref={svg_box_ref} className="h-full w-full relative">
-        <svg
-            ref={svg_ref}
-            className="h-full w-full"
-            onClick={event => {
-                const dims = svg_ref.current.getBoundingClientRect();
-                const x = event.clientX - dims.left;
-                const y = event.clientY - dims.top;
-                const distance_from_center = Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
-
-                if (event.detail == 2 && distance_from_center <= radius) {
-                    const [lon, lat] = projection.invert([x, y]);
-                    const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
-                    set_map_controls(state => state.location = { displayed_locator, location: [ lon, lat ] })
-                }
-            }}
-        >
-            <defs>
-                <clipPath id="map-clip">
-                    <circle r={radius} cx={center_x} cy={center_y}/>
-                </clipPath>
-            </defs>
-            <g className="font-medium text-lg select-none">
-                <text x={text_height} y={text_y}>Radius: {Math.round(radius_in_km)} KM</text>
-                <text x={text_height} y={text_y + text_height + 10}>Spots: {spots.length}</text>
-            </g>
-
-            <MapAngles
-                center_x={center_x}
-                center_y={center_y}
-                radius={radius + inner_padding / 2}
             />
+        );
+    });
 
-            <g clipPath="url(#map-clip)">
-                <path
-                    fill="none"
-                    stroke="#eee"
-                    pointerEvents="none"
-                    d={path_generator(d3.geoGraticule10())}
-                ></path>
-                {dxcc_map.features.map(shape => {
-                    return (
-                        <path
-                            fill={map_land_color}
-                            stroke="#777"
-                            pointerEvents="none"
-                            key={shape.properties.dxcc_name}
-                            d={path_generator(shape)}
-                        >
-                            <title>{shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})</title>
-                        </path>
-                    )
-                })}
-                {rendered_spots}
-                {map_controls.night ?
+    return (
+        <div ref={svg_box_ref} className="h-full w-full relative">
+            <svg
+                ref={svg_ref}
+                className="h-full w-full"
+                onClick={event => {
+                    const dims = svg_ref.current.getBoundingClientRect();
+                    const x = event.clientX - dims.left;
+                    const y = event.clientY - dims.top;
+                    const distance_from_center = Math.sqrt(
+                        (center_x - x) ** 2 + (center_y - y) ** 2,
+                    );
+
+                    if (event.detail == 2 && distance_from_center <= radius) {
+                        const [lon, lat] = projection.invert([x, y]);
+                        const displayed_locator = new Maidenhead(lat, lon).locator.slice(0, 6);
+                        set_map_controls(
+                            state => (state.location = { displayed_locator, location: [lon, lat] }),
+                        );
+                    }
+                }}
+            >
+                <defs>
+                    <clipPath id="map-clip">
+                        <circle r={radius} cx={center_x} cy={center_y} />
+                    </clipPath>
+                </defs>
+                <g className="font-medium text-lg select-none">
+                    <text x={text_height} y={text_y}>
+                        Radius: {Math.round(radius_in_km)} KM
+                    </text>
+                    <text x={text_height} y={text_y + text_height + 10}>
+                        Spots: {spots.length}
+                    </text>
+                </g>
+
+                <MapAngles
+                    center_x={center_x}
+                    center_y={center_y}
+                    radius={radius + inner_padding / 2}
+                />
+
+                <g clipPath="url(#map-clip)">
                     <path
-                        style={{pointerEvents: "none", fill: "rgba(0,0,128,0.2)"}}
-                        d={path_generator(get_night_circle())}
-                    /> : ""
-                }
-            </g>
-            <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
-        </svg>
-        <SpotPopup
-            visible={hovered_spot.source == "map" && popup_position != null}
-            hovered_spot={hovered_spot}
-            set_hovered_spot={set_hovered_spot}
-            set_pinned_spot={set_pinned_spot}
-            popup_position={popup_position}
-            hovered_spot_data={hovered_spot_data}
-            distance={hovered_spot_distance}
-        />
-    </div>;
+                        fill="none"
+                        stroke="#eee"
+                        pointerEvents="none"
+                        d={path_generator(d3.geoGraticule10())}
+                    ></path>
+                    {dxcc_map.features.map(shape => {
+                        return (
+                            <path
+                                fill={map_land_color}
+                                stroke="#777"
+                                pointerEvents="none"
+                                key={shape.properties.dxcc_name}
+                                d={path_generator(shape)}
+                            >
+                                <title>
+                                    {shape.properties.dxcc_name} ({shape.properties.dxcc_prefix})
+                                </title>
+                            </path>
+                        );
+                    })}
+                    {rendered_spots}
+                    {map_controls.night ? (
+                        <path
+                            style={{ pointerEvents: "none", fill: "rgba(0,0,128,0.2)" }}
+                            d={path_generator(get_night_circle())}
+                        />
+                    ) : (
+                        ""
+                    )}
+                </g>
+                <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black" />
+            </svg>
+            <SpotPopup
+                visible={hovered_spot.source == "map" && popup_position != null}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                set_pinned_spot={set_pinned_spot}
+                popup_position={popup_position}
+                hovered_spot_data={hovered_spot_data}
+                distance={hovered_spot_distance}
+            />
+        </div>
+    );
 }
 
 export default SvgMap;
