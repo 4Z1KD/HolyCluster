@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import Maidenhead from "maidenhead";
 import { century, equationOfTime, declination } from "solar-calculator";
+import { useMeasure } from "@uidotdev/usehooks";
 
 import { to_radian, mod } from "@/utils.js";
 import { band_colors, band_light_colors, map_land_color } from "@/filters_data.js";
@@ -93,9 +94,9 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
 
 function draw_map_angles(
     context,
-    { radius, center_x, center_y, dimensions, scale, degrees_diff = 15 },
+    { radius, center_x, center_y, height, scale, degrees_diff = 15 },
 ) {
-    if (dimensions.height < 300) {
+    if (height < 300) {
         return;
     }
 
@@ -141,7 +142,8 @@ function apply_zoom_and_drag_behaviors(
         zoom_transform,
         set_zoom_transform,
         set_map_controls,
-        dimensions,
+        width,
+        height,
         draw_map,
         projection,
         canvas,
@@ -156,13 +158,13 @@ function apply_zoom_and_drag_behaviors(
         .scaleExtent([1, 20])
         .translateExtent([
             [0, 0],
-            [dimensions.width, dimensions.height],
+            [width, height],
         ])
         .on("zoom", event => {
             if (!is_drawing) {
                 is_drawing = true;
                 requestAnimationFrame(() => {
-                    context.clearRect(0, 0, dimensions.width, dimensions.height);
+                    context.clearRect(0, 0, width, height);
                     local_zoom_transform = event.transform;
                     draw_map(local_zoom_transform);
                     is_drawing = false;
@@ -202,7 +204,7 @@ function apply_zoom_and_drag_behaviors(
             if (!is_drawing) {
                 is_drawing = true;
                 requestAnimationFrame(() => {
-                    context.clearRect(0, 0, dimensions.width, dimensions.height);
+                    context.clearRect(0, 0, width, height);
                     draw_map(local_zoom_transform);
                     is_drawing = false;
                 });
@@ -231,43 +233,28 @@ function CanvasMap({
     set_hovered_spot,
 }) {
     const canvas_ref = useRef(null);
-    const div_ref = useRef(null);
-    const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
+    const [div_ref, { width, height }] = useMeasure();
+    console.log(width, height);
+    const [popup_position, set_popup_position] = useState(null);
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
     const inner_padding = 50;
-    const center_x = dimensions.width / 2;
-    const center_y = dimensions.height / 2;
+    const center_x = width / 2;
+    const center_y = height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
-
-    useEffect(() => {
-        const resize = () => {
-            const { width, height } = div_ref.current.getBoundingClientRect();
-            // The height - 1 is a hack to prevent a scrollbar of the entire page to appear.
-            // I'm not sure why this happens.
-            set_dimensions({ width, height: height - 1 });
-        };
-
-        resize();
-        window.addEventListener("resize", resize);
-
-        return () => {
-            window.removeEventListener("resize", resize);
-        };
-    }, [div_ref]);
 
     const projection = d3
         .geoAzimuthalEquidistant()
         .precision(0.1)
-        .fitSize(
-            [dimensions.width - inner_padding * 2, dimensions.height - inner_padding * 2],
-            dxcc_map,
-        )
+        .fitSize([width - inner_padding * 2, height - inner_padding * 2], dxcc_map)
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
     useEffect(() => {
+        if (width == null || height == null) {
+            return;
+        }
         const canvas = canvas_ref.current;
         const context = canvas.getContext("2d");
 
@@ -275,7 +262,7 @@ function CanvasMap({
 
         function draw_map(transform) {
             // Clear the map before rendering
-            context.clearRect(0, 0, dimensions.width, dimensions.height);
+            context.clearRect(0, 0, width, height);
 
             context.save();
 
@@ -285,10 +272,10 @@ function CanvasMap({
             context.stroke();
 
             // Heuristics for the scale of the map. This is good enough
-            const scale = Math.max(Math.min(dimensions.height / 900, 1.1), 0.5);
+            const scale = Math.max(Math.min(height / 900, 1.1), 0.5);
 
             draw_map_info_text(context, { spots, scale });
-            draw_map_angles(context, { radius, center_x, center_y, dimensions, scale });
+            draw_map_angles(context, { radius, center_x, center_y, height, scale });
 
             // Clip the map content to the circle
             context.beginPath();
@@ -331,7 +318,8 @@ function CanvasMap({
             zoom_transform,
             set_zoom_transform,
             set_map_controls,
-            dimensions,
+            width,
+            height,
             draw_map,
             projection,
             canvas,
@@ -373,13 +361,14 @@ function CanvasMap({
         center_lat,
         zoom_transform,
         hovered_spot,
-        dimensions,
+        width,
+        height,
         map_controls,
     ]);
 
     return (
-        <div ref={div_ref} className="aspect-square h-[calc(100%-4rem)] w-full">
-            <canvas ref={canvas_ref} width={dimensions.width} height={dimensions.height} />
+        <div ref={div_ref} className="h-full w-full">
+            <canvas ref={canvas_ref} width={width} height={height} />
         </div>
     );
 }
