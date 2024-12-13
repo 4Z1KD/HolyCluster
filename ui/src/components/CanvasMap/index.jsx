@@ -17,7 +17,7 @@ function apply_zoom_and_drag_behaviors(
         set_map_controls,
         width,
         height,
-        draw_map,
+        draw_map_inner,
         projection,
         canvas,
         center_lat,
@@ -39,7 +39,7 @@ function apply_zoom_and_drag_behaviors(
                 requestAnimationFrame(() => {
                     context.clearRect(0, 0, width, height);
                     local_zoom_transform = event.transform;
-                    draw_map(local_zoom_transform);
+                    draw_map_inner(local_zoom_transform);
                     is_drawing = false;
                 });
             }
@@ -108,6 +108,7 @@ function CanvasMap({
     set_pinned_spot,
 }) {
     const canvas_ref = useRef(null);
+    const shadow_canvas_ref = useRef(null);
     const [div_ref, { width, height }] = useMeasure();
     const [popup_position, set_popup_position] = useState(null);
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
@@ -129,14 +130,16 @@ function CanvasMap({
         if (width == null || height == null) {
             return;
         }
-        const canvas = canvas_ref.current;
-        const context = canvas.getContext("2d");
+        const context = canvas_ref.current.getContext("2d");
+        const shadow_canvas = shadow_canvas_ref.current;
+        const shadow_context = shadow_canvas.getContext("2d");
 
         const path_generator = d3.geoPath().projection(projection).context(context);
 
         function draw_map_inner(transform) {
             draw_map(
                 context,
+                shadow_context,
                 spots,
                 hovered_spot,
                 width,
@@ -159,9 +162,9 @@ function CanvasMap({
             set_map_controls,
             width,
             height,
-            draw_map: draw_map_inner,
+            draw_map_inner,
             projection,
-            canvas,
+            canvas: shadow_canvas_ref.current,
             center_lat,
         });
 
@@ -188,21 +191,12 @@ function CanvasMap({
         };
 
         // Add event listener for mousemove
-        canvas.addEventListener("mousemove", handle_mouse_move);
+        shadow_canvas.addEventListener("mousemove", handle_mouse_move);
 
         return () => {
-            canvas.removeEventListener("mousemove", handle_mouse_move);
+            shadow_canvas.removeEventListener("mousemove", handle_mouse_move);
         };
-    }, [
-        spots,
-        center_lon,
-        center_lat,
-        zoom_transform,
-        hovered_spot,
-        width,
-        height,
-        map_controls,
-    ]);
+    }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
 
     const hovered_spot_data = spots.find(spot => spot.id == hovered_spot);
     const hovered_spot_distance =
@@ -211,8 +205,19 @@ function CanvasMap({
             : "";
 
     return (
-        <div ref={div_ref} className="h-full w-full">
-            <canvas ref={canvas_ref} width={width} height={height} />
+        <div ref={div_ref} className="relative h-full w-full">
+            <canvas
+                className="absolute top-0 left-0"
+                ref={canvas_ref}
+                width={width}
+                height={height}
+            />
+            <canvas
+                className="opacity-0 absolute top-0 left-0 none"
+                ref={shadow_canvas_ref}
+                width={width}
+                height={height}
+            />
             <SpotPopup
                 visible={hovered_spot.source == "map" && popup_position != null}
                 hovered_spot={hovered_spot}

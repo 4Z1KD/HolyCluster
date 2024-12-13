@@ -134,6 +134,7 @@ export function apply_context_transform(context, transform) {
 
 export function draw_map(
     context,
+    shadow_context,
     spots,
     hovered_spot,
     width,
