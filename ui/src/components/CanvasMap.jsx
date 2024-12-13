@@ -266,11 +266,6 @@ function CanvasMap({
 
             context.save();
 
-            // Map outline
-            context.beginPath();
-            context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
-            context.stroke();
-
             // Heuristics for the scale of the map. This is good enough
             const scale = Math.max(Math.min(height / 900, 1.1), 0.5);
 
@@ -310,6 +305,11 @@ function CanvasMap({
             }
 
             context.restore();
+
+            // Map outline
+            context.beginPath();
+            context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+            context.stroke();
         }
 
         draw_map(zoom_transform);
