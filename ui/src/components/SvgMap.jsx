@@ -172,7 +172,7 @@ function SvgMap({
             <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black"/>
         </svg>
         {hovered_spot.source == "map" && popup_position != null ? <div
-            className="absolute p-2 bg-white border border-gray-300 rounded shadow-lg"
+            className="absolute p-2 w-fit bg-white border border-gray-300 rounded shadow-lg z-50"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
             onMouseLeave={() => set_hovered_spot({source: null, id: null})}
             onClick={() => set_pinned_spot(hovered_spot_data.id)}
