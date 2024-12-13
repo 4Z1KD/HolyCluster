@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 
 import * as d3 from "d3";
 import geojsonRewind from "@mapbox/geojson-rewind";
+import haversine from "haversine-distance";
 import Maidenhead from "maidenhead";
 import { century, equationOfTime, declination } from "solar-calculator";
 import { useMeasure } from "@uidotdev/usehooks";
@@ -9,6 +10,7 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { to_radian, mod } from "@/utils.js";
 import { band_colors, band_light_colors, map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
+import SpotPopup from "@/components/SpotPopup.jsx";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
@@ -225,16 +227,17 @@ function apply_zoom_and_drag_behaviors(
 }
 
 function CanvasMap({
-    spots = [],
+    spots,
     map_controls,
     set_map_controls,
     set_cat_to_spot,
     hovered_spot,
     set_hovered_spot,
+    pinned_spot,
+    set_pinned_spot,
 }) {
     const canvas_ref = useRef(null);
     const [div_ref, { width, height }] = useMeasure();
-    console.log(width, height);
     const [popup_position, set_popup_position] = useState(null);
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
@@ -366,9 +369,24 @@ function CanvasMap({
         map_controls,
     ]);
 
+    const hovered_spot_data = spots.find(spot => spot.id == hovered_spot);
+    const hovered_spot_distance =
+        hovered_spot_data != null
+            ? (haversine(hovered_spot_data.dx_loc, hovered_spot_data.spotter_loc) / 1000).toFixed()
+            : "";
+
     return (
         <div ref={div_ref} className="h-full w-full">
             <canvas ref={canvas_ref} width={width} height={height} />
+            <SpotPopup
+                visible={hovered_spot.source == "map" && popup_position != null}
+                hovered_spot={hovered_spot}
+                set_hovered_spot={set_hovered_spot}
+                set_pinned_spot={set_pinned_spot}
+                popup_position={popup_position}
+                hovered_spot_data={hovered_spot_data}
+                distance={hovered_spot_distance}
+            />
         </div>
     );
 }
