@@ -25,9 +25,10 @@ function FilterButton({
     }
 
     if (is_active) {
-        box_style.push("border-slate-700", `bg-[${color}]`, `text-[${text_color}]`);
+        box_style.push("border", "border-slate-700", `bg-[${color}]`, `text-[${text_color}]`);
     } else {
         box_style.push(
+            "border",
             "border-slate-400",
             "bg-transparent",
             "outline",

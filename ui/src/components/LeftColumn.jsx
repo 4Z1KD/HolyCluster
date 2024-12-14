@@ -88,7 +88,7 @@ function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) 
                                 text={
                                     <>
                                         {mode}
-                                        <div className="ml-1">{mode_to_symbol[mode]}</div>
+                                        <div className="ml-1 ">{mode_to_symbol[mode]}</div>
                                     </>
                                 }
                                 is_active={filters.modes[mode]}
