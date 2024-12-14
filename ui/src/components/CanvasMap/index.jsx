@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import haversine from "haversine-distance";
 import Maidenhead from "maidenhead";
 import { useMeasure } from "@uidotdev/usehooks";
+import { HashMap } from "hashmap";
 
 import { mod } from "@/utils.js";
 import { build_geojson_line, dxcc_map, apply_context_transform, draw_map } from "./draw_map.js";
@@ -97,6 +98,24 @@ function apply_zoom_and_drag_behaviors(
     zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform);
 }
 
+function random_color() {
+    const random_byte = () => Math.floor(Math.random() * 256);
+    return [random_byte(), random_byte(), random_byte()];
+}
+
+function generate_shadow_palette(spots) {
+    const shadow_palette = new HashMap(
+        spots
+            .map(spot => [
+                [["dx", spot.id], random_color()],
+                [["arc", spot.id], random_color()],
+                [["spotter", spot.id], random_color()],
+            ])
+            .flat(),
+    );
+    return shadow_palette;
+}
+
 function CanvasMap({
     spots,
     map_controls,
@@ -126,6 +145,8 @@ function CanvasMap({
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
+    const shadow_palette = generate_shadow_palette(spots);
+
     useEffect(() => {
         if (width == null || height == null) {
             return;
@@ -133,8 +154,6 @@ function CanvasMap({
         const context = canvas_ref.current.getContext("2d");
         const shadow_canvas = shadow_canvas_ref.current;
         const shadow_context = shadow_canvas.getContext("2d");
-
-        const path_generator = d3.geoPath().projection(projection).context(context);
 
         function draw_map_inner(transform) {
             draw_map(
@@ -148,9 +167,9 @@ function CanvasMap({
                 center_y,
                 radius,
                 transform,
-                path_generator,
                 projection,
                 map_controls.night,
+                shadow_palette,
             );
         }
 
@@ -169,25 +188,6 @@ function CanvasMap({
         });
 
         const handle_mouse_move = event => {
-            const { offsetX, offsetY } = event;
-            let found_spot = null;
-
-            context.save();
-            spots.forEach(spot => {
-                const line = build_geojson_line(spot);
-                context.beginPath();
-                apply_context_transform(context, zoom_transform);
-                path_generator(line);
-                context.lineWidth = 8 / zoom_transform.k;
-
-                if (context.isPointInStroke(offsetX, offsetY)) {
-                    found_spot = spot.id;
-                }
-            });
-            context.restore();
-            if (found_spot !== hovered_spot.id) {
-                set_hovered_spot({ source: "map", id: found_spot });
-            }
         };
 
         // Add event listener for mousemove

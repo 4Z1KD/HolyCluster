@@ -84,6 +84,45 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     context.stroke();
 }
 
+function rgb_triplet_to_color([red, green, blue]) {
+    return `rgb(${red}, ${green}, ${blue})`;
+}
+
+function draw_shadow_spot(
+    context,
+    spot,
+    shadow_palette,
+    { transform, path_generator, projection },
+) {
+    const line = build_geojson_line(spot);
+
+    // Render the arc of the spot
+    context.beginPath();
+    context.strokeStyle = rgb_triplet_to_color(shadow_palette.get(["arc", spot.id]));
+    context.lineWidth = 6 / transform.k;
+    path_generator(line);
+    context.stroke();
+
+    const dx_size = 10 / transform.k;
+    const [dx_x, dx_y] = projection(spot.dx_loc);
+
+    // Render the dx rectangle
+    context.beginPath();
+    context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["dx", spot.id]));
+    context.lineWidth = 1 / transform.k;
+    context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
+    context.fill();
+
+    const [spotter_x, spotter_y] = projection(spot.spotter_loc);
+    const spotter_radius = 5 / transform.k;
+
+    context.beginPath();
+    context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["spotter", spot.id]));
+    context.lineWidth = 1 / transform.k;
+    context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
+    context.fill();
+}
+
 function draw_map_angles(
     context,
     { radius, center_x, center_y, height, scale, degrees_diff = 15 },
@@ -143,14 +182,19 @@ export function draw_map(
     center_y,
     radius,
     transform,
-    path_generator,
     projection,
     night_displayed,
+    shadow_palette,
 ) {
+    const path_generator = d3.geoPath().projection(projection).context(context);
+    const shadow_path_generator = d3.geoPath().projection(projection).context(shadow_context);
+
     // Clear the map before rendering
     context.clearRect(0, 0, width, height);
+    shadow_context.clearRect(0, 0, width, height);
 
     context.save();
+    shadow_context.save();
 
     // Heuristics for the scale of the map. This is good enough
     const scale = Math.max(Math.min(height / 900, 1.1), 0.5);
@@ -163,7 +207,14 @@ export function draw_map(
     context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
     context.clip();
 
+    // Clip the map content to the circle
+    shadow_context.beginPath();
+    shadow_context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+    shadow_context.clip();
+
+
     apply_context_transform(context, transform);
+    apply_context_transform(shadow_context, transform);
     context.lineWidth = 1 / transform.k;
 
     // Render the graticule
@@ -183,6 +234,11 @@ export function draw_map(
     });
 
     spots.forEach(spot => {
+        draw_shadow_spot(shadow_context, spot, shadow_palette, {
+            transform,
+            path_generator: shadow_path_generator,
+            projection,
+        });
         draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
     });
 
@@ -191,6 +247,7 @@ export function draw_map(
     }
 
     context.restore();
+    shadow_context.restore();
 
     // Map outline
     context.beginPath();
