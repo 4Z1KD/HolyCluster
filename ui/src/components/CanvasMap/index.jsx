@@ -113,7 +113,10 @@ function generate_shadow_palette(spots) {
             ])
             .flat(),
     );
-    return shadow_palette;
+    const reverse_shadow_palette = new HashMap(
+        shadow_palette.entries().map(([key, value]) => [value, key]),
+    );
+    return [shadow_palette, reverse_shadow_palette];
 }
 
 function CanvasMap({
@@ -145,7 +148,7 @@ function CanvasMap({
         .rotate([-center_lon, -center_lat, 0])
         .translate([center_x, center_y]);
 
-    const shadow_palette = generate_shadow_palette(spots);
+    const [shadow_palette, reverse_shadow_palette] = generate_shadow_palette(spots);
 
     useEffect(() => {
         if (width == null || height == null) {
@@ -188,6 +191,18 @@ function CanvasMap({
         });
 
         const handle_mouse_move = event => {
+            const { offsetX, offsetY } = event;
+            const [red, green, blue] = shadow_context
+                .getImageData(offsetX, offsetY, 1, 1)
+                .data.slice(0, 3);
+            const color = [red, green, blue];
+            const searched = reverse_shadow_palette.get(color);
+            if (searched != null) {
+                const [type, spot_id] = searched;
+                set_hovered_spot({ source: "map", id: spot_id });
+            } else {
+                set_hovered_spot({ source: null, id: null });
+            }
         };
 
         // Add event listener for mousemove
