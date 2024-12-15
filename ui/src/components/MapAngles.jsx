@@ -14,9 +14,9 @@ function MapAngles({ radius, center_x, center_y, degrees_diff = 15 }) {
         ];
     });
 
-    const is_max_md_device = useMediaQuery("only screen and (min-width : 768px)");
+    const is_md_device = useMediaQuery("only screen and (min-width : 640px)");
 
-    return is_max_md_device ? (
+    return is_md_device ? (
         <g>
             {angle_labels.map(([label, [x, y]]) => (
                 <text

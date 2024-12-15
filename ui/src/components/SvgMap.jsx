@@ -45,8 +45,10 @@ function SvgMap({
     const [svg_box_ref, { width, height }] = useMeasure();
     const max_radius = 20000;
 
-    const is_max_md_device = useMediaQuery("only screen and (min-width : 768px)");
-    const inner_padding = is_max_md_device ? 50 : 5;
+    const is_sm_device = useMediaQuery("only screen and (min-width : 640px)");
+    const is_max_xs_device = useMediaQuery("only screen and (max-width : 500px)");
+
+    const inner_padding = is_sm_device ? 50 : 5;
     const center_x = width / 2;
     const center_y = height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
@@ -74,8 +76,8 @@ function SvgMap({
         zoom.scaleTo(svg, k_from_radius_in_km);
     }, [map_controls]);
 
-    const text_height = 20;
-    const text_y = 30;
+    const text_height = is_max_xs_device ? 10 : 20;
+    const text_y = is_max_xs_device ? 20 : 30;
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
     const [popup_position, set_popup_position] = useState(null);
