@@ -30,7 +30,7 @@ function TopBar({
     toggled_ui,
     set_toggled_ui,
 }) {
-    const box_container_style = "flex h-full p-2 gap-3";
+    const box_container_style = "flex items-center h-full p-2 gap-3";
 
     const network_state_colors = { connected: "#00EE00", disconnected: "#EE0000" };
 
@@ -42,14 +42,14 @@ function TopBar({
                     on_click={() => set_toggled_ui({ ...toggled_ui, left: !toggled_ui.left })}
                 />
             </div>
-            <div className={box_container_style}>
+            <div className="hidden xs:flex h-full p-2 gap-3">
                 <img className="object-contain max-h-12 w-10 m-auto" src={Icon} />
             </div>
-            <h1 className="hidden md:block text-4xl m-auto font-bold">The Holy Cluster</h1>
+            <h1 className="hidden md:block text-3xl lg:text-4xl m-auto font-bold">The Holy Cluster</h1>
             <div className={box_container_style}>
                 <Clock />
                 <select
-                    className="rounded-lg px-4 py-2"
+                    className="rounded-lg px-4 py-2 w-24"
                     value={filters.time_limit}
                     onChange={event =>
                         set_filters(state => (state.time_limit = event.target.value))
