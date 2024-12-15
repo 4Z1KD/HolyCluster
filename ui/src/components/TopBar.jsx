@@ -49,7 +49,7 @@ function TopBar({
             <div className={box_container_style}>
                 <Clock />
                 <select
-                    className="rounded-lg px-4 py-2 w-24"
+                    className="rounded-lg px-4 py-2 w-28"
                     value={filters.time_limit}
                     onChange={event =>
                         set_filters(state => (state.time_limit = event.target.value))
