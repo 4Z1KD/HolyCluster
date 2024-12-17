@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 import Button from "@/components/Button.jsx";
+import { useFilters } from "../hooks/useFilters";
 
 function FilterOptions({
-    set_filters,
     filter_key,
     filter_value,
     align,
@@ -11,6 +11,10 @@ function FilterOptions({
     children,
     text,
 }) {
+
+    const {setFilterKeys,
+    setOnlyFilterKeys} = useFilters()
+
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
         "absolute",
@@ -38,26 +42,6 @@ function FilterOptions({
 
     classes = classes.join(" ");
 
-    // This function changes all the keys in the filter object.
-    // For example: set_filter_keys("bands", true) will enable all bands.
-    function set_filter_keys(filters_key, is_active) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = is_active;
-            })
-        })
-    }
-
-    // This function set only on filter on.
-    // For example: set_only_filter_keys("modes", "CW"), enables only CW.
-    function set_only_filter_keys(filters_key, selected_key) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = selected_key == key;
-            })
-        })
-    }
-
     return (
       <div
           className="relative"
@@ -73,7 +57,7 @@ function FilterOptions({
                         color="blue"
                         className="w-16 px-2"
                         on_click={() => {
-                            set_only_filter_keys(filter_key, filter_value);
+                            setOnlyFilterKeys(filter_key, filter_value);
                             set_is_hovered(false);
                         }}
                     >
@@ -83,7 +67,7 @@ function FilterOptions({
                         color="green"
                         className="w-16 px-2"
                         on_click={() => {
-                            set_filter_keys(filter_key, true);
+                            setFilterKeys(filter_key, true);
                             set_is_hovered(false);
                         }}
                     >

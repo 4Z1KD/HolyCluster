@@ -4,15 +4,18 @@ import { BrowserView, MobileView } from 'react-device-detect';
 
 import MainContainer from "@/components/MainContainer.jsx"
 import MobileNotAvailable from "@/components/MobileNotAvailable.jsx"
+import { FiltersProvider } from "./hooks/useFilters";
 import "@/index.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
-        <BrowserView className="h-full">
-            <MainContainer/>
-        </BrowserView>
-        <MobileView className="h-full">
-            <MobileNotAvailable/>
-        </MobileView>
-    </React.StrictMode>
+    <FiltersProvider>
+        <React.StrictMode>
+            <BrowserView className="h-full">
+                <MainContainer />
+            </BrowserView>
+            <MobileView className="h-full">
+                <MobileNotAvailable />
+            </MobileView>
+        </React.StrictMode>
+    </FiltersProvider>
 )

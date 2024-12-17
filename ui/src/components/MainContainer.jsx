@@ -8,6 +8,7 @@ import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
 import { is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
+import { useFilters } from "../hooks/useFilters";
 
 import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
@@ -54,7 +55,7 @@ function fetch_spots(set_spots, set_network_state) {
     if (!navigator.onLine) {
         set_network_state("disconnected")
     } else {
-        return fetch(url, {mode: "cors"})
+        return fetch(url, { mode: "cors" })
             .then(response => {
                 if (response == null || !response.ok) {
                     return Promise.reject(response)
@@ -105,29 +106,14 @@ function use_object_local_storage(key, default_value) {
 }
 
 function MainContainer() {
-    const [filters, set_filters_inner] = use_object_local_storage(
-        "filters",
-        {
-            bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
-            modes: Object.fromEntries(modes.map(mode => [mode, true])),
-            dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-            spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-            include_callsigns: [],
-            exclude_callsigns: [],
-            time_limit: 3600,
-        }
-    );
+
+
+    const { filters } = useFilters()
+
 
     const include_filters_callsigns = filters.include_callsigns.filter(([pattern, _]) => pattern.length > 0);
     const exclude_filters_callsigns = filters.exclude_callsigns.filter(([pattern, _]) => pattern.length > 0);
 
-    const set_filters = (change_func) => {
-        set_filters_inner(previous_state => {
-            const state = structuredClone(previous_state);
-            change_func(state);
-            return state;
-        })
-    }
 
     let [alerts, set_alerts] = useLocalStorage("alerts", [])
     alerts = alerts.filter(([pattern, _]) => pattern.length > 0);
@@ -236,7 +222,7 @@ function MainContainer() {
     let { send_message_to_radio, radio_status } = connect_to_radio();
 
     function set_cat_to_spot(spot) {
-        send_message_to_radio({mode: spot.mode, freq: spot.freq, band: spot.band})
+        send_message_to_radio({ mode: spot.mode, freq: spot.freq, band: spot.band })
     }
 
     let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
@@ -260,8 +246,7 @@ function MainContainer() {
 
     return <>
         <TopBar
-            filters={filters}
-            set_filters={set_filters}
+
             settings={settings}
             set_settings={set_settings}
             set_map_controls={set_map_controls}
@@ -270,8 +255,7 @@ function MainContainer() {
         />
         <div className="flex h-[calc(100%-4rem)] max-lg:flex-wrap">
             <LeftColumn
-                filters={filters}
-                set_filters={set_filters}
+
                 filtered_alerts_count={filtered_alerts_count}
                 spots_per_band_count={spots_per_band_count}
             />
@@ -321,10 +305,9 @@ function MainContainer() {
             <CallsignsView
                 alerts={alerts}
                 set_alerts={set_alerts}
-                filters={filters}
-                set_filters={set_filters}
+
             />
-            <Continents filters={filters} set_filters={set_filters}/>
+            <Continents />
         </div>
     </>;
 }

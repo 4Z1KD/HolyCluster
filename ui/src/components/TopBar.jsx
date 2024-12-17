@@ -2,6 +2,7 @@ import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
 import Settings from "@/components/Settings.jsx";
+import { useFilters } from "../hooks/useFilters";
 
 import Icon from "@/icon.png";
 
@@ -19,14 +20,13 @@ const spots_time_limits = {
 }
 
 function TopBar({
-    filters,
-    set_filters,
     settings,
     set_settings,
     set_map_controls,
     set_radius_in_km,
     network_state,
 }) {
+    const {filters, setFilters} = useFilters()
     const box_container_style = "flex flex-wrap h-full p-2 gap-3";
 
     const network_state_colors = { "connected": "#00EE00", "disconnected": "#EE0000" };
@@ -41,7 +41,7 @@ function TopBar({
                 <select
                     className="rounded-lg px-4 py-2"
                     value={filters.time_limit}
-                    onChange={event => set_filters(state => state.time_limit = event.target.value)}
+                    onChange={event => setFilters(state => ({...state, time_limit:event.target.value}))}
                 >
                     {Object.entries(spots_time_limits).map(([text, minutes]) => {
                         return <option key={minutes} value={minutes}>{text}</option>
