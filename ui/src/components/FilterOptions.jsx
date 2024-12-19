@@ -9,11 +9,10 @@ function FilterOptions({
     align,
     orientation,
     children,
-    text,
 }) {
 
-    const {setFilterKeys,
-    setOnlyFilterKeys} = useFilters()
+    const { setFilterKeys,
+        setOnlyFilterKeys } = useFilters()
 
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
@@ -31,53 +30,54 @@ function FilterOptions({
         "w-22",
     ];
     const orientation_options = {
-        "right": ["-translate-y-1/2", "translate-x-[4rem]"],
-        "left": ["-translate-y-1/2", "-translate-x-[5.6rem]"],
+        right: ["-translate-y-1/2", "translate-x-[4rem]"],
+        left: ["-translate-y-1/2", "-translate-x-[5.6rem]"],
     };
     classes.push(...orientation_options[orientation]);
 
-    if (text != null) {
-        classes.push("pt-1");
-    }
-
     classes = classes.join(" ");
 
+
+
+
+
+
     return (
-      <div
-          className="relative"
-          onMouseEnter={() => set_is_hovered(true)}
-          onMouseLeave={() => set_is_hovered(false)}
-      >
-        {children}
-        {is_hovered && (
-            <div className={classes}>
-                {text != null ? <div><strong>{text}</strong></div> : ""}
-                <div className="space-y-4">
-                    <Button
-                        color="blue"
-                        className="w-16 px-2"
-                        on_click={() => {
-                            setOnlyFilterKeys(filter_key, filter_value);
-                            set_is_hovered(false);
-                        }}
-                    >
-                        ONLY
-                    </Button>
-                    <Button
-                        color="green"
-                        className="w-16 px-2"
-                        on_click={() => {
-                            setFilterKeys(filter_key, true);
-                            set_is_hovered(false);
-                        }}
-                    >
-                        ALL
-                    </Button>
+        <div
+            className="relative"
+            onMouseEnter={() => set_is_hovered(true)}
+            onMouseLeave={() => set_is_hovered(false)}
+        >
+            {children}
+            {is_hovered && (
+                <div className={classes}>
+                    <div className="space-y-4">
+                        <Button
+                            color="blue"
+                            className="w-16 px-2"
+                            on_click={() => {
+                                setOnlyFilterKeys(filter_key, filter_value);
+                                set_is_hovered(false);
+                            }}
+                        >
+                            ONLY
+                        </Button>
+                        <Button
+                            color="green"
+                            className="w-16 px-2"
+                            on_click={() => {
+                                setFilterKeys(filter_key, true);
+                                set_is_hovered(false);
+                            }}
+                        >
+                            ALL
+                        </Button>
+                    </div>
                 </div>
-            </div>
-        )}
-      </div>
+            )}
+        </div>
     );
-};
+}
+
 
 export default FilterOptions;

@@ -23,11 +23,11 @@ function Button({
         "p-2",
     ].join(" ");
 
-    return <button
-        className={`${builtin_classes} ${classes}`}
-        onClick={on_click}
-        {...other_props}
-    >{children}</button>;
+    return (
+        <button className={`${builtin_classes} ${classes}`} onClick={on_click} {...other_props}>
+            {children}
+        </button>
+    );
 }
 
 export default Button;

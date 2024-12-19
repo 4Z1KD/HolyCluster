@@ -1,8 +1,8 @@
 export function to_radian(deg) {
-    return deg * (Math.PI / 180)
+    return deg * (Math.PI / 180);
 }
 
-export const mod = (n, m) => (n % m + m) % m;
+export const mod = (n, m) => ((n % m) + m) % m;
 
 export function is_matching_list(list, callsign) {
     return list.some(([pattern, is_suffix]) => {

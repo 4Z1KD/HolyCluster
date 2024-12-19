@@ -7,15 +7,17 @@ function clock() {
         let interval_id = setInterval(() => set_current_time(new Date()), 1000);
         return () => {
             clearInterval(interval_id);
-        }
-    })
+        };
+    });
 
     function pad(number) {
         return number.toString().padStart(2, "0");
     }
-    return <div className="flex items-center text-center font-bold text-xl">
-        {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}:${pad(time.getUTCSeconds())}z`}
-    </div>
+    return (
+        <div className="flex items-center text-center font-bold text-xl min-w-18">
+            {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}z`}
+        </div>
+    );
 }
 
 export default clock;

@@ -1,21 +1,16 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { BrowserView, MobileView } from 'react-device-detect';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-import MainContainer from "@/components/MainContainer.jsx"
-import MobileNotAvailable from "@/components/MobileNotAvailable.jsx"
+import MainContainer from "@/components/MainContainer.jsx";
 import { FiltersProvider } from "./hooks/useFilters";
-import "@/index.css"
+import "@/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <FiltersProvider>
+
         <React.StrictMode>
-            <BrowserView className="h-full">
-                <MainContainer />
-            </BrowserView>
-            <MobileView className="h-full">
-                <MobileNotAvailable />
-            </MobileView>
+            <MainContainer />
         </React.StrictMode>
     </FiltersProvider>
-)
+    ,
+);

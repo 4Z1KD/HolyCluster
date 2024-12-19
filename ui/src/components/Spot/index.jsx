@@ -19,15 +19,12 @@ function Spot({
 }) {
     const line = {
         type: "LineString",
-        coordinates: [
-            spot.spotter_loc,
-            spot.dx_loc,
-        ],
+        coordinates: [spot.spotter_loc, spot.dx_loc],
         properties: {
             band: spot.band,
             freq: Number(spot.freq) * 1000,
-            mode: spot.mode
-        }
+            mode: spot.mode,
+        },
     };
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
@@ -44,7 +41,7 @@ function Spot({
         style = {
             strokeDasharray: 5,
             strokeDashoffset: 50,
-            animation: "dash 2s linear forwards infinite"
+            animation: "dash 2s linear forwards infinite",
         };
     } else {
         style = {};
@@ -53,14 +50,13 @@ function Spot({
     function on_click(event) {
         switch (event.detail) {
             case 1:
-                set_pinned_spot(spot.id)
+                set_pinned_spot(spot.id);
                 break;
             case 2:
-                set_cat_to_spot(spot)
+                set_cat_to_spot(spot);
                 break;
         }
     }
-
 
     let symbol_component;
     if (spot.mode === "SSB") {
@@ -98,53 +94,57 @@ function Spot({
         );
     }
 
-
-
-    return <g
-        onMouseOver={() => set_hovered_spot({ source: "map", id: spot.id })}
-        onMouseLeave={() => set_hovered_spot({ source: null, id: null })}
-        onClick={on_click}
-    >
-        <path
-            fill="none"
-            stroke={is_hovered ? light_color : color}
-            strokeWidth={is_hovered ? "6px" : "2px"}
-            d={path_generator(line)}
-            style={style}
-        />
-        <path
-            fill="none"
-            opacity="0"
-            strokeWidth="8px"
-            stroke="#FFFFFF"
-            d={path_generator(line)}
-        />
-        {spot.is_alerted ?
-            <style>
-                {`
+    return (
+        <g
+            onMouseOver={() => set_hovered_spot({ source: "map", id: spot.id })}
+            onMouseLeave={() => set_hovered_spot({ source: null, id: null })}
+            onClick={on_click}
+        >
+            <path
+                fill="none"
+                stroke={is_hovered ? light_color : color}
+                strokeWidth={is_hovered ? "6px" : "2px"}
+                d={path_generator(line)}
+                style={style}
+            />
+            <path
+                fill="none"
+                opacity="0"
+                strokeWidth="8px"
+                stroke="#FFFFFF"
+                d={path_generator(line)}
+            />
+            {spot.is_alerted ? (
+                <style>
+                    {`
                 @keyframes dash {
                     to {
                         stroke-dashoffset: 0;
                     }
                 }
             `}
-            </style>
-            : ""}
-        <circle
-            r={is_hovered ? 5 : 3}
-            fill={light_color}
-            stroke="grey"
-            cx={spotter_x}
-            cy={spotter_y}
-            onClick={() => set_cat_to_spot(spot)}>
-        </circle>
-        <g
-            onMouseOver={event => set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY })}
-            onMouseLeave={event => set_popup_position(null)}
-        >
-            {symbol_component}
+                </style>
+            ) : (
+                ""
+            )}
+            <circle
+                r={is_hovered ? 5 : 3}
+                fill={light_color}
+                stroke="grey"
+                cx={spotter_x}
+                cy={spotter_y}
+                onClick={() => set_cat_to_spot(spot)}
+            ></circle>
+            <g
+                onMouseOver={event =>
+                    set_popup_position({ x: event.nativeEvent.layerX, y: event.nativeEvent.layerY })
+                }
+                onMouseLeave={event => set_popup_position(null)}
+            >
+                {symbol_component}
+            </g>
         </g>
-    </g>;
+    );
 }
 
 export default Spot;
