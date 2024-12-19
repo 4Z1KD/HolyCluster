@@ -2,6 +2,7 @@ import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 import About from "@/components/About.jsx";
 import { band_colors, band_text_colors, band_light_colors, modes } from "@/filters_data.js";
+import { useFilters } from "../hooks/useFilters";
 
 const Hex = (
     <svg fill="#000000" width="16" height="16" viewBox="0 0 256 256">
@@ -33,7 +34,9 @@ const mode_to_symbol = {
     DIGI: Hex,
 };
 
-function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) {
+function LeftColumn({ spots_per_band_count, toggled_ui }) {
+    const { filters, setFilters } = useFilters()
+
     const filter_group_classes = "p-1 flex flex-col text-center gap-2 ";
     const toggled_classes = toggled_ui.left
         ? "hidden "
@@ -45,7 +48,6 @@ function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) 
                     return (
                         <FilterOptions
                             key={band}
-                            set_filters={set_filters}
                             filter_key="bands"
                             filter_value={band}
                             orientation="right"
@@ -64,9 +66,8 @@ function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) 
                                 is_active={filters.bands[band]}
                                 color={color}
                                 text_color={band_text_colors[band]}
-                                on_click={_ =>
-                                    set_filters(state => (state.bands[band] = !state.bands[band]))
-                                }
+                                on_click={_ => setFilters(_filters => ({ ..._filters, bands: { ..._filters.bands, [band]: !_filters.bands[band]}}))}
+
                                 hover_brightness="125"
                                 size="small"
                             />
@@ -79,7 +80,6 @@ function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) 
                     return (
                         <FilterOptions
                             key={mode}
-                            set_filters={set_filters}
                             filter_key="modes"
                             filter_value={mode}
                             orientation="right"
@@ -92,9 +92,8 @@ function LeftColumn({ filters, set_filters, spots_per_band_count, toggled_ui }) 
                                     </>
                                 }
                                 is_active={filters.modes[mode]}
-                                on_click={() =>
-                                    set_filters(state => (state.modes[mode] = !state.modes[mode]))
-                                }
+                                on_click={() => setFilters(_filters => ({ ..._filters, modes: { ..._filters.modes, [mode]: !_filters.modes[mode] } }))}
+
                                 size="small"
                             />
                         </FilterOptions>

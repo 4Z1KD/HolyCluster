@@ -9,8 +9,8 @@ import CallsignsView from "@/components/CallsignsView.jsx";
 import Tabs from "@/components/Tabs.jsx";
 import { is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
+import { useFilters } from "../hooks/useFilters";
 
-import Maidenhead from "maidenhead";
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
@@ -109,18 +109,11 @@ function use_object_local_storage(key, default_value) {
 }
 
 function MainContainer() {
+
     const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
-    const [filters, set_filters_inner] = use_object_local_storage("filters", {
-        bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
-        modes: Object.fromEntries(modes.map(mode => [mode, true])),
-        dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-        spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-        include_callsigns: [],
-        exclude_callsigns: [],
-        is_include_filters_active: true,
-        is_exclude_filters_active: true,
-        time_limit: 3600,
-    });
+
+    const { filters } = useFilters()
+
 
     const include_filters_callsigns = filters.include_callsigns.filter(
         ([pattern, _]) => pattern.length > 0,
@@ -129,13 +122,6 @@ function MainContainer() {
         ([pattern, _]) => pattern.length > 0,
     );
 
-    const set_filters = change_func => {
-        set_filters_inner(previous_state => {
-            const state = structuredClone(previous_state);
-            change_func(state);
-            return state;
-        });
-    };
 
     let [alerts, set_alerts] = useLocalStorage("alerts", []);
     alerts = alerts.filter(([pattern, _]) => pattern.length > 0);
@@ -204,6 +190,9 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
+    const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
+    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
+
     const filtered_spots = spots
         .filter(spot => {
             const is_in_time_limit = current_time - spot.time < filters.time_limit;
@@ -239,12 +228,7 @@ function MainContainer() {
         })
         .slice(0, 100);
 
-    const spots_per_band_count = Object.fromEntries(
-        Array.from(band_colors.keys()).map(band => [
-            band,
-            filtered_spots.filter(spot => spot.band == band).length,
-        ]),
-    );
+
 
     // Limit the count for 2 digit display
     for (const band in spots_per_band_count) {
@@ -331,7 +315,6 @@ function MainContainer() {
         <>
             <TopBar
                 filters={filters}
-                set_filters={set_filters}
                 settings={settings}
                 set_settings={set_settings}
                 set_map_controls={set_map_controls}
@@ -343,7 +326,6 @@ function MainContainer() {
             <div className="flex relative h-[calc(100%-4rem)]">
                 <LeftColumn
                     filters={filters}
-                    set_filters={set_filters}
                     spots_per_band_count={spots_per_band_count}
                     toggled_ui={toggled_ui}
                 />
@@ -358,11 +340,9 @@ function MainContainer() {
                 <CallsignsView
                     alerts={alerts}
                     set_alerts={set_alerts}
-                    filters={filters}
-                    set_filters={set_filters}
                     toggled_ui={toggled_ui}
                 />
-                <Continents filters={filters} set_filters={set_filters} toggled_ui={toggled_ui} />
+                <Continents  toggled_ui={toggled_ui} />
             </div>
         </>
     );

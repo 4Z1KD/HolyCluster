@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 
 import Button from "@/components/Button.jsx";
+import { useFilters } from "../hooks/useFilters";
 
-function FilterOptions({ set_filters, filter_key, filter_value, align, orientation, children }) {
+function FilterOptions({
+    filter_key,
+    filter_value,
+    align,
+    orientation,
+    children,
+}) {
+
+    const { setFilterKeys,
+        setOnlyFilterKeys } = useFilters()
+
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
         "absolute",
@@ -26,25 +37,10 @@ function FilterOptions({ set_filters, filter_key, filter_value, align, orientati
 
     classes = classes.join(" ");
 
-    // This function changes all the keys in the filter object.
-    // For example: set_filter_keys("bands", true) will enable all bands.
-    function set_filter_keys(filters_key, is_active) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = is_active;
-            });
-        });
-    }
 
-    // This function set only on filter on.
-    // For example: set_only_filter_keys("modes", "CW"), enables only CW.
-    function set_only_filter_keys(filters_key, selected_key) {
-        set_filters(state => {
-            Object.keys(state[filters_key]).forEach(key => {
-                state[filters_key][key] = selected_key == key;
-            });
-        });
-    }
+
+
+
 
     return (
         <div
@@ -60,7 +56,7 @@ function FilterOptions({ set_filters, filter_key, filter_value, align, orientati
                             color="blue"
                             className="w-16 px-2"
                             on_click={() => {
-                                set_only_filter_keys(filter_key, filter_value);
+                                setOnlyFilterKeys(filter_key, filter_value);
                                 set_is_hovered(false);
                             }}
                         >
@@ -70,7 +66,7 @@ function FilterOptions({ set_filters, filter_key, filter_value, align, orientati
                             color="green"
                             className="w-16 px-2"
                             on_click={() => {
-                                set_filter_keys(filter_key, true);
+                                setFilterKeys(filter_key, true);
                                 set_is_hovered(false);
                             }}
                         >
@@ -82,5 +78,6 @@ function FilterOptions({ set_filters, filter_key, filter_value, align, orientati
         </div>
     );
 }
+
 
 export default FilterOptions;
