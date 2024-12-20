@@ -3,10 +3,13 @@ export default {
   safelist: [
     {pattern: /(active:|hover:)?bg-.+-.+/},
     {pattern: /text-.+/},
-
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        xs: "500px"
+      }
+    },
   },
   plugins: [],
 }
