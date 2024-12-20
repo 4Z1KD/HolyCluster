@@ -230,8 +230,13 @@ function CanvasMap({
                 } else {
                     set_popup_position(null);
                 }
-            } else if (hovered_spot.source != null || hovered_spot.id != null) {
-                set_hovered_spot({ source: null, id: null });
+            } else {
+                if (hovered_spot.source != null || hovered_spot.id != null) {
+                    set_hovered_spot({ source: null, id: null });
+                }
+                if (popup_position != null) {
+                    set_popup_position(null);
+                }
             }
         };
 
