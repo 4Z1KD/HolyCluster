@@ -181,15 +181,18 @@ function SvgMap({
                 </g>
                 <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black" />
             </svg>
-            <SpotPopup
-                visible={hovered_spot.source == "map" && popup_position != null}
-                hovered_spot={hovered_spot}
-                set_hovered_spot={set_hovered_spot}
-                set_pinned_spot={set_pinned_spot}
-                popup_position={popup_position}
-                hovered_spot_data={hovered_spot_data}
-                distance={hovered_spot_distance}
-            />
+            {hovered_spot.source == "map" && popup_position != null ? (
+                <SpotPopup
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
+                    set_pinned_spot={set_pinned_spot}
+                    popup_position={popup_position}
+                    hovered_spot_data={hovered_spot_data}
+                    distance={hovered_spot_distance}
+                />
+            ) : (
+                ""
+            )}
         </div>
     );
 }

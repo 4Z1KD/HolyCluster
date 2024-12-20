@@ -191,8 +191,15 @@ function CanvasMap({
             const searched = reverse_shadow_palette.get(color);
             if (searched != null) {
                 let [type, spot_id] = searched;
-                if ("map" != hovered_spot.source || spot_id != hovered_spot.id) {
+                if (hovered_spot.source != "map" || hovered_spot.id != spot_id) {
                     set_hovered_spot({ source: "map", id: spot_id });
+                }
+                if (type == "dx") {
+                    if (popup_position == null) {
+                        set_popup_position({ x: offsetX, y: offsetY });
+                    }
+                } else {
+                    set_popup_position(null);
                 }
             } else if (hovered_spot.source != null || hovered_spot.id != null) {
                 set_hovered_spot({ source: null, id: null });
@@ -207,7 +214,7 @@ function CanvasMap({
         };
     }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
 
-    const hovered_spot_data = spots.find(spot => spot.id == hovered_spot);
+    const hovered_spot_data = spots.find(spot => spot.id == hovered_spot.id);
     const hovered_spot_distance =
         hovered_spot_data != null
             ? (haversine(hovered_spot_data.dx_loc, hovered_spot_data.spotter_loc) / 1000).toFixed()
@@ -227,15 +234,18 @@ function CanvasMap({
                 width={width}
                 height={height}
             />
-            <SpotPopup
-                visible={hovered_spot.source == "map" && popup_position != null}
-                hovered_spot={hovered_spot}
-                set_hovered_spot={set_hovered_spot}
-                set_pinned_spot={set_pinned_spot}
-                popup_position={popup_position}
-                hovered_spot_data={hovered_spot_data}
-                distance={hovered_spot_distance}
-            />
+            {hovered_spot.source == "map" && popup_position != null ? (
+                <SpotPopup
+                    hovered_spot={hovered_spot}
+                    set_hovered_spot={set_hovered_spot}
+                    set_pinned_spot={set_pinned_spot}
+                    popup_position={popup_position}
+                    hovered_spot_data={hovered_spot_data}
+                    distance={hovered_spot_distance}
+                />
+            ) : (
+                ""
+            )}
         </div>
     );
 }
