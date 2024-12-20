@@ -50,6 +50,7 @@ const dxcc_to_country_flag = {
     Svalbard: "Norway",
     Crete: "Greece",
     "The Gambia": "Gambia",
+    "Eastern Kiribati": "Kiribati",
 };
 
 function Callsign({ callsign }) {
