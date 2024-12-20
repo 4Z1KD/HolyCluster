@@ -132,11 +132,11 @@ function draw_shadow_spot(
     // Render the arc of the spot
     context.beginPath();
     context.strokeStyle = rgb_triplet_to_color(shadow_palette.get(["arc", spot.id]));
-    context.lineWidth = 6 / transform.k;
+    context.lineWidth = 8 / transform.k;
     path_generator(line);
     context.stroke();
 
-    const dx_size = 10 / transform.k;
+    const dx_size = 12 / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     // Render the dx rectangle
@@ -144,11 +144,11 @@ function draw_shadow_spot(
     draw_spot_dx(context, spot, dx_color, dx_color, dx_x, dx_y, dx_size, transform);
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const spotter_radius = 5 / transform.k;
+    const spotter_radius = 7 / transform.k;
 
     context.beginPath();
     context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["spotter", spot.id]));
-    context.lineWidth = 1 / transform.k;
+    context.lineWidth = 2 / transform.k;
     context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
     context.fill();
 }
