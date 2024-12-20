@@ -67,7 +67,12 @@ function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, t
     context.stroke();
 }
 
-function draw_spot(context, spot, { hovered_spot, transform, path_generator, projection }) {
+function draw_spot(
+    context,
+    spot,
+    dash_offset,
+    { hovered_spot, transform, path_generator, projection },
+) {
     const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot.id;
 
@@ -83,6 +88,7 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     context.lineWidth = context.lineWidth / transform.k;
     if (spot.is_alerted) {
         context.setLineDash([10 / transform.k, 10 / transform.k]);
+        context.lineDashOffset = dash_offset / transform.k;
     } else {
         context.setLineDash([]);
     }
@@ -214,14 +220,7 @@ export class Dimensions {
     }
 }
 
-export function draw_map(
-    context,
-    spots,
-    dims,
-    transform,
-    projection,
-    night_displayed,
-) {
+export function draw_map(context, spots, dims, transform, projection, night_displayed) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
@@ -268,14 +267,7 @@ export function draw_map(
     context.stroke();
 }
 
-export function draw_spots(
-    context,
-    spots,
-    hovered_spot,
-    dims,
-    transform,
-    projection,
-) {
+export function draw_spots(context, spots, hovered_spot, dims, dash_offset, transform, projection) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
@@ -292,7 +284,12 @@ export function draw_spots(
     context.lineWidth = 1 / transform.k;
 
     spots.forEach(spot => {
-        draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
+        draw_spot(context, spot, dash_offset, {
+            hovered_spot,
+            transform,
+            path_generator,
+            projection,
+        });
     });
 
     context.restore();

@@ -151,6 +151,9 @@ function CanvasMap({
     const spots_canvas_ref = useRef(null);
     const shadow_canvas_ref = useRef(null);
 
+    const animation_id_ref = useRef(null);
+    const dash_offset_ref = useRef(0);
+
     const [div_ref, { width, height }] = useMeasure();
     const dims = new Dimensions(width, height, 50);
     const [popup_position, set_popup_position] = useState(null);
@@ -178,6 +181,24 @@ function CanvasMap({
             return;
         }
 
+        function draw_spots_inner(transform) {
+            draw_spots(
+                canvas_storage.spots.context,
+                spots,
+                hovered_spot,
+                dims,
+                dash_offset_ref.current,
+                transform,
+                projection,
+            );
+
+            dash_offset_ref.current -= 0.5;
+            if (dash_offset_ref.current < -20) {
+                dash_offset_ref.current = 0;
+            }
+            animation_id_ref.current = requestAnimationFrame(() => draw_spots_inner(transform));
+        }
+
         function draw_map_inner(transform) {
             draw_map(
                 canvas_storage.map.context,
@@ -187,14 +208,10 @@ function CanvasMap({
                 projection,
                 map_controls.night,
             );
-            draw_spots(
-                canvas_storage.spots.context,
-                spots,
-                hovered_spot,
-                dims,
-                transform,
-                projection,
-            );
+            if (animation_id_ref.current != null) {
+                cancelAnimationFrame(animation_id_ref.current);
+            }
+            draw_spots_inner(transform);
             draw_shadow_map(
                 canvas_storage.shadow.context,
                 spots,
@@ -253,6 +270,7 @@ function CanvasMap({
 
         return () => {
             canvas_storage.shadow.canvas.removeEventListener("mousemove", handle_mouse_move);
+            cancelAnimationFrame(animation_id_ref.current);
         };
     }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
 
