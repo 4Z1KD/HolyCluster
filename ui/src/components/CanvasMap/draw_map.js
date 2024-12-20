@@ -36,6 +36,37 @@ export function build_geojson_line(spot) {
     };
 }
 
+function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, transform) {
+    context.beginPath();
+    context.strokeStyle = stroke_color;
+    context.fillStyle = color;
+    context.lineWidth = 1 / transform.k;
+    if (spot.mode === "SSB") {
+        context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
+    } else if (spot.mode === "CW") {
+        context.moveTo(dx_x, dx_y - dx_size / 2);
+        context.lineTo(dx_x - dx_size / 2, dx_y + dx_size / 2);
+        context.lineTo(dx_x + dx_size / 2, dx_y + dx_size / 2);
+    } else {
+        dx_size = dx_size / 1.6;
+        const hex_points = [];
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i;
+            const x = dx_x + dx_size * Math.cos(angle);
+            const y = dx_y + dx_size * Math.sin(angle);
+            hex_points.push([x, y]);
+        }
+
+        context.moveTo(hex_points[0][0], hex_points[0][1]);
+        for (let i = 1; i < hex_points.length; i++) {
+            context.lineTo(hex_points[i][0], hex_points[i][1]);
+        }
+    }
+    context.closePath();
+    context.fill();
+    context.stroke();
+}
+
 function draw_spot(context, spot, { hovered_spot, transform, path_generator, projection }) {
     const line = build_geojson_line(spot);
     const is_hovered = spot.id == hovered_spot.id;
@@ -61,14 +92,16 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     const dx_size = (is_hovered ? 12 : 10) / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
-    // Render the dx rectangle
-    context.beginPath();
-    context.strokeStyle = "grey";
-    context.fillStyle = band_light_colors[spot.band];
-    context.lineWidth = 1 / transform.k;
-    context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
-    context.fill();
-    context.stroke();
+    draw_spot_dx(
+        context,
+        spot,
+        band_light_colors[spot.band],
+        "grey",
+        dx_x,
+        dx_y,
+        dx_size,
+        transform,
+    );
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
     const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
@@ -107,11 +140,8 @@ function draw_shadow_spot(
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     // Render the dx rectangle
-    context.beginPath();
-    context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["dx", spot.id]));
-    context.lineWidth = 1 / transform.k;
-    context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
-    context.fill();
+    const dx_color = rgb_triplet_to_color(shadow_palette.get(["dx", spot.id]));
+    draw_spot_dx(context, spot, dx_color, dx_color, dx_x, dx_y, dx_size, transform);
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
     const spotter_radius = 5 / transform.k;
