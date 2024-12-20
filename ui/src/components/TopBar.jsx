@@ -45,7 +45,9 @@ function TopBar({
             <div className="hidden xs:flex h-full p-2 gap-3">
                 <img className="object-contain max-h-12 w-10 m-auto" src={Icon} />
             </div>
-            <h1 className="hidden md:block text-3xl lg:text-4xl m-auto font-bold">The Holy Cluster</h1>
+            <h1 className="hidden md:block text-3xl lg:text-4xl m-auto font-bold">
+                The Holy Cluster
+            </h1>
             <div className={box_container_style}>
                 <Clock />
                 <select
