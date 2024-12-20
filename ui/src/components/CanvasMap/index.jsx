@@ -7,7 +7,14 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { HashMap } from "hashmap";
 
 import { mod } from "@/utils.js";
-import { build_geojson_line, dxcc_map, apply_context_transform, draw_map } from "./draw_map.js";
+import {
+    build_geojson_line,
+    dxcc_map,
+    apply_context_transform,
+    draw_map,
+    draw_shadow_map,
+    Dimensions,
+} from "./draw_map.js";
 import SpotPopup from "@/components/SpotPopup.jsx";
 
 function apply_zoom_and_drag_behaviors(
@@ -131,27 +138,25 @@ function CanvasMap({
 }) {
     const canvas_ref = useRef(null);
     const shadow_canvas_ref = useRef(null);
+
     const [div_ref, { width, height }] = useMeasure();
+    const dims = new Dimensions(width, height, 50);
     const [popup_position, set_popup_position] = useState(null);
     const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
 
-    const inner_padding = 50;
-    const center_x = width / 2;
-    const center_y = height / 2;
-    const radius = Math.min(center_x, center_y) - inner_padding;
     const [center_lon, center_lat] = map_controls.location.location;
 
     const projection = d3
         .geoAzimuthalEquidistant()
         .precision(0.1)
-        .fitSize([width - inner_padding * 2, height - inner_padding * 2], dxcc_map)
+        .fitSize(dims.padded_size, dxcc_map)
         .rotate([-center_lon, -center_lat, 0])
-        .translate([center_x, center_y]);
+        .translate([dims.center_x, dims.center_y]);
 
     const [shadow_palette, reverse_shadow_palette] = generate_shadow_palette(spots);
 
     useEffect(() => {
-        if (width == null || height == null) {
+        if (dims.width == null || dims.height == null) {
             return;
         }
         const context = canvas_ref.current.getContext("2d");
@@ -159,21 +164,8 @@ function CanvasMap({
         const shadow_context = shadow_canvas.getContext("2d");
 
         function draw_map_inner(transform) {
-            draw_map(
-                context,
-                shadow_context,
-                spots,
-                hovered_spot,
-                width,
-                height,
-                center_x,
-                center_y,
-                radius,
-                transform,
-                projection,
-                map_controls.night,
-                shadow_palette,
-            );
+            draw_map(context, spots, hovered_spot, dims, transform, projection, map_controls.night);
+            draw_shadow_map(shadow_context, spots, dims, transform, projection, shadow_palette);
         }
 
         draw_map_inner(zoom_transform);
@@ -198,9 +190,11 @@ function CanvasMap({
             const color = [red, green, blue];
             const searched = reverse_shadow_palette.get(color);
             if (searched != null) {
-                const [type, spot_id] = searched;
-                set_hovered_spot({ source: "map", id: spot_id });
-            } else {
+                let [type, spot_id] = searched;
+                if ("map" != hovered_spot.source || spot_id != hovered_spot.id) {
+                    set_hovered_spot({ source: "map", id: spot_id });
+                }
+            } else if (hovered_spot.source != null || hovered_spot.id != null) {
                 set_hovered_spot({ source: null, id: null });
             }
         };

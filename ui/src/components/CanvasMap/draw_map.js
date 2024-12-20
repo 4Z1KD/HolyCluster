@@ -123,15 +123,12 @@ function draw_shadow_spot(
     context.fill();
 }
 
-function draw_map_angles(
-    context,
-    { radius, center_x, center_y, height, scale, degrees_diff = 15 },
-) {
-    if (height < 300) {
+function draw_map_angles(context, dims, degrees_diff = 15) {
+    if (dims.height < 300) {
         return;
     }
 
-    const angle_radius = radius + 25 * scale;
+    const angle_radius = dims.radius + 25 * dims.scale;
     // Calculate the positions for angle labels
     const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys()).map(x => {
         const angle_degrees = x * degrees_diff;
@@ -139,13 +136,13 @@ function draw_map_angles(
         return [
             angle_degrees,
             [
-                Math.cos(angle_radians) * angle_radius + center_x,
-                Math.sin(angle_radians) * angle_radius + center_y,
+                Math.cos(angle_radians) * angle_radius + dims.center_x,
+                Math.sin(angle_radians) * angle_radius + dims.center_y,
             ],
         ];
     });
 
-    const font_size = Math.floor(20 * scale);
+    const font_size = Math.floor(20 * dims.scale);
     // Set font properties
     context.font = font_size + "px Arial";
     context.textAlign = "center";
@@ -171,50 +168,47 @@ export function apply_context_transform(context, transform) {
     context.setTransform(transform.k, 0, 0, transform.k, transform.x, transform.y, 1, 1, 1);
 }
 
+export class Dimensions {
+    constructor(width, height, inner_padding) {
+        this.width = width;
+        this.height = height;
+        this.inner_padding = inner_padding;
+
+        this.center_x = width / 2;
+        this.center_y = height / 2;
+        this.radius = Math.min(this.center_x, this.center_y) - inner_padding;
+
+        this.padded_size = [width - inner_padding * 2, height - inner_padding * 2];
+        // Heuristics for the scale of the map. This is good enough
+        this.scale = Math.max(Math.min(height / 900, 1.1), 0.5);
+    }
+}
+
 export function draw_map(
     context,
-    shadow_context,
     spots,
     hovered_spot,
-    width,
-    height,
-    center_x,
-    center_y,
-    radius,
+    dims,
     transform,
     projection,
     night_displayed,
-    shadow_palette,
 ) {
     const path_generator = d3.geoPath().projection(projection).context(context);
-    const shadow_path_generator = d3.geoPath().projection(projection).context(shadow_context);
 
     // Clear the map before rendering
-    context.clearRect(0, 0, width, height);
-    shadow_context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, dims.width, dims.height);
 
     context.save();
-    shadow_context.save();
 
-    // Heuristics for the scale of the map. This is good enough
-    const scale = Math.max(Math.min(height / 900, 1.1), 0.5);
-
-    draw_map_info_text(context, { spots, scale });
-    draw_map_angles(context, { radius, center_x, center_y, height, scale });
+    draw_map_info_text(context, { spots, scale: dims.scale });
+    draw_map_angles(context, dims);
 
     // Clip the map content to the circle
     context.beginPath();
-    context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.clip();
 
-    // Clip the map content to the circle
-    shadow_context.beginPath();
-    shadow_context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
-    shadow_context.clip();
-
-
     apply_context_transform(context, transform);
-    apply_context_transform(shadow_context, transform);
     context.lineWidth = 1 / transform.k;
 
     // Render the graticule
@@ -234,11 +228,6 @@ export function draw_map(
     });
 
     spots.forEach(spot => {
-        draw_shadow_spot(shadow_context, spot, shadow_palette, {
-            transform,
-            path_generator: shadow_path_generator,
-            projection,
-        });
         draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
     });
 
@@ -247,10 +236,40 @@ export function draw_map(
     }
 
     context.restore();
-    shadow_context.restore();
 
     // Map outline
     context.beginPath();
-    context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.stroke();
+}
+
+export function draw_shadow_map(
+    shadow_context,
+    spots,
+    dims,
+    transform,
+    projection,
+    shadow_palette,
+) {
+    const shadow_path_generator = d3.geoPath().projection(projection).context(shadow_context);
+    shadow_context.clearRect(0, 0, dims.width, dims.height);
+
+    shadow_context.save();
+
+    // Clip the map content to the circle
+    shadow_context.beginPath();
+    shadow_context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    shadow_context.clip();
+
+    apply_context_transform(shadow_context, transform);
+
+    spots.forEach(spot => {
+        draw_shadow_spot(shadow_context, spot, shadow_palette, {
+            transform,
+            path_generator: shadow_path_generator,
+            projection,
+        });
+    });
+
+    shadow_context.restore();
 }
