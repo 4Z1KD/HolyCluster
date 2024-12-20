@@ -126,6 +126,16 @@ function generate_shadow_palette(spots) {
     return [shadow_palette, reverse_shadow_palette];
 }
 
+function build_canvas_storage(projection, canvas_map) {
+    return Object.fromEntries(
+        Object.entries(canvas_map).map(([key, canvas_ref]) => {
+            const canvas = canvas_ref.current;
+            const context = canvas?.getContext("2d");
+            return [key, { canvas, context }];
+        }),
+    );
+}
+
 function CanvasMap({
     spots,
     map_controls,
@@ -136,7 +146,8 @@ function CanvasMap({
     pinned_spot,
     set_pinned_spot,
 }) {
-    const canvas_ref = useRef(null);
+    const map_canvas_ref = useRef(null);
+    const spots_canvas_ref = useRef(null);
     const shadow_canvas_ref = useRef(null);
 
     const [div_ref, { width, height }] = useMeasure();
@@ -153,24 +164,42 @@ function CanvasMap({
         .rotate([-center_lon, -center_lat, 0])
         .translate([dims.center_x, dims.center_y]);
 
+    const canvas_storage = build_canvas_storage(projection, {
+        map: map_canvas_ref,
+        spots: spots_canvas_ref,
+        shadow: shadow_canvas_ref,
+    });
+
     const [shadow_palette, reverse_shadow_palette] = generate_shadow_palette(spots);
 
     useEffect(() => {
         if (dims.width == null || dims.height == null) {
             return;
         }
-        const context = canvas_ref.current.getContext("2d");
-        const shadow_canvas = shadow_canvas_ref.current;
-        const shadow_context = shadow_canvas.getContext("2d");
 
         function draw_map_inner(transform) {
-            draw_map(context, spots, hovered_spot, dims, transform, projection, map_controls.night);
-            draw_shadow_map(shadow_context, spots, dims, transform, projection, shadow_palette);
+            draw_map(
+                canvas_storage.map.context,
+                spots,
+                hovered_spot,
+                dims,
+                transform,
+                projection,
+                map_controls.night,
+            );
+            draw_shadow_map(
+                canvas_storage.shadow.context,
+                spots,
+                dims,
+                transform,
+                projection,
+                shadow_palette,
+            );
         }
 
         draw_map_inner(zoom_transform);
 
-        apply_zoom_and_drag_behaviors(context, {
+        apply_zoom_and_drag_behaviors(canvas_storage.map.context, {
             zoom_transform,
             set_zoom_transform,
             set_map_controls,
@@ -184,7 +213,7 @@ function CanvasMap({
 
         const handle_mouse_move = event => {
             const { offsetX, offsetY } = event;
-            const [red, green, blue] = shadow_context
+            const [red, green, blue] = canvas_storage.shadow.context
                 .getImageData(offsetX, offsetY, 1, 1)
                 .data.slice(0, 3);
             const color = [red, green, blue];
@@ -207,10 +236,10 @@ function CanvasMap({
         };
 
         // Add event listener for mousemove
-        shadow_canvas.addEventListener("mousemove", handle_mouse_move);
+        canvas_storage.shadow.canvas.addEventListener("mousemove", handle_mouse_move);
 
         return () => {
-            shadow_canvas.removeEventListener("mousemove", handle_mouse_move);
+            canvas_storage.shadow.canvas.removeEventListener("mousemove", handle_mouse_move);
         };
     }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
 
@@ -224,7 +253,13 @@ function CanvasMap({
         <div ref={div_ref} className="relative h-full w-full">
             <canvas
                 className="absolute top-0 left-0"
-                ref={canvas_ref}
+                ref={map_canvas_ref}
+                width={width}
+                height={height}
+            />
+            <canvas
+                className="absolute top-0 left-0"
+                ref={spots_canvas_ref}
                 width={width}
                 height={height}
             />
