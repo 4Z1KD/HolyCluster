@@ -190,9 +190,11 @@ function CanvasMap({
             const color = [red, green, blue];
             const searched = reverse_shadow_palette.get(color);
             if (searched != null) {
-                const [type, spot_id] = searched;
-                set_hovered_spot({ source: "map", id: spot_id });
-            } else {
+                let [type, spot_id] = searched;
+                if ("map" != hovered_spot.source || spot_id != hovered_spot.id) {
+                    set_hovered_spot({ source: "map", id: spot_id });
+                }
+            } else if (hovered_spot.source != null || hovered_spot.id != null) {
                 set_hovered_spot({ source: null, id: null });
             }
         };
