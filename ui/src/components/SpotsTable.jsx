@@ -7,10 +7,10 @@ import { band_colors, band_text_colors, band_light_colors } from "@/filters_data
 const cell_classes = {
     time: "w-14",
     flag: "w-[1.3rem] md:min-w-[1.3rem]",
-    dx: "w-24",
+    dx: "w-16 2xs:w-24",
     freq: "w-12",
     band: "w-12 hidden md:table-cell",
-    spotter: "w-24",
+    spotter: "w-16 2xs:w-24",
     mode: "w-12 lg:w-[14rem]",
     comment: "w-[40rem] text-left hidden xl:table-cell",
 };
