@@ -12,6 +12,7 @@ import {
     dxcc_map,
     apply_context_transform,
     draw_map,
+    draw_spots,
     draw_shadow_map,
     Dimensions,
 } from "./draw_map.js";
@@ -181,11 +182,18 @@ function CanvasMap({
             draw_map(
                 canvas_storage.map.context,
                 spots,
-                hovered_spot,
                 dims,
                 transform,
                 projection,
                 map_controls.night,
+            );
+            draw_spots(
+                canvas_storage.spots.context,
+                spots,
+                hovered_spot,
+                dims,
+                transform,
+                projection,
             );
             draw_shadow_map(
                 canvas_storage.shadow.context,

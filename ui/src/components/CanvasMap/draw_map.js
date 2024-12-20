@@ -217,7 +217,6 @@ export class Dimensions {
 export function draw_map(
     context,
     spots,
-    hovered_spot,
     dims,
     transform,
     projection,
@@ -257,10 +256,6 @@ export function draw_map(
         context.stroke();
     });
 
-    spots.forEach(spot => {
-        draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
-    });
-
     if (night_displayed) {
         draw_night_circle(context, { path_generator });
     }
@@ -271,6 +266,36 @@ export function draw_map(
     context.beginPath();
     context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.stroke();
+}
+
+export function draw_spots(
+    context,
+    spots,
+    hovered_spot,
+    dims,
+    transform,
+    projection,
+) {
+    const path_generator = d3.geoPath().projection(projection).context(context);
+
+    // Clear the map before rendering
+    context.clearRect(0, 0, dims.width, dims.height);
+
+    context.save();
+
+    // Clip the map content to the circle
+    context.beginPath();
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    context.clip();
+
+    apply_context_transform(context, transform);
+    context.lineWidth = 1 / transform.k;
+
+    spots.forEach(spot => {
+        draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
+    });
+
+    context.restore();
 }
 
 export function draw_shadow_map(
