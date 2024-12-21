@@ -8,48 +8,49 @@ const FiltersContext = createContext(undefined)
 const { Provider } = FiltersContext
 
 
-export const useFilters = () =>{
+export const useFilters = () => {
     const context = useContext(FiltersContext)
-    return {...context}
+    return { ...context }
 }
 
 
 export const FiltersProvider = ({ children }) => {
-    function useObjectLocalStorage(key, default_value) {
-        const [current_value, set_value] = useLocalStorage(key, default_value);
-    
-        const should_update = Object.keys(default_value) != Object.keys(current_value);
-    
-        let merged_value;
-        if (should_update) {
-            merged_value = Object.fromEntries(Object.entries(default_value).map(([key, value]) => {
-                return [key, current_value[key] || value];
-            }));
-        } else {
-            merged_value = current_value;
-        }
-    
-        useEffect(() => {
-            if (should_update) {
-                set_value(merged_value);
-            }
-        }, [current_value]);
-    
-        return [merged_value, set_value];
+
+    const initial_filters = {
+        bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
+        modes: Object.fromEntries(modes.map(mode => [mode, true])),
+        dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
+        spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
+        include_callsigns: [],
+        exclude_callsigns: [],
+        time_limit: 3600,
     }
 
-    const [filters, setFilters] = useObjectLocalStorage(
+    const [filters, setFilters] = useLocalStorage(
         "filters",
-        {
-            bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
-            modes: Object.fromEntries(modes.map(mode => [mode, true])),
-            dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-            spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-            include_callsigns: [],
-            exclude_callsigns: [],
-            time_limit: 3600,
-        }
+        initial_filters
     );
+
+    useEffect(() => {
+        if (Object.keys(initial_filters) != Object.keys(filters)) {
+            const merged = {
+                ...initial_filters,
+                ...Object.keys(filters).reduce((acc, key) => {
+                    acc[key] = filters[key]
+                    return acc;
+                }, {})
+            }
+            const new_keys = Object.keys(initial_filters)
+            Object.keys(merged).forEach((key) => {
+                if (!new_keys.includes(key)) {
+                    delete merged[key]
+                }
+            })
+            setFilters(merged)
+        }
+    }, [])
+
+
 
     // This function changes all the keys in the filter object.
     // For example: setFilterKeys("bands", true) will enable all bands.
