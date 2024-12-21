@@ -71,14 +71,13 @@ function draw_spot(
     context,
     spot,
     dash_offset,
-    { hovered_spot, transform, path_generator, projection },
+    { is_bold, transform, path_generator, projection },
 ) {
     const line = build_geojson_line(spot);
-    const is_hovered = spot.id == hovered_spot.id;
 
     // Render the arc of the spot
     context.beginPath();
-    if (is_hovered) {
+    if (is_bold) {
         context.strokeStyle = band_light_colors[spot.band];
         context.lineWidth = 6;
     } else {
@@ -95,7 +94,7 @@ function draw_spot(
     path_generator(line);
     context.stroke();
 
-    const dx_size = (is_hovered ? 12 : 10) / transform.k;
+    const dx_size = (is_bold ? 12 : 10) / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     draw_spot_dx(
@@ -110,7 +109,7 @@ function draw_spot(
     );
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
+    const spotter_radius = (is_bold ? 5 : 3) / transform.k;
 
     context.beginPath();
 
@@ -267,7 +266,16 @@ export function draw_map(context, spots, dims, transform, projection, night_disp
     context.stroke();
 }
 
-export function draw_spots(context, spots, hovered_spot, dims, dash_offset, transform, projection) {
+export function draw_spots(
+    context,
+    spots,
+    hovered_spot,
+    pinned_spot,
+    dims,
+    dash_offset,
+    transform,
+    projection,
+) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
@@ -283,14 +291,28 @@ export function draw_spots(context, spots, hovered_spot, dims, dash_offset, tran
     apply_context_transform(context, transform);
     context.lineWidth = 1 / transform.k;
 
+    let bold_spot;
     spots.forEach(spot => {
-        draw_spot(context, spot, dash_offset, {
-            hovered_spot,
+        if (hovered_spot.id == spot.id || pinned_spot == spot.id) {
+            bold_spot = spot;
+        } else {
+            draw_spot(context, spot, dash_offset, {
+                is_bold: false,
+                transform,
+                path_generator,
+                projection,
+            });
+        }
+    });
+    // This is used to draw the bold spot over all the other spots.
+    if (bold_spot != null) {
+        draw_spot(context, bold_spot, dash_offset, {
+            is_bold: true,
             transform,
             path_generator,
             projection,
         });
-    });
+    }
 
     context.restore();
 }

@@ -186,12 +186,14 @@ function CanvasMap({
                 canvas_storage.spots.context,
                 spots,
                 hovered_spot,
+                pinned_spot,
                 dims,
                 dash_offset_ref.current,
                 transform,
                 projection,
             );
 
+            // This recursion redraws the spot every frame with changing sash_offset to animate the alerted spots.
             dash_offset_ref.current -= 0.5;
             if (dash_offset_ref.current < -20) {
                 dash_offset_ref.current = 0;
@@ -236,13 +238,17 @@ function CanvasMap({
             center_lat,
         });
 
-        const handle_mouse_move = event => {
-            const { offsetX, offsetY } = event;
+        function get_data_from_shadow_canvas(x, y) {
             const [red, green, blue] = canvas_storage.shadow.context
-                .getImageData(offsetX, offsetY, 1, 1)
+                .getImageData(x, y, 1, 1)
                 .data.slice(0, 3);
             const color = [red, green, blue];
-            const searched = reverse_shadow_palette.get(color);
+            return reverse_shadow_palette.get(color);
+        }
+
+        function on_mouse_move(event) {
+            const { offsetX, offsetY } = event;
+            const searched = get_data_from_shadow_canvas(offsetX, offsetY);
             if (searched != null) {
                 let [type, spot_id] = searched;
                 if (hovered_spot.source != "map" || hovered_spot.id != spot_id) {
@@ -265,11 +271,30 @@ function CanvasMap({
             }
         };
 
+        function on_click(event) {
+            const { offsetX, offsetY } = event;
+            const searched = get_data_from_shadow_canvas(offsetX, offsetY);
+            if (searched != null) {
+                let [type, spot_id] = searched;
+                switch (event.detail) {
+                    case 1:
+                        set_pinned_spot(spot_id);
+                        break;
+                    case 2:
+                        const spot = spots.find(spot => spot.id == spot_id);
+                        set_cat_to_spot(spot);
+                        break;
+                }
+            }
+        }
+
         // Add event listener for mousemove
-        canvas_storage.shadow.canvas.addEventListener("mousemove", handle_mouse_move);
+        canvas_storage.shadow.canvas.addEventListener("mousemove", on_mouse_move);
+        canvas_storage.shadow.canvas.addEventListener("click", on_click);
 
         return () => {
-            canvas_storage.shadow.canvas.removeEventListener("mousemove", handle_mouse_move);
+            canvas_storage.shadow.canvas.removeEventListener("mousemove", on_mouse_move);
+            canvas_storage.shadow.canvas.removeEventListener("click", on_click);
             cancelAnimationFrame(animation_id_ref.current);
         };
     }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
