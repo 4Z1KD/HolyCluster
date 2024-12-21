@@ -44,8 +44,7 @@ function CallsignFilters({ is_show_only }) {
                                     setFilters(
                                         state =>
                                         ({
-                                            ...state, is_exclude_filters_active:
-                                                !state.is_exclude_filters_active
+                                            ...state, is_exclude_filters_active:!state.is_exclude_filters_active
                                         }),
                                     );
                                 }}
