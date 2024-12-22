@@ -1,7 +1,6 @@
 import { band_colors } from "@/filters_data.js";
 
 function SpotPopup({
-    visible,
     hovered_spot,
     set_hovered_spot,
     set_pinned_spot,
@@ -9,7 +8,7 @@ function SpotPopup({
     hovered_spot_data,
     distance,
 }) {
-    return visible ? (
+    return (
         <div
             className="absolute p-2 w-fit bg-white border border-gray-300 rounded shadow-lg z-50"
             onMouseOver={() => set_hovered_spot(hovered_spot)}
@@ -49,8 +48,6 @@ function SpotPopup({
                 </p>
             </div>
         </div>
-    ) : (
-        ""
     );
 }
 

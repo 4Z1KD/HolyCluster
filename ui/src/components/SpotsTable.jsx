@@ -7,10 +7,10 @@ import { band_colors, band_text_colors, band_light_colors } from "@/filters_data
 const cell_classes = {
     time: "w-14",
     flag: "w-[1.3rem] md:min-w-[1.3rem]",
-    dx: "w-24",
+    dx: "w-16 2xs:w-24",
     freq: "w-12",
     band: "w-12 hidden md:table-cell",
-    spotter: "w-24",
+    spotter: "w-16 2xs:w-24",
     mode: "w-12 lg:w-[14rem]",
     comment: "w-[40rem] text-left hidden xl:table-cell",
 };
@@ -50,6 +50,7 @@ const dxcc_to_country_flag = {
     Svalbard: "Norway",
     Crete: "Greece",
     "The Gambia": "Gambia",
+    "Eastern Kiribati": "Kiribati",
 };
 
 function Callsign({ callsign }) {
@@ -121,7 +122,13 @@ function Spot(
                 <Callsign callsign={spot.dx_callsign}></Callsign>
             </td>
             <td className={cell_classes.freq}>
-                <div className="cursor-pointer" onClick={() => set_cat_to_spot(spot)}>
+                <div onClick={() => set_cat_to_spot(spot)}
+                    className="px-1 rounded-full cursor-pointer"
+                    style={{
+                        backgroundColor: `${window.matchMedia("(max-width: 767px)").matches ? band_colors.get(spot.band) : "transparent"}`,
+                        color: `${window.matchMedia("(max-width: 767px)").matches ? band_text_colors[spot.band] : "black"}`
+                    }}
+                    >
                     {spot.freq}
                 </div>
             </td>

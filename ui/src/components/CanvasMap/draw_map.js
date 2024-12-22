@@ -36,13 +36,48 @@ export function build_geojson_line(spot) {
     };
 }
 
-function draw_spot(context, spot, { hovered_spot, transform, path_generator, projection }) {
+function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, transform) {
+    context.beginPath();
+    context.strokeStyle = stroke_color;
+    context.fillStyle = color;
+    context.lineWidth = 1 / transform.k;
+    if (spot.mode === "SSB") {
+        context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
+    } else if (spot.mode === "CW") {
+        context.moveTo(dx_x, dx_y - dx_size / 2);
+        context.lineTo(dx_x - dx_size / 2, dx_y + dx_size / 2);
+        context.lineTo(dx_x + dx_size / 2, dx_y + dx_size / 2);
+    } else {
+        dx_size = dx_size / 1.6;
+        const hex_points = [];
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i;
+            const x = dx_x + dx_size * Math.cos(angle);
+            const y = dx_y + dx_size * Math.sin(angle);
+            hex_points.push([x, y]);
+        }
+
+        context.moveTo(hex_points[0][0], hex_points[0][1]);
+        for (let i = 1; i < hex_points.length; i++) {
+            context.lineTo(hex_points[i][0], hex_points[i][1]);
+        }
+    }
+    context.closePath();
+    context.fill();
+    context.stroke();
+}
+
+function draw_spot(
+    context,
+    spot,
+    dash_offset,
+    { is_bold, transform, path_generator, projection },
+) {
     const line = build_geojson_line(spot);
-    const is_hovered = spot.id == hovered_spot.id;
 
     // Render the arc of the spot
     context.beginPath();
-    if (is_hovered) {
+    if (is_bold) {
         context.strokeStyle = band_light_colors[spot.band];
         context.lineWidth = 6;
     } else {
@@ -52,26 +87,29 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     context.lineWidth = context.lineWidth / transform.k;
     if (spot.is_alerted) {
         context.setLineDash([10 / transform.k, 10 / transform.k]);
+        context.lineDashOffset = dash_offset / transform.k;
     } else {
         context.setLineDash([]);
     }
     path_generator(line);
     context.stroke();
 
-    const dx_size = (is_hovered ? 12 : 10) / transform.k;
+    const dx_size = (is_bold ? 12 : 10) / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
-    // Render the dx rectangle
-    context.beginPath();
-    context.strokeStyle = "grey";
-    context.fillStyle = band_light_colors[spot.band];
-    context.lineWidth = 1 / transform.k;
-    context.rect(dx_x - dx_size / 2, dx_y - dx_size / 2, dx_size, dx_size);
-    context.fill();
-    context.stroke();
+    draw_spot_dx(
+        context,
+        spot,
+        band_light_colors[spot.band],
+        "grey",
+        dx_x,
+        dx_y,
+        dx_size,
+        transform,
+    );
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
+    const spotter_radius = (is_bold ? 5 : 3) / transform.k;
 
     context.beginPath();
 
@@ -84,15 +122,48 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     context.stroke();
 }
 
-function draw_map_angles(
+function rgb_triplet_to_color([red, green, blue]) {
+    return `rgb(${red}, ${green}, ${blue})`;
+}
+
+function draw_shadow_spot(
     context,
-    { radius, center_x, center_y, height, scale, degrees_diff = 15 },
+    spot,
+    shadow_palette,
+    { transform, path_generator, projection },
 ) {
-    if (height < 300) {
+    const line = build_geojson_line(spot);
+
+    // Render the arc of the spot
+    context.beginPath();
+    context.strokeStyle = rgb_triplet_to_color(shadow_palette.get(["arc", spot.id]));
+    context.lineWidth = 8 / transform.k;
+    path_generator(line);
+    context.stroke();
+
+    const dx_size = 12 / transform.k;
+    const [dx_x, dx_y] = projection(spot.dx_loc);
+
+    // Render the dx rectangle
+    const dx_color = rgb_triplet_to_color(shadow_palette.get(["dx", spot.id]));
+    draw_spot_dx(context, spot, dx_color, dx_color, dx_x, dx_y, dx_size, transform);
+
+    const [spotter_x, spotter_y] = projection(spot.spotter_loc);
+    const spotter_radius = 7 / transform.k;
+
+    context.beginPath();
+    context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["spotter", spot.id]));
+    context.lineWidth = 2 / transform.k;
+    context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
+    context.fill();
+}
+
+function draw_map_angles(context, dims, degrees_diff = 15) {
+    if (dims.height < 300) {
         return;
     }
 
-    const angle_radius = radius + 25 * scale;
+    const angle_radius = dims.radius + 25 * dims.scale;
     // Calculate the positions for angle labels
     const angle_labels = Array.from(Array(Math.round(360 / degrees_diff)).keys()).map(x => {
         const angle_degrees = x * degrees_diff;
@@ -100,13 +171,13 @@ function draw_map_angles(
         return [
             angle_degrees,
             [
-                Math.cos(angle_radians) * angle_radius + center_x,
-                Math.sin(angle_radians) * angle_radius + center_y,
+                Math.cos(angle_radians) * angle_radius + dims.center_x,
+                Math.sin(angle_radians) * angle_radius + dims.center_y,
             ],
         ];
     });
 
-    const font_size = Math.floor(20 * scale);
+    const font_size = Math.floor(20 * dims.scale);
     // Set font properties
     context.font = font_size + "px Arial";
     context.textAlign = "center";
@@ -132,35 +203,36 @@ export function apply_context_transform(context, transform) {
     context.setTransform(transform.k, 0, 0, transform.k, transform.x, transform.y, 1, 1, 1);
 }
 
-export function draw_map(
-    context,
-    shadow_context,
-    spots,
-    hovered_spot,
-    width,
-    height,
-    center_x,
-    center_y,
-    radius,
-    transform,
-    path_generator,
-    projection,
-    night_displayed,
-) {
+export class Dimensions {
+    constructor(width, height, inner_padding) {
+        this.width = width;
+        this.height = height;
+        this.inner_padding = inner_padding;
+
+        this.center_x = width / 2;
+        this.center_y = height / 2;
+        this.radius = Math.min(this.center_x, this.center_y) - inner_padding;
+
+        this.padded_size = [width - inner_padding * 2, height - inner_padding * 2];
+        // Heuristics for the scale of the map. This is good enough
+        this.scale = Math.max(Math.min(height / 900, 1.1), 0.5);
+    }
+}
+
+export function draw_map(context, spots, dims, transform, projection, night_displayed) {
+    const path_generator = d3.geoPath().projection(projection).context(context);
+
     // Clear the map before rendering
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, dims.width, dims.height);
 
     context.save();
 
-    // Heuristics for the scale of the map. This is good enough
-    const scale = Math.max(Math.min(height / 900, 1.1), 0.5);
-
-    draw_map_info_text(context, { spots, scale });
-    draw_map_angles(context, { radius, center_x, center_y, height, scale });
+    draw_map_info_text(context, { spots, scale: dims.scale });
+    draw_map_angles(context, dims);
 
     // Clip the map content to the circle
     context.beginPath();
-    context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.clip();
 
     apply_context_transform(context, transform);
@@ -182,10 +254,6 @@ export function draw_map(
         context.stroke();
     });
 
-    spots.forEach(spot => {
-        draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
-    });
-
     if (night_displayed) {
         draw_night_circle(context, { path_generator });
     }
@@ -194,6 +262,88 @@ export function draw_map(
 
     // Map outline
     context.beginPath();
-    context.arc(center_x, center_y, radius, 0, 2 * Math.PI);
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.stroke();
+}
+
+export function draw_spots(
+    context,
+    spots,
+    hovered_spot,
+    pinned_spot,
+    dims,
+    dash_offset,
+    transform,
+    projection,
+) {
+    const path_generator = d3.geoPath().projection(projection).context(context);
+
+    // Clear the map before rendering
+    context.clearRect(0, 0, dims.width, dims.height);
+
+    context.save();
+
+    // Clip the map content to the circle
+    context.beginPath();
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    context.clip();
+
+    apply_context_transform(context, transform);
+    context.lineWidth = 1 / transform.k;
+
+    let bold_spot;
+    spots.forEach(spot => {
+        if (hovered_spot.id == spot.id || pinned_spot == spot.id) {
+            bold_spot = spot;
+        } else {
+            draw_spot(context, spot, dash_offset, {
+                is_bold: false,
+                transform,
+                path_generator,
+                projection,
+            });
+        }
+    });
+    // This is used to draw the bold spot over all the other spots.
+    if (bold_spot != null) {
+        draw_spot(context, bold_spot, dash_offset, {
+            is_bold: true,
+            transform,
+            path_generator,
+            projection,
+        });
+    }
+
+    context.restore();
+}
+
+export function draw_shadow_map(
+    shadow_context,
+    spots,
+    dims,
+    transform,
+    projection,
+    shadow_palette,
+) {
+    const shadow_path_generator = d3.geoPath().projection(projection).context(shadow_context);
+    shadow_context.clearRect(0, 0, dims.width, dims.height);
+
+    shadow_context.save();
+
+    // Clip the map content to the circle
+    shadow_context.beginPath();
+    shadow_context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    shadow_context.clip();
+
+    apply_context_transform(shadow_context, transform);
+
+    spots.forEach(spot => {
+        draw_shadow_spot(shadow_context, spot, shadow_palette, {
+            transform,
+            path_generator: shadow_path_generator,
+            projection,
+        });
+    });
+
+    shadow_context.restore();
 }
