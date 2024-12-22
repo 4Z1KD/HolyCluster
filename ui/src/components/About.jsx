@@ -35,7 +35,7 @@ function About() {
                     .<br />
                 </p>
                 <br />
-                Contact us at: <strong>holycuster@iarc.org</strong>
+                Contact us at: <strong>holycluster@iarc.org</strong>
             </div>
         </Modal>
     );

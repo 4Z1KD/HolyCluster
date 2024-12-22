@@ -67,13 +67,17 @@ function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, t
     context.stroke();
 }
 
-function draw_spot(context, spot, { hovered_spot, transform, path_generator, projection }) {
+function draw_spot(
+    context,
+    spot,
+    dash_offset,
+    { is_bold, transform, path_generator, projection },
+) {
     const line = build_geojson_line(spot);
-    const is_hovered = spot.id == hovered_spot.id;
 
     // Render the arc of the spot
     context.beginPath();
-    if (is_hovered) {
+    if (is_bold) {
         context.strokeStyle = band_light_colors[spot.band];
         context.lineWidth = 6;
     } else {
@@ -83,13 +87,14 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     context.lineWidth = context.lineWidth / transform.k;
     if (spot.is_alerted) {
         context.setLineDash([10 / transform.k, 10 / transform.k]);
+        context.lineDashOffset = dash_offset / transform.k;
     } else {
         context.setLineDash([]);
     }
     path_generator(line);
     context.stroke();
 
-    const dx_size = (is_hovered ? 12 : 10) / transform.k;
+    const dx_size = (is_bold ? 12 : 10) / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     draw_spot_dx(
@@ -104,7 +109,7 @@ function draw_spot(context, spot, { hovered_spot, transform, path_generator, pro
     );
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const spotter_radius = (is_hovered ? 5 : 3) / transform.k;
+    const spotter_radius = (is_bold ? 5 : 3) / transform.k;
 
     context.beginPath();
 
@@ -132,11 +137,11 @@ function draw_shadow_spot(
     // Render the arc of the spot
     context.beginPath();
     context.strokeStyle = rgb_triplet_to_color(shadow_palette.get(["arc", spot.id]));
-    context.lineWidth = 6 / transform.k;
+    context.lineWidth = 8 / transform.k;
     path_generator(line);
     context.stroke();
 
-    const dx_size = 10 / transform.k;
+    const dx_size = 12 / transform.k;
     const [dx_x, dx_y] = projection(spot.dx_loc);
 
     // Render the dx rectangle
@@ -144,11 +149,11 @@ function draw_shadow_spot(
     draw_spot_dx(context, spot, dx_color, dx_color, dx_x, dx_y, dx_size, transform);
 
     const [spotter_x, spotter_y] = projection(spot.spotter_loc);
-    const spotter_radius = 5 / transform.k;
+    const spotter_radius = 7 / transform.k;
 
     context.beginPath();
     context.fillStyle = rgb_triplet_to_color(shadow_palette.get(["spotter", spot.id]));
-    context.lineWidth = 1 / transform.k;
+    context.lineWidth = 2 / transform.k;
     context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
     context.fill();
 }
@@ -214,15 +219,7 @@ export class Dimensions {
     }
 }
 
-export function draw_map(
-    context,
-    spots,
-    hovered_spot,
-    dims,
-    transform,
-    projection,
-    night_displayed,
-) {
+export function draw_map(context, spots, dims, transform, projection, night_displayed) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
@@ -257,10 +254,6 @@ export function draw_map(
         context.stroke();
     });
 
-    spots.forEach(spot => {
-        draw_spot(context, spot, { hovered_spot, transform, path_generator, projection });
-    });
-
     if (night_displayed) {
         draw_night_circle(context, { path_generator });
     }
@@ -271,6 +264,57 @@ export function draw_map(
     context.beginPath();
     context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.stroke();
+}
+
+export function draw_spots(
+    context,
+    spots,
+    hovered_spot,
+    pinned_spot,
+    dims,
+    dash_offset,
+    transform,
+    projection,
+) {
+    const path_generator = d3.geoPath().projection(projection).context(context);
+
+    // Clear the map before rendering
+    context.clearRect(0, 0, dims.width, dims.height);
+
+    context.save();
+
+    // Clip the map content to the circle
+    context.beginPath();
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    context.clip();
+
+    apply_context_transform(context, transform);
+    context.lineWidth = 1 / transform.k;
+
+    let bold_spot;
+    spots.forEach(spot => {
+        if (hovered_spot.id == spot.id || pinned_spot == spot.id) {
+            bold_spot = spot;
+        } else {
+            draw_spot(context, spot, dash_offset, {
+                is_bold: false,
+                transform,
+                path_generator,
+                projection,
+            });
+        }
+    });
+    // This is used to draw the bold spot over all the other spots.
+    if (bold_spot != null) {
+        draw_spot(context, bold_spot, dash_offset, {
+            is_bold: true,
+            transform,
+            path_generator,
+            projection,
+        });
+    }
+
+    context.restore();
 }
 
 export function draw_shadow_map(
