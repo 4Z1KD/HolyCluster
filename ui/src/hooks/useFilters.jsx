@@ -58,7 +58,6 @@ export const FiltersProvider = ({ children }) => {
     // This function set only one filter on.
     // For example: set_only_filter_keys("modes", "CW"), enables only CW.
     function setOnlyFilterKeys(filters_key, selected_key) {
-        console.log("ff", filters_key, selected_key);
         setFilters(state => ({
             ...state,
             [filters_key]: Object.fromEntries(
