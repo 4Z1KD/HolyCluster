@@ -109,11 +109,9 @@ function use_object_local_storage(key, default_value) {
 }
 
 function MainContainer() {
-
     const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
 
-    const { filters } = useFilters()
-
+    const { filters } = useFilters();
 
     const include_filters_callsigns = filters.include_callsigns.filter(
         ([pattern, _]) => pattern.length > 0,
@@ -121,7 +119,6 @@ function MainContainer() {
     const exclude_filters_callsigns = filters.exclude_callsigns.filter(
         ([pattern, _]) => pattern.length > 0,
     );
-
 
     let [alerts, set_alerts] = useLocalStorage("alerts", []);
     alerts = alerts.filter(([pattern, _]) => pattern.length > 0);
@@ -190,8 +187,12 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
-    const filtered_alerts_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
-    const spots_per_band_count = Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, 0]));
+    const filtered_alerts_count = Object.fromEntries(
+        Array.from(band_colors.keys()).map(band => [band, 0]),
+    );
+    const spots_per_band_count = Object.fromEntries(
+        Array.from(band_colors.keys()).map(band => [band, 0]),
+    );
 
     const filtered_spots = spots
         .filter(spot => {
@@ -227,8 +228,6 @@ function MainContainer() {
             return result;
         })
         .slice(0, 100);
-
-
 
     // Limit the count for 2 digit display
     for (const band in spots_per_band_count) {
@@ -337,12 +336,8 @@ function MainContainer() {
                         {table}
                     </>
                 )}
-                <CallsignsView
-                    alerts={alerts}
-                    set_alerts={set_alerts}
-                    toggled_ui={toggled_ui}
-                />
-                <Continents  toggled_ui={toggled_ui} />
+                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} />
+                <Continents toggled_ui={toggled_ui} />
             </div>
         </>
     );

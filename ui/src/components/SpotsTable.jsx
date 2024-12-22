@@ -122,13 +122,14 @@ function Spot(
                 <Callsign callsign={spot.dx_callsign}></Callsign>
             </td>
             <td className={cell_classes.freq}>
-                <div onClick={() => set_cat_to_spot(spot)}
+                <div
+                    onClick={() => set_cat_to_spot(spot)}
                     className="px-1 rounded-full cursor-pointer"
                     style={{
                         backgroundColor: `${window.matchMedia("(max-width: 767px)").matches ? band_colors.get(spot.band) : "transparent"}`,
-                        color: `${window.matchMedia("(max-width: 767px)").matches ? band_text_colors[spot.band] : "black"}`
+                        color: `${window.matchMedia("(max-width: 767px)").matches ? band_text_colors[spot.band] : "black"}`,
                     }}
-                    >
+                >
                     {spot.freq}
                 </div>
             </td>

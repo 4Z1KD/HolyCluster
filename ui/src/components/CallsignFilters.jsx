@@ -3,16 +3,16 @@ import { useFilters } from "../hooks/useFilters";
 import Toggle from "@/components/Toggle.jsx";
 
 function CallsignFilters({ is_show_only }) {
-    const { filters, setFilters } = useFilters()
+    const { filters, setFilters } = useFilters();
     const callsigns = is_show_only ? filters.include_callsigns : filters.exclude_callsigns;
 
     const title = is_show_only ? "Show only" : "Hide";
 
     function set_callsigns(callsigns) {
         if (is_show_only) {
-            setFilters(_filters => ({ ..._filters, include_callsigns: callsigns }))
+            setFilters(_filters => ({ ..._filters, include_callsigns: callsigns }));
         } else {
-            setFilters(_filters => ({ ..._filters, exclude_callsigns: callsigns }))
+            setFilters(_filters => ({ ..._filters, exclude_callsigns: callsigns }));
         }
     }
 
@@ -28,25 +28,20 @@ function CallsignFilters({ is_show_only }) {
                             <Toggle
                                 value={filters.is_include_filters_active}
                                 on_click={() => {
-                                    setFilters(
-                                        state =>
-                                        ({
-                                            ...state, is_include_filters_active:
-                                                !state.is_include_filters_active
-                                        }),
-                                    );
+                                    setFilters(state => ({
+                                        ...state,
+                                        is_include_filters_active: !state.is_include_filters_active,
+                                    }));
                                 }}
                             />
                         ) : (
                             <Toggle
                                 value={filters.is_exclude_filters_active}
                                 on_click={() => {
-                                    setFilters(
-                                        state =>
-                                        ({
-                                            ...state, is_exclude_filters_active:!state.is_exclude_filters_active
-                                        }),
-                                    );
+                                    setFilters(state => ({
+                                        ...state,
+                                        is_exclude_filters_active: !state.is_exclude_filters_active,
+                                    }));
                                 }}
                             />
                         )}

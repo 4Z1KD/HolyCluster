@@ -3,16 +3,8 @@ import React, { useState } from "react";
 import Button from "@/components/Button.jsx";
 import { useFilters } from "../hooks/useFilters";
 
-function FilterOptions({
-    filter_key,
-    filter_value,
-    align,
-    orientation,
-    children,
-}) {
-
-    const { setFilterKeys,
-        setOnlyFilterKeys } = useFilters()
+function FilterOptions({ filter_key, filter_value, align, orientation, children }) {
+    const { setFilterKeys, setOnlyFilterKeys } = useFilters();
 
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
@@ -36,11 +28,6 @@ function FilterOptions({
     classes.push(...orientation_options[orientation]);
 
     classes = classes.join(" ");
-
-
-
-
-
 
     return (
         <div
@@ -78,6 +65,5 @@ function FilterOptions({
         </div>
     );
 }
-
 
 export default FilterOptions;

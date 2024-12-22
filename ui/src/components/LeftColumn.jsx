@@ -35,7 +35,7 @@ const mode_to_symbol = {
 };
 
 function LeftColumn({ spots_per_band_count, toggled_ui }) {
-    const { filters, setFilters } = useFilters()
+    const { filters, setFilters } = useFilters();
 
     const filter_group_classes = "p-1 flex flex-col text-center gap-2 ";
     const toggled_classes = toggled_ui.left
@@ -66,8 +66,12 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
                                 is_active={filters.bands[band]}
                                 color={color}
                                 text_color={band_text_colors[band]}
-                                on_click={_ => setFilters(_filters => ({ ..._filters, bands: { ..._filters.bands, [band]: !_filters.bands[band]}}))}
-
+                                on_click={_ =>
+                                    setFilters(_filters => ({
+                                        ..._filters,
+                                        bands: { ..._filters.bands, [band]: !_filters.bands[band] },
+                                    }))
+                                }
                                 hover_brightness="125"
                                 size="small"
                             />
@@ -92,8 +96,12 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
                                     </>
                                 }
                                 is_active={filters.modes[mode]}
-                                on_click={() => setFilters(_filters => ({ ..._filters, modes: { ..._filters.modes, [mode]: !_filters.modes[mode] } }))}
-
+                                on_click={() =>
+                                    setFilters(_filters => ({
+                                        ..._filters,
+                                        modes: { ..._filters.modes, [mode]: !_filters.modes[mode] },
+                                    }))
+                                }
                                 size="small"
                             />
                         </FilterOptions>

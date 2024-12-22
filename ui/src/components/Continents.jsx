@@ -6,7 +6,7 @@ const title = { dx: "DX", spotter: "DE" };
 const button_color = { dx: "rgb(191 219 254)", spotter: "rgb(254 205 211)" };
 
 function ContinentColumn({ spot_type, color }) {
-    const {filters, setFilters} = useFilters()
+    const { filters, setFilters } = useFilters();
     const filter_key = `${spot_type}_continents`;
 
     return (
@@ -24,7 +24,13 @@ function ContinentColumn({ spot_type, color }) {
                         text={continent}
                         is_active={filters[filter_key][continent]}
                         on_click={_ => {
-                            setFilters(state => ({...state, [filter_key]:{...state[filter_key], [continent]: !state[filter_key][continent]}}));
+                            setFilters(state => ({
+                                ...state,
+                                [filter_key]: {
+                                    ...state[filter_key],
+                                    [continent]: !state[filter_key][continent],
+                                },
+                            }));
                         }}
                         size="small"
                     />
@@ -50,7 +56,6 @@ function Continents({ toggled_ui }) {
                 <ContinentColumn
                     key={spot_type}
                     spot_type={spot_type}
-           
                     color={button_color[spot_type]}
                 />
             ))}

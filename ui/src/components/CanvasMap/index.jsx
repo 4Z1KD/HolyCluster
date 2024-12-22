@@ -269,7 +269,7 @@ function CanvasMap({
                     set_popup_position(null);
                 }
             }
-        };
+        }
 
         function on_click(event) {
             const { offsetX, offsetY } = event;

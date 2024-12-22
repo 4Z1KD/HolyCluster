@@ -7,10 +7,8 @@ import "@/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <FiltersProvider>
-
         <React.StrictMode>
             <MainContainer />
         </React.StrictMode>
-    </FiltersProvider>
-    ,
+    </FiltersProvider>,
 );

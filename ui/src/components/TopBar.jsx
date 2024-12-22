@@ -29,7 +29,7 @@ function TopBar({
     toggled_ui,
     set_toggled_ui,
 }) {
-    const {filters, setFilters} = useFilters()
+    const { filters, setFilters } = useFilters();
     const box_container_style = "flex items-center h-full p-2 gap-3";
 
     const network_state_colors = { connected: "#00EE00", disconnected: "#EE0000" };
@@ -53,7 +53,9 @@ function TopBar({
                 <select
                     className="rounded-lg px-4 py-2 w-28"
                     value={filters.time_limit}
-                    onChange={event => setFilters(state => ({...state, time_limit:event.target.value}))}
+                    onChange={event =>
+                        setFilters(state => ({ ...state, time_limit: event.target.value }))
+                    }
                 >
                     {Object.entries(spots_time_limits).map(([text, minutes]) => {
                         return (
