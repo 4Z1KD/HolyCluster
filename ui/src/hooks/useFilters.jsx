@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { use_object_local_storage } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
 
 const FiltersContext = createContext(undefined);
@@ -22,7 +22,7 @@ export const FiltersProvider = ({ children }) => {
         time_limit: 3600,
     };
 
-    const [filters, setFilters] = useLocalStorage("filters", initial_filters);
+    const [filters, setFilters] = use_object_local_storage("filters", initial_filters);
 
     useEffect(() => {
         if (Object.keys(initial_filters) != Object.keys(filters)) {

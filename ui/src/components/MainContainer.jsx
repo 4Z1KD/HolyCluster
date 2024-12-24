@@ -7,7 +7,7 @@ import Continents from "@/components/Continents.jsx";
 import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
 import Tabs from "@/components/Tabs.jsx";
-import { is_matching_list } from "@/utils.js";
+import { use_object_local_storage, is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
 import { useFilters } from "../hooks/useFilters";
 
@@ -81,31 +81,6 @@ function fetch_spots(set_spots, set_network_state) {
                 set_network_state("disconnected");
             });
     }
-}
-
-function use_object_local_storage(key, default_value) {
-    const [current_value, set_value] = useLocalStorage(key, default_value);
-
-    const should_update = Object.keys(default_value) != Object.keys(current_value);
-
-    let merged_value;
-    if (should_update) {
-        merged_value = Object.fromEntries(
-            Object.entries(default_value).map(([key, default_value]) => {
-                return [key, current_value[key] != null ? current_value[key] : default_value];
-            }),
-        );
-    } else {
-        merged_value = current_value;
-    }
-
-    useEffect(() => {
-        if (should_update) {
-            set_value(merged_value);
-        }
-    }, [current_value]);
-
-    return [merged_value, set_value];
 }
 
 function MainContainer() {
