@@ -10,9 +10,9 @@ function CallsignFilters({ is_show_only }) {
 
     function set_callsigns(callsigns) {
         if (is_show_only) {
-            setFilters(_filters => ({ ..._filters, include_callsigns: callsigns }));
+            setFilters(filters => ({ ...filters, include_callsigns: callsigns }));
         } else {
-            setFilters(_filters => ({ ..._filters, exclude_callsigns: callsigns }));
+            setFilters(filters => ({ ...filters, exclude_callsigns: callsigns }));
         }
     }
 

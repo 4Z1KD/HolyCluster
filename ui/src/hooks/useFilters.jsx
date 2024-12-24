@@ -17,31 +17,14 @@ export const FiltersProvider = ({ children }) => {
         modes: Object.fromEntries(modes.map(mode => [mode, true])),
         dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
         spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
+        is_include_filters_active: true,
+        is_exclude_filters_active: true,
         include_callsigns: [],
         exclude_callsigns: [],
         time_limit: 3600,
     };
 
     const [filters, setFilters] = use_object_local_storage("filters", initial_filters);
-
-    useEffect(() => {
-        if (Object.keys(initial_filters) != Object.keys(filters)) {
-            const merged = {
-                ...initial_filters,
-                ...Object.keys(filters).reduce((acc, key) => {
-                    acc[key] = filters[key];
-                    return acc;
-                }, {}),
-            };
-            const new_keys = Object.keys(initial_filters);
-            Object.keys(merged).forEach(key => {
-                if (!new_keys.includes(key)) {
-                    delete merged[key];
-                }
-            });
-            setFilters(merged);
-        }
-    }, []);
 
     // This function changes all the keys in the filter object.
     // For example: setFilterKeys("bands", true) will enable all bands.
