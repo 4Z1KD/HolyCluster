@@ -50,36 +50,40 @@ function TopBar({
             </h1>
             <div className={box_container_style}>
                 <Clock />
-                <select
-                    className="rounded-lg px-4 py-2 w-28"
-                    value={filters.time_limit}
-                    onChange={event =>
-                        setFilters(state => ({ ...state, time_limit: event.target.value }))
-                    }
-                >
-                    {Object.entries(spots_time_limits).map(([text, minutes]) => {
-                        return (
-                            <option key={minutes} value={minutes}>
-                                {text}
-                            </option>
-                        );
-                    })}
-                </select>
+                <span title="Spots time range">
+                    <select
+                        className="rounded-lg px-4 py-2 w-28"
+                        value={filters.time_limit}
+                        onChange={event =>
+                            setFilters(state => ({ ...state, time_limit: event.target.value }))
+                        }
+                    >
+                        {Object.entries(spots_time_limits).map(([text, minutes]) => {
+                            return (
+                                <option key={minutes} value={minutes}>
+                                    {text}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </span>
                 {network_state == "connecting" ? (
                     <Spinner size="32" color="lightblue" />
                 ) : (
-                    <NetworkState
+                    <span title={network_state}><NetworkState
                         size="40"
                         color={network_state_colors[network_state]}
                         title={network_state}
-                    />
+                    /></span>
                 )}
-                <Settings
-                    settings={settings}
-                    set_settings={set_settings}
-                    set_map_controls={set_map_controls}
-                    set_radius_in_km={set_radius_in_km}
-                />
+                <span title="Settings">
+                    <Settings
+                        settings={settings}
+                        set_settings={set_settings}
+                        set_map_controls={set_map_controls}
+                        set_radius_in_km={set_radius_in_km}
+                    />
+                </span>
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu
                         size="32"
