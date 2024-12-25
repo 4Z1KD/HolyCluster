@@ -51,6 +51,7 @@ const dxcc_to_country_flag = {
     Crete: "Greece",
     "The Gambia": "Gambia",
     "Eastern Kiribati": "Kiribati",
+    "Minami Torishima": "Japan",
 };
 
 function Callsign({ callsign }) {
