@@ -50,7 +50,7 @@ function TopBar({
             </h1>
             <div className={box_container_style}>
                 <Clock />
-                <span title="Spots time range">
+                
                     <select
                         className="rounded-lg px-4 py-2 w-28"
                         value={filters.time_limit}
@@ -66,24 +66,24 @@ function TopBar({
                             );
                         })}
                     </select>
-                </span>
+                
                 {network_state == "connecting" ? (
                     <Spinner size="32" color="lightblue" />
                 ) : (
-                    <span title={network_state}><NetworkState
+                    <NetworkState
                         size="40"
                         color={network_state_colors[network_state]}
                         title={network_state}
-                    /></span>
+                    />
                 )}
-                <span title="Settings">
+                
                     <Settings
                         settings={settings}
                         set_settings={set_settings}
                         set_map_controls={set_map_controls}
                         set_radius_in_km={set_radius_in_km}
                     />
-                </span>
+                
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu
                         size="32"
