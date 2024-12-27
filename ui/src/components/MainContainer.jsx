@@ -10,6 +10,7 @@ import Tabs from "@/components/Tabs.jsx";
 import { use_object_local_storage, is_matching_list } from "@/utils.js";
 import { band_colors, modes, continents } from "@/filters_data.js";
 import { useFilters } from "../hooks/useFilters";
+import { get_flag } from "@/flags.js";
 
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
@@ -162,8 +163,18 @@ function MainContainer() {
         spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
     }
 
+    const [filter_missing_flags, set_filter_missing_flags] = useState(false);
+
     const filtered_spots = spots
         .filter(spot => {
+            if (filter_missing_flags) {
+                if (get_flag(spot.dx_country) == null) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
             const is_in_time_limit = current_time - spot.time < filters.time_limit;
             // Alerted spots are displayed, no matter what.
             if (spot.is_alerted && is_in_time_limit) {
@@ -218,21 +229,28 @@ function MainContainer() {
     let [hovered_spot, set_hovered_spot] = useState({ source: null, id: null });
     let [pinned_spot, set_pinned_spot] = useState(null);
 
-    function on_escape_clicked(event) {
+    const [canvas, set_canvas] = useLocalStorage("canvas", false);
+
+    function on_key_down(event) {
         if (event.key == "Escape") {
             set_pinned_spot(null);
+        }
+
+        if (event.ctrlKey && event.altKey && event.key == "c") {
+            set_canvas(!canvas);
+        }
+
+        if (event.ctrlKey && event.altKey && event.key == "f") {
+            set_filter_missing_flags(!filter_missing_flags)
         }
     }
 
     useEffect(() => {
-        document.body.addEventListener("keydown", on_escape_clicked);
+        document.body.addEventListener("keydown", on_key_down);
         return () => {
-            document.body.removeEventListener("keydown", on_escape_clicked);
+            document.body.removeEventListener("keydown", on_key_down);
         };
     });
-
-    // This is a debug variable that should be set from the dev console
-    const [canvas, _] = useLocalStorage("canvas", false);
 
     const is_md_device = useMediaQuery("only screen and (max-width : 768px)");
 
