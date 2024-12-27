@@ -1,7 +1,7 @@
 import X from "@/components/X.jsx";
 import { useEffect, forwardRef, useRef } from "react";
 
-import flags from "@/assets/flags.json";
+import { get_flag } from "@/flags.js";
 import { band_colors, band_text_colors, band_light_colors } from "@/filters_data.js";
 
 const cell_classes = {
@@ -13,45 +13,6 @@ const cell_classes = {
     spotter: "w-16 2xs:w-24",
     mode: "w-12 lg:w-[14rem]",
     comment: "w-[40rem] text-left hidden xl:table-cell",
-};
-
-const dxcc_to_country_flag = {
-    "Czech Republic": "Czechia",
-    "Slovak Republic": "Slovakia",
-    "European Russia": "Russia",
-    "Asiatic Russia": "Russia",
-    Kaliningrad: "Russia",
-    Sardinia: "Italy",
-    "Madeira Islands": "Portugal",
-    Azores: "Portugal",
-    "Virgin Islands": "United States Virgin Islands",
-    "St. Kitts and Nevis": "Saint Kitts and Nevis",
-    "Ceuta and Melilla": "Spain",
-    "Canary Islands": "Spain",
-    "Balearic Islands": "Spain",
-    "Rodriguez Island": "Mauritius",
-    "Reunion Island": "France",
-    "Aland Islands": "Åland Islands",
-    "East Malaysia": "Malaysia",
-    "West Malaysia": "Malaysia",
-    "St. Helena": "Saint Helena, Ascension and Tristan da Cunha",
-    Bonaire: "Caribbean Netherlands",
-    Curacao: "Caribbean Netherlands",
-    "Chatham Islands": "New Zealand",
-    "United Nations HQ": "United Nations",
-    "ITU HQ": "United Nations",
-    "Kure Island": "United States Minor Outlying Islands",
-    "Mariana Islands": "United States Minor Outlying Islands",
-    "Guantanamo Bay": "United States of America",
-    Corsica: "France",
-    "Wallis and Futuna Islands": "France",
-    "North Cook Islands": "Cook Islands",
-    "Galapagos Islands": "Ecuador",
-    Svalbard: "Norway",
-    Crete: "Greece",
-    "The Gambia": "Gambia",
-    "Eastern Kiribati": "Kiribati",
-    "Minami Torishima": "Japan",
 };
 
 function Callsign({ callsign }) {
@@ -78,14 +39,7 @@ function Spot(
         row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
     }
 
-    let flag;
-    if (dxcc_to_country_flag[spot.dx_country]) {
-        flag = flags[dxcc_to_country_flag[spot.dx_country]];
-    } else if (flags[spot.dx_country]) {
-        flag = flags[spot.dx_country];
-    } else {
-        flag = null;
-    }
+    const flag = get_flag(spot.dx_country);
 
     return (
         <tr
