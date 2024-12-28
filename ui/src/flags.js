@@ -37,6 +37,8 @@ const dxcc_to_country_flag = {
     "The Gambia": "Gambia",
     "Eastern Kiribati": "Kiribati",
     "Minami Torishima": "Japan",
+    Dodecanese: "Greece",
+    "Banaba Island": "Kiribati",
 };
 
 export function get_flag(dx_country) {
