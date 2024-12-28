@@ -3,7 +3,7 @@ import { century, equationOfTime, declination } from "solar-calculator";
 import geojsonRewind from "@mapbox/geojson-rewind";
 
 import { to_radian } from "@/utils.js";
-import { band_colors, band_light_colors, map_land_color } from "@/filters_data.js";
+import { map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 export const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -67,16 +67,16 @@ function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, t
     context.stroke();
 }
 
-function draw_spot(context, spot, dash_offset, { is_bold, transform, path_generator, projection }) {
+function draw_spot(context, spot, colors, dash_offset, { is_bold, transform, path_generator, projection }) {
     const line = build_geojson_line(spot);
 
     // Render the arc of the spot
     context.beginPath();
     if (is_bold) {
-        context.strokeStyle = band_light_colors[spot.band];
+        context.strokeStyle = colors.light_bands[spot.band];
         context.lineWidth = 6;
     } else {
-        context.strokeStyle = band_colors.get(spot.band);
+        context.strokeStyle = colors.bands[spot.band];
         context.lineWidth = 2;
     }
     context.lineWidth = context.lineWidth / transform.k;
@@ -95,7 +95,7 @@ function draw_spot(context, spot, dash_offset, { is_bold, transform, path_genera
     draw_spot_dx(
         context,
         spot,
-        band_light_colors[spot.band],
+        colors.light_bands[spot.band],
         "grey",
         dx_x,
         dx_y,
@@ -109,7 +109,7 @@ function draw_spot(context, spot, dash_offset, { is_bold, transform, path_genera
     context.beginPath();
 
     context.strokeStyle = "grey";
-    context.fillStyle = band_light_colors[spot.band];
+    context.fillStyle = colors.light_bands[spot.band];
     context.lineWidth = 1 / transform.k;
 
     context.arc(spotter_x, spotter_y, spotter_radius, 0, 2 * Math.PI);
@@ -264,6 +264,7 @@ export function draw_map(context, spots, dims, transform, projection, night_disp
 export function draw_spots(
     context,
     spots,
+    colors,
     hovered_spot,
     pinned_spot,
     dims,
@@ -291,7 +292,7 @@ export function draw_spots(
         if (hovered_spot.id == spot.id || pinned_spot == spot.id) {
             bold_spot = spot;
         } else {
-            draw_spot(context, spot, dash_offset, {
+            draw_spot(context, spot, colors, dash_offset, {
                 is_bold: false,
                 transform,
                 path_generator,
@@ -301,7 +302,7 @@ export function draw_spots(
     });
     // This is used to draw the bold spot over all the other spots.
     if (bold_spot != null) {
-        draw_spot(context, bold_spot, dash_offset, {
+        draw_spot(context, bold_spot, colors, dash_offset, {
             is_bold: true,
             transform,
             path_generator,

@@ -2,7 +2,7 @@ import X from "@/components/X.jsx";
 import { useEffect, forwardRef, useRef } from "react";
 
 import { get_flag } from "@/flags.js";
-import { band_colors, band_text_colors, band_light_colors } from "@/filters_data.js";
+import { useColors } from "../hooks/useColors";
 
 const cell_classes = {
     time: "w-14",
@@ -39,14 +39,17 @@ function Spot(
         row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
     }
 
+    const { colors } = useColors();
+    const color = colors.bands[spot.band];
+
     const flag = get_flag(spot.dx_country);
 
     return (
         <tr
             ref={ref}
             style={{
-                backgroundColor: is_hovered ? band_light_colors[spot.band] : "",
-                outlineColor: spot.is_alerted ? band_colors.get(spot.band) : "",
+                backgroundColor: is_hovered ? colors.light_bands[spot.band] : "",
+                outlineColor: spot.is_alerted ? color : "",
             }}
             className={row_classes + " h-7"}
             onMouseEnter={() => set_hovered_spot({ source: "table", id: spot.id })}
@@ -81,8 +84,8 @@ function Spot(
                     onClick={() => set_cat_to_spot(spot)}
                     className="px-1 rounded-full cursor-pointer"
                     style={{
-                        backgroundColor: `${window.matchMedia("(max-width: 767px)").matches ? band_colors.get(spot.band) : "transparent"}`,
-                        color: `${window.matchMedia("(max-width: 767px)").matches ? band_text_colors[spot.band] : "black"}`,
+                        backgroundColor: `${window.matchMedia("(max-width: 767px)").matches ? color : "transparent"}`,
+                        color: `${window.matchMedia("(max-width: 767px)").matches ? colors.text[spot.band] : "black"}`,
                     }}
                 >
                     {spot.freq}
@@ -92,8 +95,8 @@ function Spot(
                 <p
                     className="px-1 rounded-full font-medium"
                     style={{
-                        backgroundColor: band_colors.get(spot.band),
-                        color: band_text_colors[spot.band],
+                        backgroundColor: color,
+                        color: colors.text[spot.band],
                     }}
                 >
                     {spot.band}

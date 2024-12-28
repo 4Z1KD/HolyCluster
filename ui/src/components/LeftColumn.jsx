@@ -1,8 +1,9 @@
 import FilterOptions from "@/components/FilterOptions.jsx";
 import FilterButton from "@/components/FilterButton.jsx";
 import About from "@/components/About.jsx";
-import { band_colors, band_text_colors, band_light_colors, modes } from "@/filters_data.js";
+import { bands, modes } from "@/filters_data.js";
 import { useFilters } from "../hooks/useFilters";
+import { useColors } from "../hooks/useColors";
 
 const Hex = (
     <svg fill="#000000" width="16" height="16" viewBox="0 0 256 256">
@@ -58,10 +59,14 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
     const toggled_classes = toggled_ui.left
         ? "hidden "
         : "max-xl:absolute max-xl:flex z-50 border-r border-slate-300 ";
+
+    const { colors } = useColors();
+
     return (
         <div className={toggled_classes + "xl:flex flex-col h-full items-center bg-gray-100"}>
             <div className={filter_group_classes + "pb-4 border-b-2 border-slate-300"}>
-                {[...band_colors].map(([band, color]) => {
+                {bands.map((band) => {
+                    const color = colors.bands[band];
                     return (
                         <FilterOptions
                             key={band}
@@ -82,7 +87,7 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
                                 text={band + "m"}
                                 is_active={filters.bands[band]}
                                 color={color}
-                                text_color={band_text_colors[band]}
+                                text_color={colors.text[band]}
                                 on_click={_ =>
                                     setFilters(_filters => ({
                                         ..._filters,

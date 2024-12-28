@@ -8,7 +8,7 @@ import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
 import Tabs from "@/components/Tabs.jsx";
 import { use_object_local_storage, is_matching_list } from "@/utils.js";
-import { band_colors, modes, continents } from "@/filters_data.js";
+import { bands, modes, continents } from "@/filters_data.js";
 import { useFilters } from "../hooks/useFilters";
 import { get_flag } from "@/flags.js";
 
@@ -209,10 +209,7 @@ function MainContainer() {
         .slice(0, 100);
 
     const spots_per_band_count = Object.fromEntries(
-        Array.from(band_colors.keys()).map(band => [
-            band,
-            filtered_spots.filter(spot => spot.band == band).length,
-        ]),
+        bands.map(band => [band, filtered_spots.filter(spot => spot.band == band).length]),
     );
 
     // Limit the count for 2 digit display
@@ -241,7 +238,7 @@ function MainContainer() {
         }
 
         if (event.ctrlKey && event.altKey && event.key == "f") {
-            set_filter_missing_flags(!filter_missing_flags)
+            set_filter_missing_flags(!filter_missing_flags);
         }
     }
 

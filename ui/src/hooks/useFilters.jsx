@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect } from "react";
 import { use_object_local_storage } from "@/utils.js";
-import { band_colors, modes, continents } from "@/filters_data.js";
+import { bands, modes, continents } from "@/filters_data.js";
 
 const FiltersContext = createContext(undefined);
 
@@ -13,7 +13,7 @@ export const useFilters = () => {
 
 export const FiltersProvider = ({ children }) => {
     const initial_filters = {
-        bands: Object.fromEntries(Array.from(band_colors.keys()).map(band => [band, true])),
+        bands: Object.fromEntries(Array.from(bands).map(band => [band, true])),
         modes: Object.fromEntries(modes.map(mode => [mode, true])),
         dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
         spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
