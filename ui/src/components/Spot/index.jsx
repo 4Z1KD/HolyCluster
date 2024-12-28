@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 
 import { to_radian } from "@/utils.js";
-import { band_colors, band_light_colors } from "@/filters_data.js";
 import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
 import Triangle from "./components/Triangle.jsx";
 
 function Spot({
     spot,
+    colors,
     path_generator,
     projection,
     set_cat_to_spot,
@@ -33,8 +33,8 @@ function Spot({
     const is_hovered = spot.id == hovered_spot.id || spot.id == pinned_spot;
     const dx_size = is_hovered ? 14 : 10;
 
-    const color = band_colors.get(spot.band);
-    const light_color = band_light_colors[spot.band];
+    const color = colors.bands[spot.band];
+    const light_color = colors.light_bands[spot.band];
 
     let style;
     if (spot.is_alerted) {

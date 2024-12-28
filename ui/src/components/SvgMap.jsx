@@ -7,11 +7,12 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { band_colors, map_land_color } from "@/filters_data.js";
+import { map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot/index.jsx";
 import SpotPopup from "@/components/SpotPopup.jsx";
+import { useColors } from "../hooks/useColors";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
@@ -64,6 +65,8 @@ function SvgMap({
 
     const path_generator = d3.geoPath().projection(projection);
 
+    const { colors } = useColors();
+
     useEffect(() => {
         const svg = d3.select(svg_ref.current);
         const zoom = d3
@@ -93,6 +96,7 @@ function SvgMap({
             <Spot
                 key={index}
                 spot={spot}
+                colors={colors}
                 path_generator={path_generator}
                 projection={projection}
                 set_cat_to_spot={set_cat_to_spot}

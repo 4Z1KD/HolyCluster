@@ -8,11 +8,11 @@ import LeftColumn from "@/components/LeftColumn.jsx";
 import CallsignsView from "@/components/CallsignsView.jsx";
 import Tabs from "@/components/Tabs.jsx";
 import { use_object_local_storage, is_matching_list } from "@/utils.js";
-import { band_colors, modes, continents } from "@/filters_data.js";
+import { bands, modes, continents } from "@/filters_data.js";
 import { useFilters } from "../hooks/useFilters";
 import { get_flag } from "@/flags.js";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useLocalStorage, useMediaQuery } from "@uidotdev/usehooks";
 
@@ -44,7 +44,7 @@ function connect_to_radio() {
     };
 }
 
-function fetch_spots(set_spots, set_network_state) {
+function fetch_spots() {
     let url;
     // For debugging purposes
     if (window.location.port == "5173") {
@@ -52,8 +52,12 @@ function fetch_spots(set_spots, set_network_state) {
     } else {
         url = "/spots";
     }
+    if (this.last_timestamp != null) {
+        url += `?since=${this.last_timestamp}`;
+    }
+
     if (!navigator.onLine) {
-        set_network_state("disconnected");
+        this.set_network_state("disconnected");
     } else {
         return fetch(url, { mode: "cors" })
             .then(response => {
@@ -67,19 +71,20 @@ function fetch_spots(set_spots, set_network_state) {
                 if (data == null) {
                     return Promise.reject(response);
                 } else {
-                    set_spots(
-                        data.map(spot => {
-                            if (spot.mode == "DIGITAL") {
-                                spot.mode = "DIGI";
-                            }
-                            return spot;
-                        }),
-                    );
-                    set_network_state("connected");
+                    const new_spots = data.map(spot => {
+                        if (spot.mode == "DIGITAL") {
+                            spot.mode = "DIGI";
+                        }
+                        return spot;
+                    });
+                    const spots = new_spots.concat(this.spots);
+                    this.last_timestamp = spots[0].time;
+                    this.set_spots(spots);
+                    this.set_network_state("connected");
                 }
             })
             .catch(_ => {
-                set_network_state("disconnected");
+                this.set_network_state("disconnected");
             });
     }
 }
@@ -136,14 +141,23 @@ function MainContainer() {
     const [spots, set_spots] = useState([]);
     const [network_state, set_network_state] = useState("connecting");
 
+    const fetch_spots_context = useRef({
+        spots,
+        set_spots,
+        set_network_state,
+        last_timestamp: null,
+    });
+    fetch_spots_context.current.spots = spots;
+
     useEffect(() => {
-        fetch_spots(set_spots, set_network_state);
-        let interval_id = setInterval(() => fetch_spots(set_spots, set_network_state), 30 * 1000);
+        const fetch_spots_with_context = fetch_spots.bind(fetch_spots_context.current);
+        fetch_spots_with_context();
+        let interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
 
         // Try to fetch again the spots when the device is connected to the internet
         const handle_online = () => {
             set_network_state("connecting");
-            fetch_spots(set_spots, set_network_state);
+            fetch_spots_with_context();
         };
         const handle_offline = () => {
             set_network_state("disconnected");
@@ -209,10 +223,7 @@ function MainContainer() {
         .slice(0, 100);
 
     const spots_per_band_count = Object.fromEntries(
-        Array.from(band_colors.keys()).map(band => [
-            band,
-            filtered_spots.filter(spot => spot.band == band).length,
-        ]),
+        bands.map(band => [band, filtered_spots.filter(spot => spot.band == band).length]),
     );
 
     // Limit the count for 2 digit display
@@ -241,7 +252,7 @@ function MainContainer() {
         }
 
         if (event.ctrlKey && event.altKey && event.key == "f") {
-            set_filter_missing_flags(!filter_missing_flags)
+            set_filter_missing_flags(!filter_missing_flags);
         }
     }
 

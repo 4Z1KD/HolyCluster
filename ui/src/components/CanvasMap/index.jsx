@@ -17,6 +17,7 @@ import {
     Dimensions,
 } from "./draw_map.js";
 import SpotPopup from "@/components/SpotPopup.jsx";
+import { useColors } from "@/hooks/useColors";
 
 function apply_zoom_and_drag_behaviors(
     context,
@@ -161,6 +162,8 @@ function CanvasMap({
 
     const [center_lon, center_lat] = map_controls.location.location;
 
+    const { colors } = useColors();
+
     const projection = d3
         .geoAzimuthalEquidistant()
         .precision(0.1)
@@ -185,6 +188,7 @@ function CanvasMap({
             draw_spots(
                 canvas_storage.spots.context,
                 spots,
+                colors,
                 hovered_spot,
                 pinned_spot,
                 dims,
