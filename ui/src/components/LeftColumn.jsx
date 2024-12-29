@@ -63,7 +63,10 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
     const { colors } = useColors();
 
     return (
-        <div className={toggled_classes + "xl:flex flex-col h-full items-center bg-gray-100"}>
+        <div
+            className={toggled_classes + "xl:flex flex-col h-full items-center"}
+            style={{ backgroundColor: colors.theme.columns }}
+        >
             <div className={filter_group_classes + "pb-4 border-b-2 border-slate-300"}>
                 {bands.map((band) => {
                     const color = colors.bands[band];

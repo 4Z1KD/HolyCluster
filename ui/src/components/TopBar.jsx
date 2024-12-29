@@ -2,6 +2,8 @@ import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
 import Settings from "@/components/Settings.jsx";
+import ColorPicker from "@/components/ColorPicker.jsx";
+import { useColors } from "../hooks/useColors";
 import { useFilters } from "../hooks/useFilters";
 
 import Icon from "@/icon.png";
@@ -33,9 +35,13 @@ function TopBar({
     const box_container_style = "flex items-center h-full p-2 gap-3";
 
     const network_state_colors = { connected: "#00EE00", disconnected: "#EE0000" };
+    const { colors } = useColors();
 
     return (
-        <div className="flex flex-row justify-between items-center min-h-16 border-2">
+        <div
+            className="flex flex-row justify-between items-center min-h-16 border-2"
+            style={{ backgroundColor: colors.theme.background }}
+        >
             <div className="p-2 hidden max-xl:block">
                 <OpenMenu
                     size="32"
@@ -84,6 +90,7 @@ function TopBar({
                         set_radius_in_km={set_radius_in_km}
                     />
                 </span>
+                <ColorPicker></ColorPicker>
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu
                         size="32"

@@ -12,41 +12,51 @@ export const useColors = () => {
 };
 
 // Taken from: https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
-// biome-ignore format: This code is a mess and should not be touched.
-const RGB_Linear_Shade=(p,c0)=>{
-    var i=parseInt,r=Math.round,[a,b,c,d]=c0.split(","),n=p<0,t=n?0:255*p,P=n?1+p:1-p;
-    return"rgb"+(d?"a(":"(")+r(i(a[3]=="a"?a.slice(5):a.slice(4))*P+t)+","+r(i(b)*P+t)+","+r(i(c)*P+t)+(d?","+d:")");
+// bioe-ignore format: This code is a mess and should not be touched.
+function pSBC(p,c0,c1,l) {
+	let r,g,b,P,f,t,h,i=parseInt,m=Math.round,a=typeof(c1)=="string";
+	if(typeof(p)!="number"||p<-1||p>1||typeof(c0)!="string"||(c0[0]!='r'&&c0[0]!='#')||(c1&&!a))
+        return null;
+	if(!this.pSBCr)this.pSBCr=(d)=>{
+		let n=d.length,x={};
+		if(n>9){
+			[r,g,b,a]=d=d.split(","),n=d.length;
+			if(n<3||n>4)return null;
+			x.r=i(r[3]=="a"?r.slice(5):r.slice(4)),x.g=i(g),x.b=i(b),x.a=a?parseFloat(a):-1
+		}else{
+			if(n==8||n==6||n<4)return null;
+			if(n<6)d="#"+d[1]+d[1]+d[2]+d[2]+d[3]+d[3]+(n>4?d[4]+d[4]:"");
+			d=i(d.slice(1),16);
+			if(n==9||n==5)x.r=d>>24&255,x.g=d>>16&255,x.b=d>>8&255,x.a=m((d&255)/0.255)/1000;
+			else x.r=d>>16,x.g=d>>8&255,x.b=d&255,x.a=-1
+		}return x};
+	h=c0.length>9,h=a?c1.length>9?true:c1=="c"?!h:false:h,f=this.pSBCr(c0),P=p<0,t=c1&&c1!="c"?this.pSBCr(c1):P?{r:0,g:0,b:0,a:-1}:{r:255,g:255,b:255,a:-1},p=P?p*-1:p,P=1-p;
+	if(!f||!t)return null;
+	if(l)r=m(P*f.r+p*t.r),g=m(P*f.g+p*t.g),b=m(P*f.b+p*t.b);
+	else r=m((P*f.r**2+p*t.r**2)**0.5),g=m((P*f.g**2+p*t.g**2)**0.5),b=m((P*f.b**2+p*t.b**2)**0.5);
+	a=f.a,t=t.a,f=a>=0||t>=0,a=f?a<0?t:t<0?a:a*P+t*p:0;
+	if(h)
+        return"rgb"+(f?"a(":"(")+r+","+g+","+b+(f?","+m(a*1000)/1000:"")+")";
+	else
+        return"#"+(4294967296+r*16777216+g*65536+b*256+(f?m(a*255):0)).toString(16).slice(1,f?undefined:-2)
 }
+pSBC = pSBC.bind({});
 
 export const ColorsProvider = ({ children }) => {
     const initial_colors = {
         bands: {
-            4: "rgb(103, 97, 99)",
-            6: "rgb(255, 98, 235)",
-            10: "rgb(231, 117, 33)",
-            12: "rgb(70, 224, 240)",
-            15: "rgb(21, 21, 205)",
-            17: "rgb(115, 31, 105)",
-            20: "rgb(220, 38, 38)",
-            30: "rgb(252, 252, 0)",
-            40: "rgb(24, 160, 24)",
-            60: "rgb(20, 45, 69)",
-            80: "rgb(144, 55, 40)",
-            160: "rgb(21, 96, 130)",
-        },
-        light_bands: {
-            4: 0.25,
-            6: 0.25,
-            10: 0.25,
-            12: 0.25,
-            15: 0.25,
-            17: 0.25,
-            20: 0.25,
-            30: 0.25,
-            40: 0.25,
-            60: 0.25,
-            80: 0.25,
-            160: 0.25,
+            4: "#666062",
+            6: "#FF61EA",
+            10: "#E87421",
+            12: "#47DFF0",
+            15: "#1515CB",
+            17: "#751F6B",
+            20: "#DC2828",
+            30: "#FAFA00",
+            40: "#18A018",
+            60: "#152F47",
+            80: "#903727",
+            160: "#156184",
         },
         bright_text: "white",
         dark_text: "black",
@@ -64,17 +74,17 @@ export const ColorsProvider = ({ children }) => {
             80: "default_bright",
             160: "default_bright",
         },
+        theme: {
+            "background": "#FFF000",
+            "columns": "#F3F4F6",
+        }
     };
 
     const [colors, setColors] = use_object_local_storage("colors", initial_colors);
-    for (const band in colors.light_bands) {
-        if (typeof colors.light_bands[band] == "number") {
-            colors.light_bands[band] = RGB_Linear_Shade(
-                colors.light_bands[band],
-                colors.bands[band],
-            );
-        }
-    }
+    colors.light_bands = Object.fromEntries(
+        Object.entries(colors.bands).map(([band, color]) => [band, pSBC(0.25, colors.bands[band])])
+    );
+
     for (const band in colors.text) {
         if (colors.text[band] == "default_dark") {
             colors.text[band] = colors.dark_text;
@@ -83,12 +93,20 @@ export const ColorsProvider = ({ children }) => {
         }
     }
 
-    // This function changes all the keys in the filter object.
-    // For example: setFilterKeys("bands", true) will enable all bands.
     function setOneColor(color_name, value) {
         setColors(state => ({
             ...state,
             [color_name]: value,
+        }));
+    }
+
+    function setBandColor(band, value) {
+        setColors(state => ({
+            ...state,
+            bands: {
+                ...state.bands,
+                [band]: value,
+            },
         }));
     }
 
@@ -98,6 +116,7 @@ export const ColorsProvider = ({ children }) => {
                 colors,
                 setColors,
                 setOneColor,
+                setBandColor,
             }}
         >
             {children}

@@ -110,7 +110,11 @@ function SvgMap({
     });
 
     return (
-        <div ref={svg_box_ref} className="h-full w-full relative">
+        <div
+            ref={svg_box_ref}
+            className="h-full w-full relative"
+            style={{ backgroundColor: colors.theme.background }}
+        >
             <svg
                 ref={svg_ref}
                 className="h-full w-full"
