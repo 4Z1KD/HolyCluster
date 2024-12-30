@@ -80,11 +80,13 @@ function TopBar({
                 {network_state == "connecting" ? (
                     <Spinner size="32" color="lightblue" />
                 ) : (
-                    <span title={network_state}><NetworkState
-                        size="40"
-                        color={network_state_colors[network_state]}
-                        title={network_state}
-                    /></span>
+                    <span title={network_state}>
+                        <NetworkState
+                            size="40"
+                            color={network_state_colors[network_state]}
+                            title={network_state}
+                        />
+                    </span>
                 )}
                 <span title="Settings">
                     <Settings

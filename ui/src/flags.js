@@ -26,6 +26,7 @@ const dxcc_to_country_flag = {
     "United Nations HQ": "United Nations",
     "ITU HQ": "United Nations",
     "Kure Island": "United States Minor Outlying Islands",
+    "Wake Island": "United States Minor Outlying Islands",
     "Mariana Islands": "United States Minor Outlying Islands",
     "Guantanamo Bay": "United States of America",
     Corsica: "France",
