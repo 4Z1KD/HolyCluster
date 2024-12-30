@@ -65,10 +65,13 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
     return (
         <div
             className={toggled_classes + "xl:flex flex-col h-full items-center"}
-            style={{ backgroundColor: colors.theme.columns }}
+            style={{
+                backgroundColor: colors.theme.columns,
+                borderColor: colors.theme.borders,
+            }}
         >
             <div className={filter_group_classes + "pb-4 border-b-2 border-slate-300"}>
-                {bands.map((band) => {
+                {bands.map(band => {
                     const color = colors.bands[band];
                     return (
                         <FilterOptions
@@ -127,6 +130,7 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
                                         modes: { ..._filters.modes, [mode]: !_filters.modes[mode] },
                                     }))
                                 }
+                                color={colors.buttons.modes}
                                 size="small"
                             />
                         </FilterOptions>

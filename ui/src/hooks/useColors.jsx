@@ -75,14 +75,21 @@ export const ColorsProvider = ({ children }) => {
             160: "default_bright",
         },
         theme: {
-            "background": "#FFF000",
-            "columns": "#F3F4F6",
-        }
+            background: "#000000",
+            columns: "#F3F4F6",
+            modals: "#F3F4F6",
+            borders: "#F3F4F6",
+        },
+        buttons: {
+            modes: "#96FF9F",
+            dx_continents: "#BEDBFE",
+            spotter_continents: "#FECDD3",
+        },
     };
 
     const [colors, setColors] = use_object_local_storage("colors", initial_colors);
     colors.light_bands = Object.fromEntries(
-        Object.entries(colors.bands).map(([band, color]) => [band, pSBC(0.25, colors.bands[band])])
+        Object.entries(colors.bands).map(([band, color]) => [band, pSBC(0.25, colors.bands[band])]),
     );
 
     for (const band in colors.text) {
@@ -93,19 +100,12 @@ export const ColorsProvider = ({ children }) => {
         }
     }
 
-    function setOneColor(color_name, value) {
+    function setSectionColor(section, name, color) {
         setColors(state => ({
             ...state,
-            [color_name]: value,
-        }));
-    }
-
-    function setBandColor(band, value) {
-        setColors(state => ({
-            ...state,
-            bands: {
-                ...state.bands,
-                [band]: value,
+            [section]: {
+                ...state[section],
+                [name]: color,
             },
         }));
     }
@@ -115,8 +115,7 @@ export const ColorsProvider = ({ children }) => {
             value={{
                 colors,
                 setColors,
-                setOneColor,
-                setBandColor,
+                setSectionColor,
             }}
         >
             {children}

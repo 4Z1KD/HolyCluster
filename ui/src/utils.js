@@ -41,4 +41,3 @@ export function use_object_local_storage(key, default_value) {
 
     return [merged_value, set_value];
 }
-

@@ -30,6 +30,7 @@ function TopBar({
     network_state,
     toggled_ui,
     set_toggled_ui,
+    dev_mode,
 }) {
     const { filters, setFilters } = useFilters();
     const box_container_style = "flex items-center h-full p-2 gap-3";
@@ -39,8 +40,11 @@ function TopBar({
 
     return (
         <div
-            className="flex flex-row justify-between items-center min-h-16 border-2"
-            style={{ backgroundColor: colors.theme.background }}
+            className="flex flex-row justify-between items-center min-h-16 border-b-2"
+            style={{
+                backgroundColor: colors.theme.background,
+                borderColor: colors.theme.borders,
+            }}
         >
             <div className="p-2 hidden max-xl:block">
                 <OpenMenu
@@ -90,7 +94,7 @@ function TopBar({
                         set_radius_in_km={set_radius_in_km}
                     />
                 </span>
-                <ColorPicker></ColorPicker>
+                {dev_mode ? <ColorPicker></ColorPicker> : ""}
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu
                         size="32"

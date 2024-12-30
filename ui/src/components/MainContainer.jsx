@@ -241,6 +241,7 @@ function MainContainer() {
     let [pinned_spot, set_pinned_spot] = useState(null);
 
     const [canvas, set_canvas] = useLocalStorage("canvas", false);
+    const [dev_mode, set_dev_mode] = useLocalStorage("dev_mode", false);
 
     function on_key_down(event) {
         if (event.key == "Escape") {
@@ -253,6 +254,10 @@ function MainContainer() {
 
         if (event.ctrlKey && event.altKey && event.key == "f") {
             set_filter_missing_flags(!filter_missing_flags);
+        }
+
+        if (event.ctrlKey && event.altKey && event.key == "p") {
+            set_dev_mode(!dev_mode);
         }
     }
 
@@ -325,6 +330,7 @@ function MainContainer() {
                 network_state={network_state}
                 toggled_ui={toggled_ui}
                 set_toggled_ui={set_toggled_ui}
+                dev_mode={dev_mode}
             />
             <div className="flex relative h-[calc(100%-4rem)]">
                 <LeftColumn
