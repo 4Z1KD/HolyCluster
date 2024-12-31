@@ -12,7 +12,7 @@ export const useColors = () => {
 };
 
 // Taken from: https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
-// bioe-ignore format: This code is a mess and should not be touched.
+// biome-ignore format: This code is a mess and should not be touched.
 function pSBC(p,c0,c1,l) {
 	let r,g,b,P,f,t,h,i=parseInt,m=Math.round,a=typeof(c1)=="string";
 	if(typeof(p)!="number"||p<-1||p>1||typeof(c0)!="string"||(c0[0]!='r'&&c0[0]!='#')||(c1&&!a))
@@ -75,15 +75,22 @@ export const ColorsProvider = ({ children }) => {
             160: "default_bright",
         },
         theme: {
-            background: "#000000",
+            background: "#FFFFFF",
             columns: "#F3F4F6",
             modals: "#F3F4F6",
             borders: "#F3F4F6",
+            text: "#000000",
         },
         buttons: {
             modes: "#96FF9F",
             dx_continents: "#BEDBFE",
             spotter_continents: "#FECDD3",
+            utility: "#484848",
+        },
+        table: {
+            header: "#CBD5E1",
+            even_row: "#F1F5F9",
+            odd_row: "#FFFFFF",
         },
     };
 

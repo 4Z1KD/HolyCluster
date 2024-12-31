@@ -5,13 +5,15 @@ import { useFilters } from "../hooks/useFilters";
 import { useColors } from "../hooks/useColors";
 const title = { dx: "DX", spotter: "DE" };
 
-function ContinentColumn({ spot_type, color }) {
+function ContinentColumn({ spot_type, colors }) {
     const { filters, setFilters } = useFilters();
     const filter_key = `${spot_type}_continents`;
 
+    const color = colors.buttons[spot_type + "_continents"];
+
     return (
         <>
-            <strong>{title[spot_type]}</strong>
+            <strong style={{ color: colors.theme.text }}>{title[spot_type]}</strong>
             {continents.map(continent => (
                 <FilterOptions
                     key={spot_type + "_" + continent}
@@ -56,11 +58,7 @@ function Continents({ toggled_ui }) {
             style={{ backgroundColor: colors.theme.columns }}
         >
             {["dx", "spotter"].map(spot_type => (
-                <ContinentColumn
-                    key={spot_type}
-                    spot_type={spot_type}
-                    color={colors.buttons[spot_type + "_continents"]}
-                />
+                <ContinentColumn key={spot_type} spot_type={spot_type} colors={colors}/>
             ))}
         </div>
     );

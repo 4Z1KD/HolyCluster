@@ -34,6 +34,7 @@ const dxcc_to_country_flag = {
     "North Cook Islands": "Cook Islands",
     "Galapagos Islands": "Ecuador",
     Svalbard: "Norway",
+    "Jan Mayen": "Svalbard and Jan Mayen",
     Crete: "Greece",
     "The Gambia": "Gambia",
     "Eastern Kiribati": "Kiribati",

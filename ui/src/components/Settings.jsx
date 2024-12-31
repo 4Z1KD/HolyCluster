@@ -3,8 +3,11 @@ import Maidenhead from "maidenhead";
 
 import Input from "@/components/Input.jsx";
 import Modal from "@/components/Modal.jsx";
+import { useColors } from "../hooks/useColors";
 
 function SettingsIcon({ size }) {
+    const { colors } = useColors();
+
     return (
         <svg
             width={size}
@@ -14,14 +17,14 @@ function SettingsIcon({ size }) {
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                stroke="#484848"
+                stroke={colors.buttons.utility}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.723 1.723 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37 1 .608 2.296.07 2.572-1.065Z"
             />
             <path
-                stroke="#484848"
+                stroke={colors.buttons.utility}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
@@ -39,10 +42,14 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
         temp_settings.default_radius <= 20000 &&
         temp_settings.default_radius % 1000 == 0;
     const is_settings_valid = is_locator_valid && is_default_radius_valid;
+    const { colors } = useColors();
 
     return (
         <Modal
-            title={<h3 className="text-3xl">Settings</h3>}
+            title={<h3
+                className="text-3xl"
+                style={{ color: colors.theme.text }}
+            >Settings</h3>}
             button={<SettingsIcon size="40"></SettingsIcon>}
             on_open={() => {
                 set_temp_settings(settings);
@@ -68,7 +75,10 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
             }}
             on_cancel={() => set_temp_settings({ locator: "", default_radius: 0 })}
         >
-            <table className="my-3 mx-2">
+            <table
+                className="my-3 mx-2"
+                style={{ color: colors.theme.text }}
+            >
                 <tbody>
                     <tr>
                         <td>My locator:&nbsp;&nbsp;</td>
