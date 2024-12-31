@@ -32,9 +32,8 @@ function About() {
         >
             <div className="p-3 text-left">
                 <p>
-                    The Holy Cluster is built and design by the israeli group of developers
-                    <br />
-                    and supported by the Israeli Association of Radio Communication, the{" "}
+                    The Holy Cluster is being developed by a group of Israeli amateur radio enthusiasts,<br />
+                    with the support of the Israeli Association of Radio Communication ({}
                     <a
                         className="text-blue-500 underline"
                         href="https://www.iarc.org/"
@@ -42,8 +41,9 @@ function About() {
                         rel="noopener noreferrer"
                     >
                         IARC
-                    </a>
-                    .<br />
+                    </a>).<br/><br/>
+                    We hope this platform will serve as a valuable tool for radio operators worldwide,<br />
+                    fostering collaboration and enhancing the global radio communication experience.<br />
                 </p>
                 <br />
                 Contact us at: <strong>holycluster@iarc.org</strong>
