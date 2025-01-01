@@ -80,6 +80,7 @@ export const ColorsProvider = ({ children }) => {
             modals: "#F3F4F6",
             borders: "#F3F4F6",
             text: "#000000",
+            input_background: "#FFFFFF",
         },
         buttons: {
             modes: "#96FF9F",

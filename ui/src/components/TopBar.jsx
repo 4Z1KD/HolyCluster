@@ -66,6 +66,10 @@ function TopBar({
                 <span title="Spots time range">
                     <select
                         className="rounded-lg px-4 py-2 w-28"
+                        style={{
+                            backgroundColor: colors.theme.input_background,
+                            color: colors.theme.text,
+                        }}
                         value={filters.time_limit}
                         onChange={event =>
                             setFilters(state => ({ ...state, time_limit: event.target.value }))
