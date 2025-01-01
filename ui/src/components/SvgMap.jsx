@@ -142,6 +142,9 @@ function SvgMap({
 
                 <g className="font-medium text-lg select-none">
                     <text x={text_height} y={text_y} fill={colors.theme.text}>
+                        Center: {map_controls.location.displayed_locator}
+                    </text>
+                    <text x={text_height} y={text_y} fill={colors.theme.text}>
                         Radius: {Math.round(radius_in_km)} KM
                     </text>
                     <text x={text_height} y={text_y + text_height + 10} fill={colors.theme.text}>
