@@ -144,10 +144,10 @@ function SvgMap({
                     <text x={text_height} y={text_y} fill={colors.theme.text}>
                         Center: {map_controls.location.displayed_locator}
                     </text>
-                    <text x={text_height} y={text_y} fill={colors.theme.text}>
+                    <text x={text_height} y={text_y + text_height} fill={colors.theme.text}>
                         Radius: {Math.round(radius_in_km)} KM
                     </text>
-                    <text x={text_height} y={text_y + text_height + 10} fill={colors.theme.text}>
+                    <text x={text_height} y={text_y + 2 * text_height} fill={colors.theme.text}>
                         Spots: {spots.length}
                     </text>
                 </g>

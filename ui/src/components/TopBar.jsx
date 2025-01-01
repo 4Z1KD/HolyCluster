@@ -63,27 +63,27 @@ function TopBar({
             </h1>
             <div className={box_container_style}>
                 <Clock />
-                
-                    <select
-                        className="rounded-lg px-4 py-2 w-28"
-                        style={{
-                            backgroundColor: colors.theme.input_background,
-                            color: colors.theme.text,
-                        }}
-                        value={filters.time_limit}
-                        onChange={event =>
-                            setFilters(state => ({ ...state, time_limit: event.target.value }))
-                        }
-                    >
-                        {Object.entries(spots_time_limits).map(([text, minutes]) => {
-                            return (
-                                <option key={minutes} value={minutes}>
-                                    {text}
-                                </option>
-                            );
-                        })}
-                    </select>
-                
+
+                <select
+                    className="rounded-lg px-4 py-2 w-28"
+                    style={{
+                        backgroundColor: colors.theme.input_background,
+                        color: colors.theme.text,
+                    }}
+                    value={filters.time_limit}
+                    onChange={event =>
+                        setFilters(state => ({ ...state, time_limit: event.target.value }))
+                    }
+                >
+                    {Object.entries(spots_time_limits).map(([text, minutes]) => {
+                        return (
+                            <option key={minutes} value={minutes}>
+                                {text}
+                            </option>
+                        );
+                    })}
+                </select>
+
                 {network_state == "connecting" ? (
                     <Spinner size="32" color="lightblue" />
                 ) : (
@@ -95,14 +95,12 @@ function TopBar({
                         />
                     </span>
                 )}
-                
-                    <Settings
-                        settings={settings}
-                        set_settings={set_settings}
-                        set_map_controls={set_map_controls}
-                        set_radius_in_km={set_radius_in_km}
-                    />
-                </span>
+                <Settings
+                    settings={settings}
+                    set_settings={set_settings}
+                    set_map_controls={set_map_controls}
+                    set_radius_in_km={set_radius_in_km}
+                />
                 {dev_mode ? <ColorPicker></ColorPicker> : ""}
                 <div className="p-2 hidden max-2xl:block">
                     <OpenMenu
