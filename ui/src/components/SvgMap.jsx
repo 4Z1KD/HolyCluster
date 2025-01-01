@@ -7,12 +7,11 @@ import Maidenhead from "maidenhead";
 import geojsonRewind from "@mapbox/geojson-rewind";
 import { century, equationOfTime, declination } from "solar-calculator";
 
-import { map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot/index.jsx";
 import SpotPopup from "@/components/SpotPopup.jsx";
-import { useColors } from "../hooks/useColors";
+import { useColors } from "@/hooks/useColors";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
 
@@ -96,7 +95,6 @@ function SvgMap({
             <Spot
                 key={index}
                 spot={spot}
-                colors={colors}
                 path_generator={path_generator}
                 projection={projection}
                 set_cat_to_spot={set_cat_to_spot}
@@ -140,11 +138,13 @@ function SvgMap({
                         <circle r={radius} cx={center_x} cy={center_y} />
                     </clipPath>
                 </defs>
+                <circle r={radius} cx={center_x} cy={center_y} fill={colors.map.background} />
+
                 <g className="font-medium text-lg select-none">
-                    <text x={text_height} y={text_y}>
+                    <text x={text_height} y={text_y} fill={colors.theme.text}>
                         Radius: {Math.round(radius_in_km)} KM
                     </text>
-                    <text x={text_height} y={text_y + text_height + 10}>
+                    <text x={text_height} y={text_y + text_height + 10} fill={colors.theme.text}>
                         Spots: {spots.length}
                     </text>
                 </g>
@@ -158,15 +158,15 @@ function SvgMap({
                 <g clipPath="url(#map-clip)">
                     <path
                         fill="none"
-                        stroke="#eee"
+                        stroke={colors.map.graticule}
                         pointerEvents="none"
                         d={path_generator(d3.geoGraticule10())}
                     ></path>
                     {dxcc_map.features.map(shape => {
                         return (
                             <path
-                                fill={map_land_color}
-                                stroke="#777"
+                                fill={colors.map.land}
+                                stroke={colors.map.land_borders}
                                 pointerEvents="none"
                                 key={shape.properties.dxcc_name}
                                 d={path_generator(shape)}
@@ -180,14 +180,16 @@ function SvgMap({
                     {rendered_spots}
                     {map_controls.night ? (
                         <path
-                            style={{ pointerEvents: "none", fill: "rgba(0,0,128,0.2)" }}
+                            className="pointer-events-none"
+                            fill={colors.map.night}
+                            opacity="0.2"
                             d={path_generator(get_night_circle())}
                         />
                     ) : (
                         ""
                     )}
                 </g>
-                <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke="black" />
+                <circle r={radius} cx={center_x} cy={center_y} fill="none" stroke={colors.map.borders} />
             </svg>
             {hovered_spot.source == "map" && popup_position != null ? (
                 <SpotPopup

@@ -43,11 +43,11 @@ function ThemeSection({ section }) {
         <table className="w-72 table-fixed" style={{ color: colors.theme.text }}>
             <tbody>
                 <tr className="text-center">
-                    <td className="text-xl font-bold pb-2" colspan="2">{section}</td>
+                    <td className="text-xl font-bold pb-2" colSpan="2">{section}</td>
                 </tr>
                 {Object.entries(colors[section]).map(([name, color]) => {
                     return (
-                        <tr>
+                        <tr key={`${name}_${color}`}>
                             <td className="w-24">{name}</td>
                             <td className="w-8 text-center">
                                 <input
@@ -82,6 +82,7 @@ export function ColorPicker({}) {
             <div className="flex flex-row p-3">
                 <div>
                     <ThemeSection section="bands"></ThemeSection>
+                    <ThemeSection section="map"></ThemeSection>
                 </div>
                 <div>
                     <ThemeSection section="theme"></ThemeSection>

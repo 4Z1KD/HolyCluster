@@ -92,6 +92,14 @@ export const ColorsProvider = ({ children }) => {
             even_row: "#F1F5F9",
             odd_row: "#FFFFFF",
         },
+        map: {
+            background: "#FFFFFF",
+            land: "#D7D7D7",
+            land_borders: "#777777",
+            graticule: "#EEEEEE",
+            night: "#000080",
+            borders: "#000000",
+        },
     };
 
     const [colors, setColors] = use_object_local_storage("colors", initial_colors);
