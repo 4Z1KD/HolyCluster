@@ -43,7 +43,9 @@ function ThemeSection({ section }) {
         <table className="w-72 table-fixed" style={{ color: colors.theme.text }}>
             <tbody>
                 <tr className="text-center">
-                    <td className="text-xl font-bold pb-2" colSpan="2">{section}</td>
+                    <td className="text-xl font-bold pb-2" colSpan="2">
+                        {section}
+                    </td>
                 </tr>
                 {Object.entries(colors[section]).map(([name, color]) => {
                     return (
@@ -89,6 +91,19 @@ export function ColorPicker({}) {
                     <ThemeSection section="buttons"></ThemeSection>
                     <ThemeSection section="table"></ThemeSection>
                 </div>
+            </div>
+            <div className="flex justify-center items-end pb-2">
+                <a
+                    className="bg-blue-500 text-white rounded-full p-2"
+                    download="colorscheme.json"
+                    type="application/json"
+                    href={
+                        "data:Application/octet-stream," +
+                        encodeURIComponent(JSON.stringify(colors))
+                    }
+                >
+                    Download
+                </a>
             </div>
         </Modal>
     );
