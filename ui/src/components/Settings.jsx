@@ -46,10 +46,11 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
 
     return (
         <Modal
-            title={<h3
-                className="text-3xl"
-                style={{ color: colors.theme.text }}
-            >Settings</h3>}
+            title={
+                <h3 className="text-3xl" style={{ color: colors.theme.text }}>
+                    Settings
+                </h3>
+            }
             button={<SettingsIcon size="40"></SettingsIcon>}
             on_open={() => {
                 set_temp_settings(settings);
@@ -75,10 +76,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
             }}
             on_cancel={() => set_temp_settings({ locator: "", default_radius: 0 })}
         >
-            <table
-                className="my-3 mx-2"
-                style={{ color: colors.theme.text }}
-            >
+            <table className="my-3 mx-2" style={{ color: colors.theme.text }}>
                 <tbody>
                     <tr>
                         <td>My locator:&nbsp;&nbsp;</td>

@@ -24,7 +24,15 @@ function Callsign({ callsign }) {
 }
 
 function Spot(
-    { spot, is_even, hovered_spot, pinned_spot, set_pinned_spot, set_hovered_spot, set_cat_to_spot },
+    {
+        spot,
+        is_even,
+        hovered_spot,
+        pinned_spot,
+        set_pinned_spot,
+        set_hovered_spot,
+        set_cat_to_spot,
+    },
     ref,
 ) {
     const time = new Date(spot.time * 1000);
@@ -58,7 +66,7 @@ function Spot(
             style={{
                 backgroundColor: background_color,
                 outlineColor: spot.is_alerted ? color : "",
-                color: is_even ? colors.table.even_text : colors.table.odd_text
+                color: is_even ? colors.table.even_text : colors.table.odd_text,
             }}
             className={row_classes + " h-7"}
             onMouseEnter={() => set_hovered_spot({ source: "table", id: spot.id })}

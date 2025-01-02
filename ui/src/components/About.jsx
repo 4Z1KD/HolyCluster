@@ -30,20 +30,20 @@ function About() {
 
     return (
         <Modal
-            title={<h3
-                className="text-3xl"
-                style={{ color: colors.theme.text }}
-            >About</h3>}
+            title={
+                <h3 className="text-3xl" style={{ color: colors.theme.text }}>
+                    About
+                </h3>
+            }
             button={<Info size="36"></Info>}
             on_cancel={() => true}
             cancel_text="close"
         >
-            <div
-                className="p-3 text-left"
-                style={{ color: colors.theme.text }}
-            >
+            <div className="p-3 text-left" style={{ color: colors.theme.text }}>
                 <p>
-                    The Holy Cluster is being developed by a group of Israeli amateur radio enthusiasts,<br />
+                    The Holy Cluster is being developed by a group of Israeli amateur radio
+                    enthusiasts,
+                    <br />
                     with the support of the Israeli Association of Radio Communication ({}
                     <a
                         className="text-blue-500 underline"
@@ -52,9 +52,15 @@ function About() {
                         rel="noopener noreferrer"
                     >
                         IARC
-                    </a>).<br/><br/>
-                    We hope this platform will serve as a valuable tool for radio operators worldwide,<br />
-                    fostering collaboration and enhancing the global radio communication experience.<br />
+                    </a>
+                    ).
+                    <br />
+                    <br />
+                    We hope this platform will serve as a valuable tool for radio operators
+                    worldwide,
+                    <br />
+                    fostering collaboration and enhancing the global radio communication experience.
+                    <br />
                 </p>
                 <br />
                 Contact us at: <strong>holycluster@iarc.org</strong>

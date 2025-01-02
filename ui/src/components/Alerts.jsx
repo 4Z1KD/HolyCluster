@@ -9,10 +9,11 @@ function Alerts({ alerts, set_alerts }) {
         <CallsignsList
             callsigns={alerts}
             set_callsigns={set_alerts}
-            title={<h3
-                className="text-2xl p-1"
-                style={{ color: colors.theme.text }}
-            >Alerts</h3>}
+            title={
+                <h3 className="text-2xl p-1" style={{ color: colors.theme.text }}>
+                    Alerts
+                </h3>
+            }
         />
     );
 }

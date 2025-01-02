@@ -58,7 +58,7 @@ function Continents({ toggled_ui }) {
             style={{ backgroundColor: colors.theme.columns }}
         >
             {["dx", "spotter"].map(spot_type => (
-                <ContinentColumn key={spot_type} spot_type={spot_type} colors={colors}/>
+                <ContinentColumn key={spot_type} spot_type={spot_type} colors={colors} />
             ))}
         </div>
     );
