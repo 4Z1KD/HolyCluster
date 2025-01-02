@@ -89,6 +89,37 @@ function fetch_spots() {
     }
 }
 
+function fetch_propagation() {
+    let url;
+    // For debugging purposes
+    if (window.location.port == "5173") {
+        url = "https://holycluster.iarc.org/propagation";
+    } else {
+        url = "/propagation";
+    }
+
+
+    if (navigator.onLine) {
+        return fetch(url, { mode: "cors" })
+            .then(response => {
+                if (response == null || !response.ok) {
+                    return Promise.reject(response);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data == null) {
+                    return Promise.reject(response);
+                } else {
+                    this.set_propagation(data);
+                }
+            })
+            .catch(_ => {
+            });
+    }
+}
+
 function MainContainer() {
     const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
 
@@ -139,6 +170,8 @@ function MainContainer() {
     const current_time = new Date().getTime() / 1000;
 
     const [spots, set_spots] = useState([]);
+    const [propagation, set_propagation] = useState([]);
+
     const [network_state, set_network_state] = useState("connecting");
 
     const fetch_spots_context = useRef({
@@ -149,15 +182,26 @@ function MainContainer() {
     });
     fetch_spots_context.current.spots = spots;
 
+    const fetch_propagation_context = useRef({
+        propagation,
+        set_propagation
+    });
+    fetch_propagation_context.current.propagation = propagation;
+
     useEffect(() => {
         const fetch_spots_with_context = fetch_spots.bind(fetch_spots_context.current);
         fetch_spots_with_context();
         let interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
 
+        //const fetch_propagation_with_context = fetch_propagation.bind(fetch_propagation_context.current);
+        //fetch_propagation_with_context();
+        //let interval_id2 = setInterval(fetch_propagation_with_context, 3600 * 1000);
+
         // Try to fetch again the spots when the device is connected to the internet
         const handle_online = () => {
             set_network_state("connecting");
             fetch_spots_with_context();
+            fetch_propagation_with_context();
         };
         const handle_offline = () => {
             set_network_state("disconnected");
@@ -170,6 +214,7 @@ function MainContainer() {
             window.removeEventListener("online", handle_online);
             window.removeEventListener("offline", handle_offline);
             clearInterval(interval_id);
+            //clearInterval(interval_id2);
         };
     }, []);
 
@@ -340,7 +385,7 @@ function MainContainer() {
                         {table}
                     </>
                 )}
-                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} />
+                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} propagation={propagation} />
                 <Continents toggled_ui={toggled_ui} />
             </div>
         </>
