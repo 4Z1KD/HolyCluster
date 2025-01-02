@@ -58,6 +58,7 @@ function Spot(
             style={{
                 backgroundColor: background_color,
                 outlineColor: spot.is_alerted ? color : "",
+                color: is_even ? colors.table.even_text : colors.table.odd_text
             }}
             className={row_classes + " h-7"}
             onMouseEnter={() => set_hovered_spot({ source: "table", id: spot.id })}
@@ -154,12 +155,14 @@ function SpotsTable({
                 <table
                     className="max-md:table-fixed max-md:w-full text-center border-collapse"
                     onMouseLeave={_ => set_hovered_spot({ source: null, id: null })}
-                    style={{ color: colors.theme.text }}
                 >
                     <tbody className="divide-y">
                         <tr
                             className="sticky top-0"
-                            style={{ backgroundColor: colors.table.header }}
+                            style={{
+                                backgroundColor: colors.table.header,
+                                color: colors.table.header_text,
+                            }}
                         >
                             <td className={cell_classes.time}>Time</td>
                             <td className={cell_classes.flag}></td>

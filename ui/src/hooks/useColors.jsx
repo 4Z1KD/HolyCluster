@@ -92,6 +92,9 @@ export const ColorsProvider = ({ children }) => {
             header: "#CBD5E1",
             even_row: "#F1F5F9",
             odd_row: "#FFFFFF",
+            header_text: "#000000",
+            even_text: "#000000",
+            odd_text: "#000000",
         },
         map: {
             background: "#FFFFFF",
