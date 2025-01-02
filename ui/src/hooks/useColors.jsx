@@ -87,6 +87,8 @@ export const ColorsProvider = ({ children }) => {
             dx_continents: "#BEDBFE",
             spotter_continents: "#FECDD3",
             utility: "#484848",
+            disabled_background: "#F3F4F6",
+            disabled: "#484848",
         },
         table: {
             header: "#CBD5E1",

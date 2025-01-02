@@ -1,4 +1,5 @@
 import Triangle from "./Spot/components/Triangle";
+import { useColors } from "../hooks/useColors";
 
 function FilterButton({
     text,
@@ -9,6 +10,8 @@ function FilterButton({
     hover_brightness = "110",
     size = "normal",
 }) {
+    const { colors } = useColors();
+
     const box_style = [
         "max-w-18",
         "text-center",
@@ -25,7 +28,7 @@ function FilterButton({
     }
 
     if (is_active) {
-        box_style.push("border", "border-slate-700", `bg-[${color}]`, `text-[${text_color}]`);
+        box_style.push("border", "border-slate-700");
     } else {
         box_style.push(
             "border",
@@ -34,7 +37,6 @@ function FilterButton({
             "outline",
             "outline-[3px]",
             "outline-offset-[-3px]",
-            "outline-[#484848]",
         );
     }
 
@@ -43,8 +45,9 @@ function FilterButton({
             className={box_style.join(" ")}
             onClick={on_click}
             style={{
-                backgroundColor: is_active ? color : "transparent",
-                color: is_active ? text_color : "#484848",
+                backgroundColor: is_active ? color : colors.buttons.disabled_background,
+                color: is_active ? text_color : colors.buttons.disabled,
+                outlineColor: is_active ? "" : colors.buttons.disabled,
             }}
         >
             <span className="inline-flex items-center space-x-2">{text}</span>
