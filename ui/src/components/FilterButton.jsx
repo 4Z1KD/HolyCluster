@@ -4,7 +4,7 @@ function FilterButton({
     text,
     is_active,
     on_click,
-    color = "#96FF9F",
+    color,
     text_color = "#000000",
     hover_brightness = "110",
     size = "normal",

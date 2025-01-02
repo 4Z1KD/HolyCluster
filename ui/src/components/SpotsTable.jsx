@@ -24,7 +24,7 @@ function Callsign({ callsign }) {
 }
 
 function Spot(
-    { spot, hovered_spot, pinned_spot, set_pinned_spot, set_hovered_spot, set_cat_to_spot },
+    { spot, is_even, hovered_spot, pinned_spot, set_pinned_spot, set_hovered_spot, set_cat_to_spot },
     ref,
 ) {
     const time = new Date(spot.time * 1000);
@@ -34,13 +34,21 @@ function Spot(
     const is_pinned = spot.id == pinned_spot;
     const is_hovered = spot.id == hovered_spot.id || is_pinned;
 
-    let row_classes = "odd:bg-white even:bg-slate-100";
+    const { colors } = useColors();
+    let row_classes;
     if (spot.is_alerted) {
-        row_classes += " outline-2 outline outline-dashed outline-offset-[-2px]";
+        row_classes = "outline-2 outline outline-dashed outline-offset-[-2px]";
     }
 
-    const { colors } = useColors();
     const color = colors.bands[spot.band];
+    let background_color;
+    if (is_hovered) {
+        background_color = colors.light_bands[spot.band];
+    } else if (is_even) {
+        background_color = colors.table.odd_row;
+    } else {
+        background_color = colors.table.even_row;
+    }
 
     const flag = get_flag(spot.dx_country);
 
@@ -48,7 +56,7 @@ function Spot(
         <tr
             ref={ref}
             style={{
-                backgroundColor: is_hovered ? colors.light_bands[spot.band] : "",
+                backgroundColor: background_color,
                 outlineColor: spot.is_alerted ? color : "",
             }}
             className={row_classes + " h-7"}
@@ -85,7 +93,7 @@ function Spot(
                     className="px-1 rounded-full cursor-pointer"
                     style={{
                         backgroundColor: `${window.matchMedia("(max-width: 767px)").matches ? color : "transparent"}`,
-                        color: `${window.matchMedia("(max-width: 767px)").matches ? colors.text[spot.band] : "black"}`,
+                        color: `${window.matchMedia("(max-width: 767px)").matches ? colors.text[spot.band] : ""}`,
                     }}
                 >
                     {spot.freq}
@@ -124,6 +132,7 @@ function SpotsTable({
     set_cat_to_spot,
 }) {
     const row_refs = useRef({});
+    const { colors } = useColors();
 
     useEffect(() => {
         const hovered_ref = row_refs.current[hovered_spot.id];
@@ -134,14 +143,24 @@ function SpotsTable({
     }, [hovered_spot]);
 
     return (
-        <div className="text-sm h-full overflow-x-visible border-4">
+        <div
+            className="text-sm h-full overflow-x-visible border-x-4"
+            style={{
+                borderColor: colors.theme.borders,
+                backgroundColor: colors.theme.background,
+            }}
+        >
             <div className="overflow-y-scroll h-full w-full">
                 <table
                     className="max-md:table-fixed max-md:w-full text-center border-collapse"
                     onMouseLeave={_ => set_hovered_spot({ source: null, id: null })}
+                    style={{ color: colors.theme.text }}
                 >
-                    <tbody className="divide-y divide-slate-200">
-                        <tr className="sticky top-0 bg-slate-300">
+                    <tbody className="divide-y">
+                        <tr
+                            className="sticky top-0"
+                            style={{ backgroundColor: colors.table.header }}
+                        >
                             <td className={cell_classes.time}>Time</td>
                             <td className={cell_classes.flag}></td>
                             <td className={cell_classes.dx}>DX</td>
@@ -151,11 +170,12 @@ function SpotsTable({
                             <td className={cell_classes.mode}>Mode</td>
                             <td className={cell_classes.comment}>Comment</td>
                         </tr>
-                        {spots.map(spot => (
+                        {spots.map((spot, index) => (
                             <Spot
                                 ref={element => (row_refs.current[spot.id] = element)}
                                 key={spot.id}
                                 spot={spot}
+                                is_even={index % 2 == 0}
                                 hovered_spot={hovered_spot}
                                 pinned_spot={pinned_spot}
                                 set_pinned_spot={set_pinned_spot}

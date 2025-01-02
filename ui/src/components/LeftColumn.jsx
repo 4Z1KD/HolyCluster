@@ -36,13 +36,15 @@ const mode_to_symbol = {
 };
 
 function FeedbackButton({ size }) {
+    const { colors } = useColors();
+
     return (
         <a href="https://forms.gle/jak7KnvwCnBRN6QU7" target="_blank">
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
                 <title>Feedback form</title>
                 <path
                     d="M8 9H16M8 13H14M18 4C18.7956 4 19.5587 4.31607 20.1213 4.87868C20.6839 5.44129 21 6.20435 21 7V15C21 15.7956 20.6839 16.5587 20.1213 17.1213C19.5587 17.6839 18.7956 18 18 18H13L8 21V18H6C5.20435 18 4.44129 17.6839 3.87868 17.1213C3.31607 16.5587 3 15.7956 3 15V7C3 6.20435 3.31607 5.44129 3.87868 4.87868C4.44129 4.31607 5.20435 4 6 4H18Z"
-                    stroke="#484848"
+                    stroke={colors.buttons.utility}
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -63,9 +65,15 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
     const { colors } = useColors();
 
     return (
-        <div className={toggled_classes + "xl:flex flex-col h-full items-center bg-gray-100"}>
+        <div
+            className={toggled_classes + "xl:flex flex-col h-full items-center"}
+            style={{
+                backgroundColor: colors.theme.columns,
+                borderColor: colors.theme.borders,
+            }}
+        >
             <div className={filter_group_classes + "pb-4 border-b-2 border-slate-300"}>
-                {bands.map((band) => {
+                {bands.map(band => {
                     const color = colors.bands[band];
                     return (
                         <FilterOptions
@@ -124,6 +132,7 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
                                         modes: { ..._filters.modes, [mode]: !_filters.modes[mode] },
                                     }))
                                 }
+                                color={colors.buttons.modes}
                                 size="small"
                             />
                         </FilterOptions>

@@ -67,7 +67,13 @@ function draw_spot_dx(context, spot, color, stroke_color, dx_x, dx_y, dx_size, t
     context.stroke();
 }
 
-function draw_spot(context, spot, colors, dash_offset, { is_bold, transform, path_generator, projection }) {
+function draw_spot(
+    context,
+    spot,
+    colors,
+    dash_offset,
+    { is_bold, transform, path_generator, projection },
+) {
     const line = build_geojson_line(spot);
 
     // Render the arc of the spot

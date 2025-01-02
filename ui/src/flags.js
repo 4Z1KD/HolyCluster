@@ -26,6 +26,7 @@ const dxcc_to_country_flag = {
     "United Nations HQ": "United Nations",
     "ITU HQ": "United Nations",
     "Kure Island": "United States Minor Outlying Islands",
+    "Wake Island": "United States Minor Outlying Islands",
     "Mariana Islands": "United States Minor Outlying Islands",
     "Guantanamo Bay": "United States of America",
     Corsica: "France",
@@ -33,6 +34,7 @@ const dxcc_to_country_flag = {
     "North Cook Islands": "Cook Islands",
     "Galapagos Islands": "Ecuador",
     Svalbard: "Norway",
+    "Jan Mayen": "Svalbard and Jan Mayen",
     Crete: "Greece",
     "The Gambia": "Gambia",
     "Eastern Kiribati": "Kiribati",
@@ -40,6 +42,7 @@ const dxcc_to_country_flag = {
     Dodecanese: "Greece",
     "Banaba Island": "Kiribati",
     "Tristan da Cunha & Gough Islands": "Saint Helena, Ascension and Tristan da Cunha",
+    "Pitcairn Island": "Pitcairn Islands",
 };
 
 export function get_flag(dx_country) {

@@ -1,13 +1,11 @@
-import React, { useMemo } from "react";
-
-import { to_radian } from "@/utils.js";
 import Hexagon from "./components/Hexagon.jsx";
 import Square from "./components/Square.jsx";
 import Triangle from "./components/Triangle.jsx";
+import { to_radian } from "@/utils.js";
+import { useColors } from "@/hooks/useColors";
 
 function Spot({
     spot,
-    colors,
     path_generator,
     projection,
     set_cat_to_spot,
@@ -17,6 +15,7 @@ function Spot({
     set_pinned_spot,
     set_popup_position,
 }) {
+    const { colors } = useColors();
     const line = {
         type: "LineString",
         coordinates: [spot.spotter_loc, spot.dx_loc],
