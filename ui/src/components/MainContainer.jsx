@@ -170,7 +170,7 @@ function MainContainer() {
     const current_time = new Date().getTime() / 1000;
 
     const [spots, set_spots] = useState([]);
-    const [propagation, set_propagation] = useState([]);
+    const [propagation, set_propagation] = useState();
 
     const [network_state, set_network_state] = useState("connecting");
 
@@ -193,9 +193,9 @@ function MainContainer() {
         fetch_spots_with_context();
         let interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
 
-        //const fetch_propagation_with_context = fetch_propagation.bind(fetch_propagation_context.current);
-        //fetch_propagation_with_context();
-        //let interval_id2 = setInterval(fetch_propagation_with_context, 3600 * 1000);
+        const fetch_propagation_with_context = fetch_propagation.bind(fetch_propagation_context.current);
+        fetch_propagation_with_context();
+        let interval_id2 = setInterval(fetch_propagation_with_context, 3600 * 1000);
 
         // Try to fetch again the spots when the device is connected to the internet
         const handle_online = () => {
@@ -214,7 +214,7 @@ function MainContainer() {
             window.removeEventListener("online", handle_online);
             window.removeEventListener("offline", handle_offline);
             clearInterval(interval_id);
-            //clearInterval(interval_id2);
+            clearInterval(interval_id2);
         };
     }, []);
 

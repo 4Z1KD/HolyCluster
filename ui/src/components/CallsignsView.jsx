@@ -21,6 +21,7 @@ function CallsignsView({ alerts, set_alerts, toggled_ui, propagation }) {
             <CallsignFilters is_show_only={true} />
             <CallsignFilters is_show_only={false} />
             <Propagation propagation={propagation} />
+            
         </div>
     );
 }
