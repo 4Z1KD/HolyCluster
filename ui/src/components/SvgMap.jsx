@@ -78,7 +78,8 @@ function SvgMap({
         zoom.scaleTo(svg, k_from_radius_in_km);
     }, [map_controls]);
 
-    const text_height = is_max_xs_device ? 10 : 20;
+    const text_height = 20;
+    const text_x = is_max_xs_device ? 10 : 20;
     const text_y = is_max_xs_device ? 20 : 30;
 
     // const [is_popup_visible, set_is_popup_visible] = useState(false);
@@ -141,13 +142,13 @@ function SvgMap({
                 <circle r={radius} cx={center_x} cy={center_y} fill={colors.map.background} />
 
                 <g className="font-medium text-lg select-none">
-                    <text x={text_height} y={text_y} fill={colors.theme.text}>
+                    <text x={text_x} y={text_y} fill={colors.theme.text}>
                         Center: {map_controls.location.displayed_locator}
                     </text>
-                    <text x={text_height} y={text_y + text_height} fill={colors.theme.text}>
+                    <text x={text_x} y={text_y + text_height} fill={colors.theme.text}>
                         Radius: {Math.round(radius_in_km)} KM
                     </text>
-                    <text x={text_height} y={text_y + 2 * text_height} fill={colors.theme.text}>
+                    <text x={text_x} y={text_y + 2 * text_height} fill={colors.theme.text}>
                         Spots: {spots.length}
                     </text>
                 </g>
