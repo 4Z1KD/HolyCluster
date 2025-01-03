@@ -107,7 +107,9 @@ export function ColorPicker({}) {
                         Download
                     </a>
                 </Button>
-                <Button color="green" on_click={() => setColors(default_colors)}>Clear</Button>
+                <Button color="green" on_click={() => setColors(default_colors)}>
+                    Clear
+                </Button>
             </div>
         </Modal>
     );

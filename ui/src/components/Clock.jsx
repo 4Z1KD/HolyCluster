@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useColors } from "@/hooks/useColors";
 
 function clock() {
+    const { colors } = useColors();
     const [time, set_current_time] = useState(new Date());
 
     useEffect(() => {
@@ -14,7 +16,10 @@ function clock() {
         return number.toString().padStart(2, "0");
     }
     return (
-        <div className="hidden 2xs:flex items-center text-center font-bold text-xl min-w-18">
+        <div
+            className="hidden 2xs:flex items-center text-center font-bold text-xl min-w-18"
+            style={{ color: colors.theme.text }}
+        >
             {`${pad(time.getUTCHours())}:${pad(time.getUTCMinutes())}z`}
         </div>
     );

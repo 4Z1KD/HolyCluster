@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 import Button from "@/components/Button.jsx";
 import { useFilters } from "../hooks/useFilters";
+import { useColors } from "@/hooks/useColors";
 
 function FilterOptions({ filter_key, filter_value, align, orientation, children }) {
     const { setFilterKeys, setOnlyFilterKeys } = useFilters();
+    const { colors } = useColors();
 
     const [is_hovered, set_is_hovered] = useState(false);
     let classes = [
@@ -37,7 +39,7 @@ function FilterOptions({ filter_key, filter_value, align, orientation, children 
         >
             {children}
             {is_hovered && (
-                <div className={classes}>
+                <div className={classes} style={{ backgroundColor: colors.theme.background }}>
                     <div className="space-y-4">
                         <Button
                             color="blue"
