@@ -11,9 +11,9 @@ function Propagation(data) {
         setIsOpen(!isOpen);
     };
 
-    const a = data.propagation.a_index;
-    const k = data.propagation.k_index;
-    const sfi = data.propagation.sfi;
+    const a = Math.round(data.propagation.a_index);
+    const k = Math.round(data.propagation.k_index);
+    const sfi = Math.round(data.propagation.sfi);
 
     
     
@@ -71,8 +71,8 @@ function Propagation(data) {
 }
 
     return (
-        <div className="border rounded shadow-md">
-            <div className="cursor-pointer bg-gray-200 p-2 flexc justify-between items-center" onClick={toggleCollapse}>
+        <div className="">
+            <div className="cursor-pointer bg-gray-200 p-2 flex justify-between items-center" onClick={toggleCollapse}>
                 <div className="text-xs font-semibold">
                 {isOpen ? (
                     <svg
@@ -91,17 +91,17 @@ function Propagation(data) {
                 </svg>
                 ) : 
                 (
-                    <>
-                      <span className={`${a_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-1`}>
+                    <div className="justify-center items-center">
+                      <span className={`${a_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-2`}>
                         a: {a}
                       </span>
-                      <span className={`${k_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-1`}>
+                      <span className={`${k_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-2`}>
                         k: {k}
                       </span>
-                      <span className={`${sfi_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-1`}>
+                      <span className={`${sfi_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-2`}>
                         sfi: {sfi}
                       </span>
-                    </>
+                    </div>
                   )
                 }
                 </div>

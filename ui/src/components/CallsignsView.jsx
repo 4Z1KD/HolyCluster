@@ -3,7 +3,7 @@ import CallsignFilters from "@/components/CallsignFilters.jsx";
 import Propagation from "./Propagation";
 import { useColors } from "../hooks/useColors";
 
-function CallsignsView({ alerts, set_alerts, toggled_ui, propagation }) {
+function CallsignsView({ alerts, set_alerts, toggled_ui, propagation, dev_mode }) {
     const { colors } = useColors();
 
     const toggled_classes = toggled_ui.right
@@ -20,7 +20,7 @@ function CallsignsView({ alerts, set_alerts, toggled_ui, propagation }) {
             <Alerts alerts={alerts} set_alerts={set_alerts} />
             <CallsignFilters is_show_only={true} />
             <CallsignFilters is_show_only={false} />
-            <Propagation propagation={propagation} />
+            {dev_mode ? <Propagation propagation={propagation} /> : ""}
             
         </div>
     );
