@@ -1,5 +1,6 @@
 import Modal from "@/components/Modal.jsx";
-import { useColors } from "../hooks/useColors";
+import Button from "@/components/Button.jsx";
+import { useColors, default_colors } from "@/hooks/useColors";
 
 function Rainbow({ size }) {
     return (
@@ -69,7 +70,7 @@ function ThemeSection({ section }) {
 }
 
 export function ColorPicker({}) {
-    const { colors } = useColors();
+    const { colors, setColors } = useColors();
 
     return (
         <Modal
@@ -92,18 +93,23 @@ export function ColorPicker({}) {
                     <ThemeSection section="table"></ThemeSection>
                 </div>
             </div>
-            <div className="flex justify-center items-end pb-2">
-                <a
-                    className="bg-blue-500 text-white rounded-full p-2"
-                    download="colorscheme.json"
-                    type="application/json"
-                    href={
-                        "data:Application/octet-stream," +
-                        encodeURIComponent(JSON.stringify(colors))
-                    }
-                >
-                    Download
-                </a>
+            <div className="flex justify-around items-end pb-2">
+                <Button>
+                    <a
+                        className="h-full w-full p-2"
+                        download="colorscheme.json"
+                        type="application/json"
+                        href={
+                            "data:Application/octet-stream," +
+                            encodeURIComponent(JSON.stringify(colors))
+                        }
+                    >
+                        Download
+                    </a>
+                </Button>
+                <Button color="green" on_click={() => setColors(default_colors)}>
+                    Clear
+                </Button>
             </div>
         </Modal>
     );

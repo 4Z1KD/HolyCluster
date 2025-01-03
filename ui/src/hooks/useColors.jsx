@@ -42,68 +42,73 @@ function pSBC(p,c0,c1,l) {
 }
 pSBC = pSBC.bind({});
 
-export const ColorsProvider = ({ children }) => {
-    const initial_colors = {
-        bands: {
-            4: "#666062",
-            6: "#FF61EA",
-            10: "#E87421",
-            12: "#47DFF0",
-            15: "#1515CB",
-            17: "#751F6B",
-            20: "#DC2828",
-            30: "#FAFA00",
-            40: "#18A018",
-            60: "#152F47",
-            80: "#903727",
-            160: "#156184",
-        },
-        bright_text: "white",
-        dark_text: "black",
-        text: {
-            4: "default_bright",
-            6: "default_dark",
-            10: "default_dark",
-            12: "default_dark",
-            15: "default_bright",
-            17: "default_bright",
-            20: "default_bright",
-            30: "default_dark",
-            40: "default_dark",
-            60: "default_bright",
-            80: "default_bright",
-            160: "default_bright",
-        },
-        theme: {
-            background: "#FFFFFF",
-            columns: "#F3F4F6",
-            modals: "#F3F4F6",
-            borders: "#F3F4F6",
-            text: "#000000",
-            input_background: "#FFFFFF",
-        },
-        buttons: {
-            modes: "#96FF9F",
-            dx_continents: "#BEDBFE",
-            spotter_continents: "#FECDD3",
-            utility: "#484848",
-        },
-        table: {
-            header: "#CBD5E1",
-            even_row: "#F1F5F9",
-            odd_row: "#FFFFFF",
-        },
-        map: {
-            background: "#FFFFFF",
-            land: "#D7D7D7",
-            land_borders: "#777777",
-            graticule: "#EEEEEE",
-            night: "#000080",
-            borders: "#000000",
-        },
-    };
+export const default_colors = {
+    bands: {
+        4: "#666062",
+        6: "#FF61EA",
+        10: "#E87421",
+        12: "#47DFF0",
+        15: "#1515CB",
+        17: "#751F6B",
+        20: "#DC2828",
+        30: "#FAFA00",
+        40: "#18A018",
+        60: "#152F47",
+        80: "#903727",
+        160: "#156184",
+    },
+    bright_text: "white",
+    dark_text: "black",
+    text: {
+        4: "default_bright",
+        6: "default_dark",
+        10: "default_dark",
+        12: "default_dark",
+        15: "default_bright",
+        17: "default_bright",
+        20: "default_bright",
+        30: "default_dark",
+        40: "default_dark",
+        60: "default_bright",
+        80: "default_bright",
+        160: "default_bright",
+    },
+    theme: {
+        background: "#FFFFFF",
+        columns: "#F3F4F6",
+        modals: "#F3F4F6",
+        borders: "#F3F4F6",
+        text: "#000000",
+        input_background: "#FFFFFF",
+    },
+    buttons: {
+        modes: "#96FF9F",
+        dx_continents: "#BEDBFE",
+        spotter_continents: "#FECDD3",
+        utility: "#484848",
+        disabled_background: "#F3F4F6",
+        disabled: "#484848",
+    },
+    table: {
+        header: "#CBD5E1",
+        even_row: "#F1F5F9",
+        odd_row: "#FFFFFF",
+        header_text: "#000000",
+        even_text: "#000000",
+        odd_text: "#000000",
+    },
+    map: {
+        background: "#FFFFFF",
+        land: "#D7D7D7",
+        land_borders: "#777777",
+        graticule: "#EEEEEE",
+        night: "#000080",
+        borders: "#000000",
+    },
+};
 
-    const [colors, setColors] = use_object_local_storage("colors", initial_colors);
+export const ColorsProvider = ({ children }) => {
+    const [colors, setColors] = use_object_local_storage("colors", default_colors);
     colors.light_bands = Object.fromEntries(
         Object.entries(colors.bands).map(([band, color]) => [band, pSBC(0.25, colors.bands[band])]),
     );
