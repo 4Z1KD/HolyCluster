@@ -98,7 +98,6 @@ function fetch_propagation() {
         url = "/propagation";
     }
 
-
     if (navigator.onLine) {
         return fetch(url, { mode: "cors" })
             .then(response => {
@@ -115,8 +114,7 @@ function fetch_propagation() {
                     this.set_propagation(data);
                 }
             })
-            .catch(_ => {
-            });
+            .catch(_ => {});
     }
 }
 
@@ -184,7 +182,7 @@ function MainContainer() {
 
     const fetch_propagation_context = useRef({
         propagation,
-        set_propagation
+        set_propagation,
     });
     fetch_propagation_context.current.propagation = propagation;
 
@@ -193,7 +191,9 @@ function MainContainer() {
         fetch_spots_with_context();
         let interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
 
-        const fetch_propagation_with_context = fetch_propagation.bind(fetch_propagation_context.current);
+        const fetch_propagation_with_context = fetch_propagation.bind(
+            fetch_propagation_context.current,
+        );
         fetch_propagation_with_context();
         let interval_id2 = setInterval(fetch_propagation_with_context, 3600 * 1000);
 
@@ -391,7 +391,13 @@ function MainContainer() {
                         {table}
                     </>
                 )}
-                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} propagation={propagation} dev_mode={dev_mode}/>
+                <CallsignsView
+                    alerts={alerts}
+                    set_alerts={set_alerts}
+                    toggled_ui={toggled_ui}
+                    propagation={propagation}
+                    dev_mode={dev_mode}
+                />
                 <Continents toggled_ui={toggled_ui} />
             </div>
         </>
