@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useColors } from "../hooks/useColors";
 
 function Propagation(data) {
     //let prop = {"a_index": 88, "k_index": 4, "sfi": 219}
@@ -10,6 +11,7 @@ function Propagation(data) {
     const toggleCollapse = () => {
         setIsOpen(!isOpen);
     };
+    const { colors } = useColors();
 
     const a = Math.round(data.propagation.a_index);
     const k = Math.round(data.propagation.k_index);
@@ -63,17 +65,17 @@ function Propagation(data) {
     return (
         <div className="">
             <div
-                className="cursor-pointer bg-gray-200 p-2 flex justify-between items-center"
+                className="cursor-pointer p-2 flex justify-between items-center"
                 onClick={toggleCollapse}
             >
                 <div className="text-xs font-semibold">
                     {isOpen ? (
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-600"
+                            className="h-5 w-5"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke="currentColor"
+                            stroke={colors.buttons.utility}
                         >
                             <path
                                 strokeLinecap="round"
