@@ -35,8 +35,8 @@ function FilterButton({
             "border-slate-400",
             "bg-transparent",
             "outline",
-            "outline-[3px]",
-            "outline-offset-[-3px]",
+            "outline-[1px]",
+            "outline-offset-[-1px]",
         );
     }
 
