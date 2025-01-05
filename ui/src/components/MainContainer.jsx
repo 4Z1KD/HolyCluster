@@ -227,7 +227,7 @@ function MainContainer() {
     const filtered_spots = spots
         .filter(spot => {
             if (filter_missing_flags) {
-                if (get_flag(spot.dx_country) == null) {
+                if (spot.dx_country != "" && spot.dx_country != null && get_flag(spot.dx_country) == null) {
                     return true;
                 } else {
                     return false;
@@ -293,16 +293,14 @@ function MainContainer() {
             set_pinned_spot(null);
         }
 
-        if (event.ctrlKey && event.altKey && event.key == "c") {
-            set_canvas(!canvas);
-        }
-
-        if (event.ctrlKey && event.altKey && event.key == "f") {
-            set_filter_missing_flags(!filter_missing_flags);
-        }
-
-        if (event.ctrlKey && event.altKey && event.key == "p") {
-            set_dev_mode(!dev_mode);
+        if (event.ctrlKey && event.altKey) {
+            if (event.key == "c") {
+                set_canvas(!canvas);
+            } else if (event.key == "f") {
+                set_filter_missing_flags(!filter_missing_flags);
+            } else if (event.key == "p") {
+                set_dev_mode(!dev_mode);
+            }
         }
     }
 
