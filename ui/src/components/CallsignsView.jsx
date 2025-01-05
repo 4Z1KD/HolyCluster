@@ -13,14 +13,13 @@ function CallsignsView({ alerts, set_alerts, toggled_ui, propagation, dev_mode }
         <div
             className={
                 toggled_classes +
-                " 2xl:flex flex-col bg-white h-full divide-y divide-slate-300 w-60"
+                " 2xl:flex flex-col bg-white h-full divide-y divide-slate-300 w-[30rem] overflow-y-auto"
             }
             style={{ backgroundColor: colors.theme.background }}
         >
             <Alerts alerts={alerts} set_alerts={set_alerts} />
             <CallsignFilters is_show_only={true} />
             <CallsignFilters is_show_only={false} />
-            <Propagation propagation={propagation} />
         </div>
     );
 }
