@@ -97,7 +97,7 @@ function Propagation(data) {
                                 k: {k}
                             </span>
                             <span
-                                className={`${sfi_color}-400 text-sm font-medium py-1 px-2 rounded-full mr-2`}
+                                className={`${sfi_color}-400 text-sm font-medium py-1 px-2 rounded-full`}
                             >
                                 sfi: {sfi}
                             </span>
