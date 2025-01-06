@@ -31,7 +31,7 @@ function MapControls({
 
     return (
         <div className="absolute top-0 z-40 right-0 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
-            <Button on_click={reset_map}>MyQTH</Button>
+            <Button on_click={reset_map}>Center on my QTH</Button>
             <Night
                 is_active={map_controls.night}
                 size="40"
