@@ -1,9 +1,8 @@
 import Alerts from "@/components/Alerts.jsx";
 import CallsignFilters from "@/components/CallsignFilters.jsx";
-import Propagation from "./Propagation";
 import { useColors } from "../hooks/useColors";
 
-function CallsignsView({ alerts, set_alerts, toggled_ui, propagation, dev_mode }) {
+function CallsignsView({ alerts, set_alerts, toggled_ui }) {
     const { colors } = useColors();
 
     const toggled_classes = toggled_ui.right

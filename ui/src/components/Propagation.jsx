@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { useColors } from "../hooks/useColors";
 
-function Propagation(data) {
+function Propagation(propagation) {
     //let prop = {"a_index": 88, "k_index": 4, "sfi": 219}
-    if (data.propagation === undefined) {
+    if (propagation.propagation === undefined) {
         return <div></div>;
     }
-
     const [isOpen, setIsOpen] = useState(true);
     const toggleCollapse = () => {
         setIsOpen(!isOpen);
     };
     const { colors } = useColors();
 
-    const a = Math.round(data.propagation.a_index);
-    const k = Math.round(data.propagation.k_index);
-    const sfi = Math.round(data.propagation.sfi);
+    const a = Math.round(propagation.propagation.a_index);
+    const k = Math.round(propagation.propagation.k_index);
+    const sfi = Math.round(propagation.propagation.sfi);
 
     let a_color = "blue";
     let a_deg = "rotate-45";

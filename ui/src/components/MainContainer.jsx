@@ -322,6 +322,7 @@ function MainContainer() {
                 radio_status={radio_status}
                 default_radius={settings.default_radius}
                 set_radius_in_km={set_radius_in_km}
+                propagation={propagation}
             />
             {canvas ? (
                 <CanvasMap
@@ -393,8 +394,6 @@ function MainContainer() {
                     alerts={alerts}
                     set_alerts={set_alerts}
                     toggled_ui={toggled_ui}
-                    propagation={propagation}
-                    dev_mode={dev_mode}
                 />
                 <Continents toggled_ui={toggled_ui} />
             </div>
