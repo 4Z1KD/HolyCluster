@@ -35,7 +35,7 @@ function SettingsIcon({ size }) {
 }
 
 function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }) {
-    const [temp_settings, set_temp_settings] = useState({ locator: "", default_radius: 0 });
+    const [temp_settings, set_temp_settings] = useState({ locator: "", default_radius: 0, callsign: "" });
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
     const is_default_radius_valid =
         temp_settings.default_radius >= 1000 &&
@@ -57,7 +57,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
             }}
             on_apply={() => {
                 if (is_settings_valid) {
-                    set_temp_settings({ locator: "", default_radius: 0 });
+                    set_temp_settings({ locator: "", default_radius: 0, callsign: "" });
                     set_map_controls(map_controls => {
                         const [lat, lon] = Maidenhead.toLatLon(temp_settings.locator);
                         map_controls.location.displayed_locator = temp_settings.locator;
@@ -69,15 +69,32 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
                     set_settings(settings => {
                         settings.locator = temp_settings.locator;
                         settings.default_radius = temp_settings.default_radius;
+                        settings.callsign = temp_settings.callsign;
                     });
                 }
 
                 return is_settings_valid;
             }}
-            on_cancel={() => set_temp_settings({ locator: "", default_radius: 0 })}
+            on_cancel={() => set_temp_settings({ locator: "", default_radius: 0, callsign: "" })}
         >
             <table className="my-3 mx-2" style={{ color: colors.theme.text }}>
                 <tbody>
+                <tr>
+                        <td>My callsign:&nbsp;&nbsp;</td>
+                        <td>
+                            <Input
+                                value={temp_settings.callsign}
+                                maxLength={11}
+                                className="uppercase"
+                                onChange={event => {
+                                    set_temp_settings({
+                                        ...temp_settings,
+                                        callsign: event.target.value.toUpperCase(),
+                                    });
+                                }}
+                            />
+                        </td>
+                    </tr>
                     <tr>
                         <td>My locator:&nbsp;&nbsp;</td>
                         <td>
