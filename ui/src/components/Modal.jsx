@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/Button.jsx";
 import { useColors } from "../hooks/useColors";
@@ -15,6 +15,20 @@ function Modal({
 }) {
     const [show_modal, set_show_modal] = useState(false);
     const { colors } = useColors();
+
+    function on_escape(event) {
+        if (event.key == "Escape") {
+            on_cancel();
+            set_show_modal(false);
+        }
+    }
+
+    useEffect(() => {
+        document.body.addEventListener("keydown", on_escape);
+        return () => {
+            document.body.removeEventListener("keydown", on_escape);
+        };
+    });
 
     return (
         <>

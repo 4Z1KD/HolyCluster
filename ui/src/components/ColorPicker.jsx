@@ -81,6 +81,7 @@ export function ColorPicker({}) {
             }
             button={<Rainbow size="32" />}
             on_cancel={() => {}}
+            cancel_text="Close"
         >
             <div className="flex flex-row p-3">
                 <div>
