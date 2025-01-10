@@ -1,3 +1,4 @@
+import SubmitSpot from "@/components/SubmitSpot.jsx";
 import Clock from "@/components/Clock.jsx";
 import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
@@ -63,6 +64,7 @@ function TopBar({
                 The Holy Cluster
             </h1>
             <div className={box_container_style}>
+                {dev_mode ? <SubmitSpot /> : ""}
                 <Clock />
 
                 <Select
