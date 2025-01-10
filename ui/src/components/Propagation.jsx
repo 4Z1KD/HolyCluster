@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useColors } from "../hooks/useColors";
 
 function Propagation(propagation) {
-    //let prop = {"a_index": 88, "k_index": 4, "sfi": 219}
     if (propagation.propagation === undefined) {
         return <div></div>;
     }

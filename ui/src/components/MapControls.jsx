@@ -15,6 +15,7 @@ function MapControls({
     default_radius,
     set_radius_in_km,
     propagation,
+    dev_mode,
 }) {
     function reset_map() {
         const locator = home_locator == "" ? "JJ00AA" : home_locator;
@@ -81,7 +82,7 @@ function MapControls({
                     }
                 </div>
             </div>
-            {propagation && is_md_device && (
+            {propagation && is_md_device && dev_mode && (
                 <div className="absolute bottom-2 z-40 right-5 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
                     <Bar
                         value={propagation.a_index}

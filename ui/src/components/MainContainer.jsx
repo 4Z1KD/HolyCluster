@@ -320,6 +320,7 @@ function MainContainer() {
                 default_radius={settings.default_radius}
                 set_radius_in_km={set_radius_in_km}
                 propagation={propagation}
+                dev_mode={dev_mode}
             />
             {canvas ? (
                 <CanvasMap
