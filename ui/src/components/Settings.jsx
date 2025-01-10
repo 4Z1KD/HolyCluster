@@ -39,6 +39,7 @@ const empty_temp_settings = {
     locator: "",
     default_radius: 0,
     theme: "",
+    callsign: "",
 };
 
 function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, dev_mode }) {
@@ -87,6 +88,22 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
         >
             <table className="my-3 mx-2 border-separate border-spacing-y-2" style={{ color: colors.theme.text }}>
                 <tbody>
+                <tr>
+                        <td>My callsign:&nbsp;&nbsp;</td>
+                        <td>
+                            <Input
+                                value={temp_settings.callsign}
+                                maxLength={11}
+                                className="uppercase"
+                                onChange={event => {
+                                    set_temp_settings({
+                                        ...temp_settings,
+                                        callsign: event.target.value.toUpperCase(),
+                                    });
+                                }}
+                            />
+                        </td>
+                    </tr>
                     <tr>
                         <td>My locator:&nbsp;&nbsp;</td>
                         <td>
