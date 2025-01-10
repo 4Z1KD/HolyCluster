@@ -86,9 +86,12 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
             }}
             on_cancel={() => reset_temp_settings()}
         >
-            <table className="my-3 mx-2 border-separate border-spacing-y-2" style={{ color: colors.theme.text }}>
+            <table
+                className="my-3 mx-2 border-separate border-spacing-y-2"
+                style={{ color: colors.theme.text }}
+            >
                 <tbody>
-                <tr>
+                    <tr>
                         <td>My callsign:&nbsp;&nbsp;</td>
                         <td>
                             <Input

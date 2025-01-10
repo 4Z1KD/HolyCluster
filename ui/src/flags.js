@@ -29,7 +29,7 @@ const dxcc_to_country_flag = {
     "Wake Island": "United States Minor Outlying Islands",
     "Mariana Islands": "United States Minor Outlying Islands",
     "Guantanamo Bay": "United States of America",
-    "Alaska": "United States of America",
+    Alaska: "United States of America",
     Corsica: "France",
     "Wallis and Futuna Islands": "France",
     "North Cook Islands": "Cook Islands",

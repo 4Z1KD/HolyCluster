@@ -182,13 +182,13 @@ function MainContainer() {
     useEffect(() => {
         const fetch_spots_with_context = fetch_spots.bind(fetch_spots_context.current);
         fetch_spots_with_context();
-        let interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
+        let spots_interval_id = setInterval(fetch_spots_with_context, 30 * 1000);
 
         const fetch_propagation_with_context = fetch_propagation.bind(
             fetch_propagation_context.current,
         );
         fetch_propagation_with_context();
-        let interval_id2 = setInterval(fetch_propagation_with_context, 3600 * 1000);
+        let propagation_interval_id = setInterval(fetch_propagation_with_context, 3600 * 1000);
 
         // Try to fetch again the spots when the device is connected to the internet
         const handle_online = () => {
@@ -206,8 +206,8 @@ function MainContainer() {
         return () => {
             window.removeEventListener("online", handle_online);
             window.removeEventListener("offline", handle_offline);
-            clearInterval(interval_id);
-            clearInterval(interval_id2);
+            clearInterval(spots_interval_id);
+            clearInterval(propagation_interval_id);
         };
     }, []);
 
@@ -220,7 +220,11 @@ function MainContainer() {
     const filtered_spots = spots
         .filter(spot => {
             if (filter_missing_flags) {
-                if (spot.dx_country != "" && spot.dx_country != null && get_flag(spot.dx_country) == null) {
+                if (
+                    spot.dx_country != "" &&
+                    spot.dx_country != null &&
+                    get_flag(spot.dx_country) == null
+                ) {
                     return true;
                 } else {
                     return false;
@@ -383,11 +387,7 @@ function MainContainer() {
                         {table}
                     </>
                 )}
-                <CallsignsView
-                    alerts={alerts}
-                    set_alerts={set_alerts}
-                    toggled_ui={toggled_ui}
-                />
+                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} />
                 <Continents toggled_ui={toggled_ui} />
             </div>
         </>
