@@ -1,6 +1,6 @@
 import Modal from "@/components/Modal.jsx";
 import Button from "@/components/Button.jsx";
-import { useColors, default_colors } from "@/hooks/useColors";
+import { useColors } from "@/hooks/useColors";
 
 function Rainbow({ size }) {
     return (
@@ -70,7 +70,7 @@ function ThemeSection({ section }) {
 }
 
 export function ColorPicker({}) {
-    const { colors, setColors } = useColors();
+    const { colors } = useColors();
 
     return (
         <Modal
@@ -107,7 +107,7 @@ export function ColorPicker({}) {
                         Download
                     </a>
                 </Button>
-                <Button color="green" on_click={() => setColors(default_colors)}>
+                <Button color="green" on_click={() => setTheme("light")}>
                     Clear
                 </Button>
             </div>

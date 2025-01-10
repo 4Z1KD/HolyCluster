@@ -150,20 +150,13 @@ function MainContainer() {
         });
     };
 
-    const [settings, set_settings_inner] = use_object_local_storage("settings", {
+    const [settings, set_settings] = use_object_local_storage("settings", {
         locator: "JJ00AA",
         default_radius: 20000,
+        theme: "light",
     });
 
     const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
-
-    const set_settings = change_func => {
-        set_settings_inner(previous_state => {
-            const state = structuredClone(previous_state);
-            change_func(state);
-            return state;
-        });
-    };
 
     const current_time = new Date().getTime() / 1000;
 

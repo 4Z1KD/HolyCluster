@@ -3,6 +3,7 @@ import NetworkState from "@/components/NetworkState.jsx";
 import Spinner from "@/components/Spinner.jsx";
 import Settings from "@/components/Settings.jsx";
 import ColorPicker from "@/components/ColorPicker.jsx";
+import Select from "@/components/Select.jsx";
 import { useColors } from "../hooks/useColors";
 import { useFilters } from "../hooks/useFilters";
 
@@ -64,12 +65,7 @@ function TopBar({
             <div className={box_container_style}>
                 <Clock />
 
-                <select
-                    className="rounded-lg px-4 py-2 w-28"
-                    style={{
-                        backgroundColor: colors.theme.input_background,
-                        color: colors.theme.text,
-                    }}
+                <Select
                     value={filters.time_limit}
                     onChange={event =>
                         setFilters(state => ({ ...state, time_limit: event.target.value }))
@@ -82,7 +78,7 @@ function TopBar({
                             </option>
                         );
                     })}
-                </select>
+                </Select>
 
                 {network_state == "connecting" ? (
                     <Spinner size="32" color="lightblue" />
@@ -100,6 +96,7 @@ function TopBar({
                     set_settings={set_settings}
                     set_map_controls={set_map_controls}
                     set_radius_in_km={set_radius_in_km}
+                    dev_mode={dev_mode}
                 />
                 {dev_mode ? <ColorPicker></ColorPicker> : ""}
                 <div className="p-2 hidden max-2xl:block">

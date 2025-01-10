@@ -2,8 +2,9 @@ import { useState } from "react";
 import Maidenhead from "maidenhead";
 
 import Input from "@/components/Input.jsx";
+import Select from "@/components/Select.jsx";
 import Modal from "@/components/Modal.jsx";
-import { useColors } from "../hooks/useColors";
+import { useColors, themes_names } from "../hooks/useColors";
 
 function SettingsIcon({ size }) {
     const { colors } = useColors();
@@ -34,15 +35,25 @@ function SettingsIcon({ size }) {
     );
 }
 
-function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }) {
-    const [temp_settings, set_temp_settings] = useState({ locator: "", default_radius: 0 });
+const empty_temp_settings = {
+    locator: "",
+    default_radius: 0,
+    theme: "",
+};
+
+function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, dev_mode }) {
+    const [temp_settings, set_temp_settings] = useState(empty_temp_settings);
     const is_locator_valid = Maidenhead.valid(temp_settings.locator);
     const is_default_radius_valid =
         temp_settings.default_radius >= 1000 &&
         temp_settings.default_radius <= 20000 &&
         temp_settings.default_radius % 1000 == 0;
     const is_settings_valid = is_locator_valid && is_default_radius_valid;
-    const { colors } = useColors();
+    const { colors, setTheme } = useColors();
+
+    function reset_temp_settings() {
+        set_temp_settings(empty_temp_settings);
+    }
 
     return (
         <Modal
@@ -57,7 +68,6 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
             }}
             on_apply={() => {
                 if (is_settings_valid) {
-                    set_temp_settings({ locator: "", default_radius: 0 });
                     set_map_controls(map_controls => {
                         const [lat, lon] = Maidenhead.toLatLon(temp_settings.locator);
                         map_controls.location.displayed_locator = temp_settings.locator;
@@ -66,17 +76,16 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
                             set_radius_in_km(temp_settings.default_radius);
                         }
                     });
-                    set_settings(settings => {
-                        settings.locator = temp_settings.locator;
-                        settings.default_radius = temp_settings.default_radius;
-                    });
+                    setTheme(temp_settings.theme);
+                    set_settings(temp_settings);
+                    reset_temp_settings();
                 }
 
                 return is_settings_valid;
             }}
-            on_cancel={() => set_temp_settings({ locator: "", default_radius: 0 })}
+            on_cancel={() => reset_temp_settings()}
         >
-            <table className="my-3 mx-2" style={{ color: colors.theme.text }}>
+            <table className="my-3 mx-2 border-separate border-spacing-y-2" style={{ color: colors.theme.text }}>
                 <tbody>
                     <tr>
                         <td>My locator:&nbsp;&nbsp;</td>
@@ -112,6 +121,32 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km }
                             />
                         </td>
                     </tr>
+                    {dev_mode ? (
+                        <tr>
+                            <td>Default map radius:&nbsp;&nbsp;</td>
+                            <td>
+                                <Select
+                                    value={temp_settings.theme}
+                                    onChange={event => {
+                                        set_temp_settings(state => ({
+                                            ...state,
+                                            theme: event.target.value,
+                                        }));
+                                    }}
+                                >
+                                    {themes_names.map(name => {
+                                        return (
+                                            <option key={name} value={name}>
+                                                {name}
+                                            </option>
+                                        );
+                                    })}
+                                </Select>
+                            </td>
+                        </tr>
+                    ) : (
+                        ""
+                    )}
                 </tbody>
             </table>
         </Modal>
