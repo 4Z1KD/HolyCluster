@@ -18,7 +18,9 @@ function Modal({
 
     function on_escape(event) {
         if (event.key == "Escape") {
-            on_cancel();
+            if (on_cancel != null) {
+                on_cancel();
+            }
             set_show_modal(false);
         }
     }
@@ -56,31 +58,35 @@ function Modal({
                                 {title}
                             </div>
                             <div>{children}</div>
-                            <div className="flex items-center justify-around p-3 border-t border-solid border-blueGray-200 rounded-b">
-                                {on_cancel != null ? (
-                                    <Button
-                                        color="red"
-                                        on_click={() => {
-                                            on_cancel();
-                                            set_show_modal(false);
-                                        }}
-                                    >
-                                        {cancel_text}
-                                    </Button>
-                                ) : (
-                                    ""
-                                )}
-                                {on_apply != null ? (
-                                    <Button
-                                        color="blue"
-                                        on_click={() => set_show_modal(!on_apply())}
-                                    >
-                                        {apply_text}
-                                    </Button>
-                                ) : (
-                                    ""
-                                )}
-                            </div>
+                            {on_cancel != null && on_apply != null ? (
+                                <div className="flex items-center justify-around p-3 border-t border-solid border-blueGray-200 rounded-b">
+                                    {on_cancel != null ? (
+                                        <Button
+                                            color="red"
+                                            on_click={() => {
+                                                on_cancel();
+                                                set_show_modal(false);
+                                            }}
+                                        >
+                                            {cancel_text}
+                                        </Button>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {on_apply != null ? (
+                                        <Button
+                                            color="blue"
+                                            on_click={() => set_show_modal(!on_apply())}
+                                        >
+                                            {apply_text}
+                                        </Button>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 </div>
