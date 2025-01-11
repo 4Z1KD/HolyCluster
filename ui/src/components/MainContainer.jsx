@@ -154,6 +154,7 @@ function MainContainer() {
         locator: "JJ00AA",
         default_radius: 20000,
         theme: "light",
+        callsign: "",
     });
 
     const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
