@@ -44,6 +44,7 @@ const dxcc_to_country_flag = {
     "Banaba Island": "Kiribati",
     "Tristan da Cunha & Gough Islands": "Saint Helena, Ascension and Tristan da Cunha",
     "Pitcairn Island": "Pitcairn Islands",
+    "Vatican City": "Vatican City (Holy See)",
 };
 
 export function get_flag(dx_country) {
