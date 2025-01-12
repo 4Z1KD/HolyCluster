@@ -28,7 +28,7 @@ function MapAngles({ radius, center_x, center_y, degrees_diff = 15 }) {
                     textAnchor="middle"
                     x={x}
                     y={y}
-                    fontSize="20px"
+                    fontSize="18px"
                     fill={colors.theme.text}
                 >
                     {label}°

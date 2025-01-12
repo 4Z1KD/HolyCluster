@@ -48,7 +48,7 @@ function SvgMap({
     const is_sm_device = useMediaQuery("only screen and (min-width : 640px)");
     const is_max_xs_device = useMediaQuery("only screen and (max-width : 500px)");
 
-    const inner_padding = is_sm_device ? 50 : 5;
+    const inner_padding = is_sm_device ? 45 : 5;
     const center_x = width / 2;
     const center_y = height / 2;
     const radius = Math.min(center_x, center_y) - inner_padding;
