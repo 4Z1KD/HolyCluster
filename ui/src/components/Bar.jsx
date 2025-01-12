@@ -17,7 +17,10 @@ const Bar = ({ value, label, min = 0, max = 100, reverse_colors = false }) => {
 
     return (
         <div className="flex flex-col items-center">
-            <div className="flex justify-center items-end w-10 h-20 border border-gray-300 rounded-lg bg-gray-100 p-1">
+            <span className="mt-2 text-sm" style={{ color: colors.theme.text }}>
+                {label}
+            </span>
+            <div className="flex justify-center items-end w-8 h-20 border border-gray-300 rounded-lg bg-gray-100 p-1">
                 <div
                     className="w-full rounded transition-all duration-300"
                     style={{
@@ -27,7 +30,7 @@ const Bar = ({ value, label, min = 0, max = 100, reverse_colors = false }) => {
                 ></div>
             </div>
             <span className="mt-2 text-sm" style={{ color: colors.theme.text }}>
-                {label}
+                {value}
             </span>
         </div>
     );

@@ -86,19 +86,19 @@ function MapControls({
                 <div className="absolute bottom-2 z-40 right-5 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
                     <Bar
                         value={propagation.a_index}
-                        label={`A=${propagation.a_index}`}
+                        label="A"
                         min={0}
                         max={100}
                     />
                     <Bar
                         value={propagation.k_index}
-                        label={`K=${propagation.k_index}`}
+                        label="K"
                         min={0}
                         max={9}
                     />
                     <Bar
                         value={propagation.sfi}
-                        label={`SFI=${propagation.sfi}`}
+                        label="SFI"
                         min={0}
                         max={200}
                         reverseColors={true}
