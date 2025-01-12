@@ -200,6 +200,7 @@ function SvgMap({
                     fill="none"
                     stroke={colors.map.borders}
                 />
+                <circle r="4" fill="#FF0000" cx={center_x} cy={center_y} />
             </svg>
             {hovered_spot.source == "map" && popup_position != null ? (
                 <SpotPopup
