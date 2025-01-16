@@ -87,12 +87,12 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
             on_cancel={() => reset_temp_settings()}
         >
             <table
-                className="my-3 mx-2 border-separate border-spacing-y-2"
+                className="table-fixed w-[21rem] my-3 mx-2 border-separate border-spacing-y-2"
                 style={{ color: colors.theme.text }}
             >
                 <tbody>
                     <tr>
-                        <td>My callsign:&nbsp;&nbsp;</td>
+                        <td>My callsign:</td>
                         <td>
                             <Input
                                 value={temp_settings.callsign}
@@ -108,7 +108,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                         </td>
                     </tr>
                     <tr>
-                        <td>My locator:&nbsp;&nbsp;</td>
+                        <td>My locator:</td>
                         <td>
                             <Input
                                 value={temp_settings.locator}
@@ -123,7 +123,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                         </td>
                     </tr>
                     <tr>
-                        <td>Default map radius:&nbsp;&nbsp;</td>
+                        <td>Default map radius:</td>
                         <td>
                             <Input
                                 value={temp_settings.default_radius}
@@ -143,7 +143,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                     </tr>
                     {dev_mode ? (
                         <tr>
-                            <td>Default map radius:&nbsp;&nbsp;</td>
+                            <td>Theme:</td>
                             <td>
                                 <Select
                                     value={temp_settings.theme}
