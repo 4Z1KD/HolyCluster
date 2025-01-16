@@ -164,6 +164,11 @@ function MainContainer() {
         callsign: "",
     });
 
+    const [table_sort, set_table_sort] = use_object_local_storage("table_sort", {
+        column: "time",
+        ascending: false,
+    });
+
     const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
 
     const current_time = new Date().getTime() / 1000;
@@ -224,6 +229,28 @@ function MainContainer() {
     }
 
     const [filter_missing_flags, set_filter_missing_flags] = useState(false);
+
+    spots.sort((spot_a, spot_b) => {
+        // Sorting by frequency should be always more accurate
+        const column = table_sort.column == "band" ? "freq" : table_sort.column;
+        const value_a = spot_a[column];
+        const value_b = spot_b[column];
+        if (typeof(value_a) == "string" && typeof(value_b) == "string") {
+            if (table_sort.ascending) {
+                return value_a.localeCompare(value_b);
+            } else {
+                return value_b.localeCompare(value_a);
+            }
+        } else if (typeof(value_b) == "number" && typeof(value_a) == "number") {
+            if (table_sort.ascending) {
+                return value_a - value_b;
+            } else {
+                return value_b - value_a;
+            }
+        } else {
+            console.log(`Bad values of column ${table_sort.column}`, value_a, value_b, spot_a, spot_b);
+        }
+    });
 
     const filtered_spots = spots
         .filter(spot => {
@@ -366,6 +393,8 @@ function MainContainer() {
             pinned_spot={pinned_spot}
             set_pinned_spot={set_pinned_spot}
             set_cat_to_spot={set_cat_to_spot}
+            table_sort={table_sort}
+            set_table_sort={set_table_sort}
         />
     );
 
