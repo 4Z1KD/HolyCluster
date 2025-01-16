@@ -34,7 +34,6 @@ function connect_to_submit_spot_endpoint(on_successful_submit) {
     const { sendJsonMessage, readyState, lastJsonMessage } = useWebSocket(websocket_url);
 
     useEffect(() => {
-        console.log(lastJsonMessage);
         if (lastJsonMessage != null) {
             if ("status" in lastJsonMessage) {
                 if (lastJsonMessage.status == "success") {
