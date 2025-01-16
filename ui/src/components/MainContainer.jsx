@@ -45,6 +45,11 @@ function connect_to_radio() {
 }
 
 function fetch_spots() {
+    if (this.is_fetching_in_progress) {
+        return;
+    }
+    this.is_fetching_in_progress = true;
+
     let url;
     // For debugging purposes
     if (window.location.port == "5173") {
@@ -82,9 +87,11 @@ function fetch_spots() {
                     this.set_spots(spots);
                     this.set_network_state("connected");
                 }
+                this.is_fetching_in_progress = false;
             })
             .catch(_ => {
                 this.set_network_state("disconnected");
+                this.is_fetching_in_progress = false;
             });
     }
 }
