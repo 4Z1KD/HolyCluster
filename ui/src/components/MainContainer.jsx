@@ -229,28 +229,31 @@ function MainContainer() {
     }
 
     const [filter_missing_flags, set_filter_missing_flags] = useState(false);
+    const [dev_mode, set_dev_mode] = useLocalStorage("dev_mode", false);
 
-    spots.sort((spot_a, spot_b) => {
-        // Sorting by frequency should be always more accurate
-        const column = table_sort.column == "band" ? "freq" : table_sort.column;
-        const value_a = spot_a[column];
-        const value_b = spot_b[column];
-        if (typeof(value_a) == "string" && typeof(value_b) == "string") {
-            if (table_sort.ascending) {
-                return value_a.localeCompare(value_b);
+    if (dev_mode) {
+        spots.sort((spot_a, spot_b) => {
+            // Sorting by frequency should be always more accurate
+            const column = table_sort.column == "band" ? "freq" : table_sort.column;
+            const value_a = spot_a[column];
+            const value_b = spot_b[column];
+            if (typeof(value_a) == "string" && typeof(value_b) == "string") {
+                if (table_sort.ascending) {
+                    return value_a.localeCompare(value_b);
+                } else {
+                    return value_b.localeCompare(value_a);
+                }
+            } else if (typeof(value_b) == "number" && typeof(value_a) == "number") {
+                if (table_sort.ascending) {
+                    return value_a - value_b;
+                } else {
+                    return value_b - value_a;
+                }
             } else {
-                return value_b.localeCompare(value_a);
+                console.log(`Bad values of column ${table_sort.column}`, value_a, value_b, spot_a, spot_b);
             }
-        } else if (typeof(value_b) == "number" && typeof(value_a) == "number") {
-            if (table_sort.ascending) {
-                return value_a - value_b;
-            } else {
-                return value_b - value_a;
-            }
-        } else {
-            console.log(`Bad values of column ${table_sort.column}`, value_a, value_b, spot_a, spot_b);
-        }
-    });
+        });
+    }
 
     const filtered_spots = spots
         .filter(spot => {
@@ -318,7 +321,6 @@ function MainContainer() {
     let [pinned_spot, set_pinned_spot] = useState(null);
 
     const [canvas, set_canvas] = useLocalStorage("canvas", false);
-    const [dev_mode, set_dev_mode] = useLocalStorage("dev_mode", false);
 
     function on_key_down(event) {
         if (event.key == "Escape") {
@@ -395,6 +397,7 @@ function MainContainer() {
             set_cat_to_spot={set_cat_to_spot}
             table_sort={table_sort}
             set_table_sort={set_table_sort}
+            dev_mode={dev_mode}
         />
     );
 
