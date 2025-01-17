@@ -33,13 +33,13 @@ const Bar = ({ value, label, min = 0, max = 100, low_mid = 33, mid_high = 75, re
     }
 
     return (
-        <div className="flex flex-col items-center">
-            <span className="mt-2 text-sm" style={{ color: colors.theme.text }}>
+        <div className="flex flex-col items-center m-0">
+            <span className="text-sm" style={{ color: colors.theme.text }}>
                 {label}
             </span>
-            <div className="flex justify-center items-end w-6 h-20 border border-gray-300 rounded-lg bg-gray-100 p-1">
+            <div className="flex justify-center items-end w-8 h-20 border border-gray-300 rounded-lg bg-gray-100 p-1">
                 <div
-                    className=" rounded-tl-md rounded-bl-md w-0.5 transition-all duration-300 mr-0.5"
+                    className=" w-2 transition-all duration-300 mr-0.5 border border-solid border-gray-900"
                     style=
                     {{
                         height: `100%`,
@@ -47,7 +47,7 @@ const Bar = ({ value, label, min = 0, max = 100, low_mid = 33, mid_high = 75, re
                       }}
                 ></div>
                 <div
-                    className="w-full w-5 transition-all duration-300"
+                    className=" w-4 transition-all duration-300"
                     style={{
                         height: `${percentage}%`,
                         background: `${getBarColor(percentage)}`,
@@ -55,7 +55,7 @@ const Bar = ({ value, label, min = 0, max = 100, low_mid = 33, mid_high = 75, re
                     }}
                 ></div>
             </div>
-            <span className="mt-2 text-sm" style={{ color: colors.theme.text }}>
+            <span className="mt-1 text-sm" style={{ color: colors.theme.text }}>
                 {value}
             </span>
         </div>
