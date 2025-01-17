@@ -38,7 +38,7 @@ function MapControls({
 	};
 
 	const is_md_device = useMediaQuery("only screen and (min-width : 768px)");
-
+	
 	return (
 		<>
 			<div className="absolute top-0 z-40 right-0 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
@@ -83,7 +83,7 @@ function MapControls({
 						label="SFI"
 						min={0}
 						max={200}
-						reverseColors={true}
+						reverse_colors={true}
 					/>
 				</div>
 			)}

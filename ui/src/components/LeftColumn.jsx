@@ -69,13 +69,13 @@ function LeftColumn({ spots_per_band_count, toggled_ui }) {
     const filter_group_classes = "p-1 flex flex-col text-center gap-2 ";
     const toggled_classes = toggled_ui.left
         ? "hidden "
-        : "max-xl:absolute max-xl:flex z-50 border-r border-slate-300 ";
+        : "max-2xl:absolute max-2xl:flex z-50 border-r border-slate-300 ";
 
     const { colors } = useColors();
 
     return (
         <div
-            className={toggled_classes + "xl:flex flex-col h-full items-center"}
+            className={toggled_classes + "2xl:flex flex-col h-full items-center"}
             style={{
                 backgroundColor: colors.theme.columns,
                 borderColor: colors.theme.borders,
