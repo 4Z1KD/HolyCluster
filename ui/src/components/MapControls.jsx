@@ -77,7 +77,7 @@ function MapControls({
 			{propagation && is_md_device && dev_mode && (
 				<div className="absolute bottom-2 z-40 right-5 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
 					<Bar value={Math.round(propagation.a_index)} label="A" min={0} max={20} low_mid={6} mid_high={10} />
-					<Bar value={Math.round(propagation.k_index)+1} label="K" min={0} max={9} low_mid={3} mid_high={5} />
+					<Bar value={Math.round(propagation.k_index)} label="K" min={0} max={9} low_mid={3} mid_high={5} />
 					<Bar
 						value={Math.round(propagation.sfi)}
 						label="SFI"
