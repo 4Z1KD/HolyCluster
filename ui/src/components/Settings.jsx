@@ -177,11 +177,14 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                                     onChange={event => {
                                         set_temp_settings({
                                             ...temp_settings,
-                                            is_miles: event.target.value,
+                                            is_miles: JSON.parse(event.target.value),
                                         });
                                     }}
                                 >
-                                    {[{key:'km', value:false},{key:'miles', value:true}].map(unit => {
+                                    {[
+                                        { key: "km", value: false },
+                                        { key: "miles", value: true },
+                                    ].map(unit => {
                                         return (
                                             <option key={unit.key} value={unit.value}>
                                                 {unit.key}

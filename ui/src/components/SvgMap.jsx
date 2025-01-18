@@ -39,6 +39,7 @@ function SvgMap({
     set_pinned_spot,
     radius_in_km,
     set_radius_in_km,
+    settings,
 }) {
     const svg_ref = useRef(null);
     // const [dimensions, set_dimensions] = useState({ width: 700, height: 700 });
@@ -210,6 +211,7 @@ function SvgMap({
                     popup_position={popup_position}
                     hovered_spot_data={hovered_spot_data}
                     distance={hovered_spot_distance}
+                    settings={settings}
                 />
             ) : (
                 ""

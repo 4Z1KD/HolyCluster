@@ -373,6 +373,7 @@ function MainContainer() {
                     set_hovered_spot={set_hovered_spot}
                     pinned_spot={pinned_spot}
                     set_pinned_spot={set_pinned_spot}
+                    settings={settings}
                 />
             ) : (
                 <SvgMap
@@ -386,6 +387,7 @@ function MainContainer() {
                     set_pinned_spot={set_pinned_spot}
                     radius_in_km={radius_in_km}
                     set_radius_in_km={set_radius_in_km}
+                    settings={settings}
                 />
             )}
         </div>

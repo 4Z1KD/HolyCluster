@@ -147,6 +147,7 @@ function CanvasMap({
     set_hovered_spot,
     pinned_spot,
     set_pinned_spot,
+    settings,
 }) {
     const map_canvas_ref = useRef(null);
     const spots_canvas_ref = useRef(null);
@@ -337,6 +338,7 @@ function CanvasMap({
                     popup_position={popup_position}
                     hovered_spot_data={hovered_spot_data}
                     distance={hovered_spot_distance}
+                    settings={settings}
                 />
             ) : (
                 ""
