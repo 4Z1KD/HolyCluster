@@ -40,6 +40,7 @@ const empty_temp_settings = {
     default_radius: 0,
     theme: "",
     callsign: "",
+    is_miles: false,
 };
 
 function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, dev_mode }) {
@@ -143,7 +144,7 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                     </tr>
                     {dev_mode ? (
                         <tr>
-                            <td>Default map radius:&nbsp;&nbsp;</td>
+                            <td>Theme:&nbsp;&nbsp;</td>
                             <td>
                                 <Select
                                     value={temp_settings.theme}
@@ -158,6 +159,32 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                                         return (
                                             <option key={name} value={name}>
                                                 {name}
+                                            </option>
+                                        );
+                                    })}
+                                </Select>
+                            </td>
+                        </tr>
+                    ) : (
+                        ""
+                    )}
+                    {dev_mode ? (
+                        <tr>
+                            <td>Distance Units:&nbsp;&nbsp;</td>
+                            <td>
+                                <Select
+                                    value={temp_settings.is_miles}
+                                    onChange={event => {
+                                        set_temp_settings({
+                                            ...temp_settings,
+                                            is_miles: event.target.value,
+                                        });
+                                    }}
+                                >
+                                    {[{key:'km', value:false},{key:'miles', value:true}].map(unit => {
+                                        return (
+                                            <option key={unit.key} value={unit.value}>
+                                                {unit.key}
                                             </option>
                                         );
                                     })}

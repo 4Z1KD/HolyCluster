@@ -155,6 +155,7 @@ function MainContainer() {
         default_radius: 20000,
         theme: "light",
         callsign: "",
+        is_miles: false,
     });
 
     const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);

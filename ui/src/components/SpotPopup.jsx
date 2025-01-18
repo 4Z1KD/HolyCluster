@@ -1,3 +1,4 @@
+import { use_object_local_storage, is_matching_list } from "@/utils.js";
 import { useColors } from "../hooks/useColors";
 
 function SpotPopup({
@@ -9,6 +10,18 @@ function SpotPopup({
     distance,
 }) {
     const { colors } = useColors();
+    const [settings, set_settings] = use_object_local_storage("settings", {
+            locator: "JJ00AA",
+            default_radius: 20000,
+            theme: "light",
+            callsign: "",
+            is_miles: false,
+        });
+
+    function convertKmToMiles(km) {
+        const miles = km * 0.621371;
+        return Math.round(miles);
+    }
 
     return (
         <div
@@ -43,7 +56,7 @@ function SpotPopup({
                 </p>
                 Distance:{" "}
                 <p className="inline" style={{ color: colors.bands[hovered_spot_data.band] }}>
-                    {distance} KM
+                    {settings.is_miles?convertKmToMiles(distance):distance} {settings.is_miles?'MILES':'KM'}
                 </p>
                 <p>
                     <small>(Click to freeze)</small>
