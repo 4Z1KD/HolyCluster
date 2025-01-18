@@ -133,7 +133,7 @@ function Spot(
 Spot = forwardRef(Spot);
 
 function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, dev_mode }) {
-    let direction = "";
+    let direction = " ";
     if (table_sort.column == field && dev_mode) {
         if (table_sort.ascending) {
             direction = "⬇";
@@ -152,7 +152,7 @@ function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, de
     }
     return (
         <td className={cell_classes[field]} onClick={set_sort}>
-            {direction}
+            <span className="font-bold text-lg leading-3">{direction}</span>
             {title}
         </td>
     );
