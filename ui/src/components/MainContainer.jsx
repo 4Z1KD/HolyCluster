@@ -83,6 +83,8 @@ function fetch_spots() {
                         return spot;
                     });
                     const spots = new_spots.concat(this.spots);
+                    spots.sort((spot_a, spot_b) => spot_b.time - spot_a.time);
+                    spots.slice(500);
                     this.last_timestamp = spots[0].time;
                     this.set_spots(spots);
                     this.set_network_state("connected");
@@ -184,7 +186,8 @@ function MainContainer() {
         set_network_state,
         last_timestamp: null,
     });
-    fetch_spots_context.current.spots = spots;
+    // This is very importent because the spots are later sorted
+    fetch_spots_context.current.spots = structuredClone(spots);
 
     const fetch_propagation_context = useRef({
         propagation,
