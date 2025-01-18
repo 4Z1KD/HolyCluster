@@ -46,6 +46,7 @@ const dxcc_to_country_flag = {
     "Pitcairn Island": "Pitcairn Islands",
     "Vatican City": "Vatican City (Holy See)",
     "Temotu Province": "Solomon Islands",
+    Congo: "Republic of the Congo",
 };
 
 export function get_flag(dx_country) {

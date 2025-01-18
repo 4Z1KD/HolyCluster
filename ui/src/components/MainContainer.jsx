@@ -45,6 +45,11 @@ function connect_to_radio() {
 }
 
 function fetch_spots() {
+    if (this.is_fetching_in_progress) {
+        return;
+    }
+    this.is_fetching_in_progress = true;
+
     let url;
     // For debugging purposes
     if (window.location.port == "5173") {
@@ -78,13 +83,17 @@ function fetch_spots() {
                         return spot;
                     });
                     const spots = new_spots.concat(this.spots);
+                    spots.sort((spot_a, spot_b) => spot_b.time - spot_a.time);
+                    spots.slice(500);
                     this.last_timestamp = spots[0].time;
                     this.set_spots(spots);
                     this.set_network_state("connected");
                 }
+                this.is_fetching_in_progress = false;
             })
             .catch(_ => {
                 this.set_network_state("disconnected");
+                this.is_fetching_in_progress = false;
             });
     }
 }
@@ -158,6 +167,11 @@ function MainContainer() {
         is_miles: false,
     });
 
+    const [table_sort, set_table_sort] = use_object_local_storage("table_sort", {
+        column: "time",
+        ascending: false,
+    });
+
     const [radius_in_km, set_radius_in_km] = useState(settings.default_radius);
 
     const current_time = new Date().getTime() / 1000;
@@ -173,7 +187,8 @@ function MainContainer() {
         set_network_state,
         last_timestamp: null,
     });
-    fetch_spots_context.current.spots = spots;
+    // This is very importent because the spots are later sorted
+    fetch_spots_context.current.spots = structuredClone(spots);
 
     const fetch_propagation_context = useRef({
         propagation,
@@ -218,6 +233,7 @@ function MainContainer() {
     }
 
     const [filter_missing_flags, set_filter_missing_flags] = useState(false);
+    const [dev_mode, set_dev_mode] = useLocalStorage("dev_mode", false);
 
     const filtered_spots = spots
         .filter(spot => {
@@ -266,6 +282,30 @@ function MainContainer() {
         })
         .slice(0, 100);
 
+    if (dev_mode) {
+        filtered_spots.sort((spot_a, spot_b) => {
+            // Sorting by frequency should be always more accurate
+            const column = table_sort.column == "band" ? "freq" : table_sort.column;
+            const value_a = spot_a[column];
+            const value_b = spot_b[column];
+            if (typeof(value_a) == "string" && typeof(value_b) == "string") {
+                if (table_sort.ascending) {
+                    return value_a.localeCompare(value_b);
+                } else {
+                    return value_b.localeCompare(value_a);
+                }
+            } else if (typeof(value_b) == "number" && typeof(value_a) == "number") {
+                if (table_sort.ascending) {
+                    return value_a - value_b;
+                } else {
+                    return value_b - value_a;
+                }
+            } else {
+                console.log(`Bad values of column ${table_sort.column}`, value_a, value_b, spot_a, spot_b);
+            }
+        });
+    }
+
     const spots_per_band_count = Object.fromEntries(
         bands.map(band => [band, filtered_spots.filter(spot => spot.band == band).length]),
     );
@@ -285,7 +325,6 @@ function MainContainer() {
     let [pinned_spot, set_pinned_spot] = useState(null);
 
     const [canvas, set_canvas] = useLocalStorage("canvas", false);
-    const [dev_mode, set_dev_mode] = useLocalStorage("dev_mode", false);
 
     function on_key_down(event) {
         if (event.key == "Escape") {
@@ -360,6 +399,9 @@ function MainContainer() {
             pinned_spot={pinned_spot}
             set_pinned_spot={set_pinned_spot}
             set_cat_to_spot={set_cat_to_spot}
+            table_sort={table_sort}
+            set_table_sort={set_table_sort}
+            dev_mode={dev_mode}
         />
     );
 

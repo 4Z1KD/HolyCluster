@@ -7,10 +7,10 @@ import { useColors } from "../hooks/useColors";
 const cell_classes = {
     time: "w-14",
     flag: "w-[1.3rem] md:min-w-[1.3rem]",
-    dx: "w-16 2xs:w-24",
+    dx_callsign: "w-16 2xs:w-24",
     freq: "w-12",
     band: "w-12 hidden md:table-cell",
-    spotter: "w-16 2xs:w-24",
+    spotter_callsign: "w-16 2xs:w-24",
     mode: "w-12 lg:w-[14rem]",
     comment: "w-[40rem] text-left hidden xl:table-cell",
 };
@@ -93,7 +93,7 @@ function Spot(
                     ""
                 )}
             </td>
-            <td className={cell_classes.dx + " font-semibold"}>
+            <td className={cell_classes.dx_callsign + " font-semibold"}>
                 <Callsign callsign={spot.dx_callsign}></Callsign>
             </td>
             <td className={cell_classes.freq}>
@@ -119,7 +119,7 @@ function Spot(
                     {spot.band}
                 </p>
             </td>
-            <td className={cell_classes.spotter}>
+            <td className={cell_classes.spotter_callsign}>
                 <Callsign callsign={spot.spotter_callsign}></Callsign>
             </td>
             <td className={cell_classes.mode}>{spot.mode}</td>
@@ -132,6 +132,32 @@ function Spot(
 
 Spot = forwardRef(Spot);
 
+function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, dev_mode }) {
+    let direction = " ";
+    if (table_sort.column == field && dev_mode) {
+        if (table_sort.ascending) {
+            direction = "⬇";
+        } else {
+            direction = "⬆";
+        }
+    }
+    function set_sort() {
+        if (dev_mode) {
+            if (table_sort.column == field) {
+                set_table_sort({ ...table_sort, ascending: !table_sort.ascending });
+            } else {
+                set_table_sort({ column: field, ascending: false });
+            }
+        }
+    }
+    return (
+        <td className={cell_classes[field]} onClick={set_sort}>
+            <span className="font-bold text-lg leading-3">{direction}</span>
+            {title}
+        </td>
+    );
+}
+
 function SpotsTable({
     spots,
     hovered_spot,
@@ -139,6 +165,9 @@ function SpotsTable({
     pinned_spot,
     set_pinned_spot,
     set_cat_to_spot,
+    table_sort,
+    set_table_sort,
+    dev_mode,
 }) {
     const row_refs = useRef({});
     const { colors } = useColors();
@@ -172,13 +201,55 @@ function SpotsTable({
                                 color: colors.table.header_text,
                             }}
                         >
-                            <td className={cell_classes.time}>Time</td>
+                            <HeaderCell
+                                title="Time"
+                                field="time"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
                             <td className={cell_classes.flag}></td>
-                            <td className={cell_classes.dx}>DX</td>
-                            <td className={cell_classes.freq}>Freq</td>
-                            <td className={cell_classes.band}>Band</td>
-                            <td className={cell_classes.spotter}>Spotter</td>
-                            <td className={cell_classes.mode}>Mode</td>
+                            <HeaderCell
+                                title="DX"
+                                field="dx_callsign"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
+                            <HeaderCell
+                                title="Freq"
+                                field="freq"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
+                            <HeaderCell
+                                title="Band"
+                                field="band"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
+                            <HeaderCell
+                                title="Spotter"
+                                field="spotter_callsign"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
+                            <HeaderCell
+                                title="Mode"
+                                field="mode"
+                                cell_classes={cell_classes}
+                                table_sort={table_sort}
+                                set_table_sort={set_table_sort}
+                                dev_mode={dev_mode}
+                            />
                             <td className={cell_classes.comment}>Comment</td>
                         </tr>
                         {spots.map((spot, index) => (
