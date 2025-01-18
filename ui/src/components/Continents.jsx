@@ -47,8 +47,8 @@ function Continents({ toggled_ui }) {
     const { colors } = useColors();
 
     const toggled_classes = toggled_ui.right
-        ? "max-xl:hidden "
-        : "max-xl:absolute z-50 right-0 top-0 ";
+        ? "max-2xl:hidden "
+        : "max-2xl:absolute z-50 right-0 top-0 ";
     return (
         <div
             className={
