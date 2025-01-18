@@ -52,8 +52,7 @@ function apply_zoom_and_drag_behaviors(
                 });
             }
         })
-        .on("end", event => {
-        });
+        .on("end", event => {});
 
     let lon_start = null;
     let current_lon = null;

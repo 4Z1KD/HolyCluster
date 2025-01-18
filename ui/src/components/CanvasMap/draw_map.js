@@ -219,15 +219,7 @@ export class Dimensions {
     }
 }
 
-export function draw_map(
-    context,
-    spots,
-    colors,
-    dims,
-    transform,
-    projection,
-    night_displayed
-) {
+export function draw_map(context, spots, colors, dims, transform, projection, night_displayed) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
