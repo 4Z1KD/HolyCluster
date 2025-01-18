@@ -38,7 +38,7 @@ function MapControls({
 	};
 
 	const is_md_device = useMediaQuery("only screen and (min-width : 768px)");
-
+	
 	return (
 		<>
 			<div className="absolute top-0 z-40 right-0 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
@@ -75,15 +75,17 @@ function MapControls({
 				</div>
 			</div>
 			{propagation && is_md_device && dev_mode && (
-				<div className="absolute bottom-2 z-40 right-5 flex justify-center pt-2 xs:pt-4 gap-2 xs:gap-4">
-					<Bar value={propagation.a_index} label="A" min={0} max={100} />
-					<Bar value={propagation.k_index} label="K" min={0} max={9} />
+				<div className="absolute bottom-2 z-40 right-5 flex justify-center pt-1 xs:pt-2 gap-1 xs:gap-2">
+					<Bar value={Math.round(propagation.a_index)} label="A" min={0} max={20} low_mid={6} mid_high={10} />
+					<Bar value={Math.round(propagation.k_index)} label="K" min={0} max={9} low_mid={3} mid_high={5} />
 					<Bar
-						value={propagation.sfi}
+						value={Math.round(propagation.sfi)}
 						label="SFI"
 						min={0}
 						max={200}
-						reverseColors={true}
+						reverse_colors={true}
+						low_mid={70}
+						mid_high={100}
 					/>
 				</div>
 			)}
