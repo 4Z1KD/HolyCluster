@@ -209,6 +209,7 @@ function CanvasMap({
             draw_map(
                 canvas_storage.map.context,
                 spots,
+                colors,
                 dims,
                 transform,
                 projection,
@@ -310,7 +311,11 @@ function CanvasMap({
             : "";
 
     return (
-        <div ref={div_ref} className="relative h-full w-full">
+        <div
+            ref={div_ref}
+            className="relative h-full w-full"
+            style={{ backgroundColor: colors.theme.background }}
+        >
             <canvas
                 className="absolute top-0 left-0"
                 ref={map_canvas_ref}
