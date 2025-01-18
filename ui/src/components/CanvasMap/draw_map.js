@@ -3,7 +3,6 @@ import { century, equationOfTime, declination } from "solar-calculator";
 import geojsonRewind from "@mapbox/geojson-rewind";
 
 import { to_radian } from "@/utils.js";
-import { map_land_color } from "@/filters_data.js";
 import dxcc_map_raw from "@/assets/dxcc_map.json";
 
 export const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -159,7 +158,7 @@ function draw_shadow_spot(
     context.fill();
 }
 
-function draw_map_angles(context, dims, degrees_diff = 15) {
+function draw_map_angles(context, colors, dims, degrees_diff = 15) {
     if (dims.height < 300) {
         return;
     }
@@ -183,7 +182,7 @@ function draw_map_angles(context, dims, degrees_diff = 15) {
     context.font = font_size + "px Arial";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillStyle = "#000000";
+    context.fillStyle = colors.theme.text;
 
     // Draw each angle label on the canvas
     angle_labels.forEach(([label, [x, y]]) => {
@@ -220,7 +219,7 @@ export class Dimensions {
     }
 }
 
-export function draw_map(context, spots, dims, transform, projection, night_displayed) {
+export function draw_map(context, spots, colors, dims, transform, projection, night_displayed) {
     const path_generator = d3.geoPath().projection(projection).context(context);
 
     // Clear the map before rendering
@@ -229,12 +228,17 @@ export function draw_map(context, spots, dims, transform, projection, night_disp
     context.save();
 
     draw_map_info_text(context, { spots, scale: dims.scale });
-    draw_map_angles(context, dims);
+    draw_map_angles(context, colors, dims);
 
     // Clip the map content to the circle
     context.beginPath();
     context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
     context.clip();
+
+    context.beginPath();
+    context.arc(dims.center_x, dims.center_y, dims.radius, 0, 2 * Math.PI);
+    context.fillStyle = colors.map.background;
+    context.fill();
 
     apply_context_transform(context, transform);
     context.lineWidth = 1 / transform.k;
@@ -242,15 +246,15 @@ export function draw_map(context, spots, dims, transform, projection, night_disp
     // Render the graticule
     context.beginPath();
     path_generator(d3.geoGraticule10());
-    context.strokeStyle = "#eeeeee";
+    context.strokeStyle = colors.map.graticule;
     context.stroke();
 
     // Render the map countries from geojson
     dxcc_map.features.forEach(feature => {
         context.beginPath();
         path_generator(feature);
-        context.fillStyle = map_land_color;
-        context.strokeStyle = "#777777";
+        context.fillStyle = colors.map.land;
+        context.strokeStyle = colors.map.land_borders;
         context.fill();
         context.stroke();
     });

@@ -23,7 +23,6 @@ function apply_zoom_and_drag_behaviors(
     context,
     {
         zoom_transform,
-        set_zoom_transform,
         set_map_controls,
         width,
         height,
@@ -34,7 +33,6 @@ function apply_zoom_and_drag_behaviors(
     },
 ) {
     let is_drawing = false;
-    let local_zoom_transform = zoom_transform;
 
     const zoom = d3
         .zoom()
@@ -48,15 +46,13 @@ function apply_zoom_and_drag_behaviors(
                 is_drawing = true;
                 requestAnimationFrame(() => {
                     context.clearRect(0, 0, width, height);
-                    local_zoom_transform = event.transform;
-                    draw_map_inner(local_zoom_transform);
+                    zoom_transform.current = event.transform;
+                    draw_map_inner(zoom_transform.current);
                     is_drawing = false;
                 });
             }
         })
-        .on("end", event => {
-            set_zoom_transform(local_zoom_transform);
-        });
+        .on("end", event => {});
 
     let lon_start = null;
     let current_lon = null;
@@ -69,15 +65,15 @@ function apply_zoom_and_drag_behaviors(
             lon_start = projection.rotate()[0];
         })
         .on("drag", event => {
-            if (zoom_transform.k > 1) {
+            if (zoom_transform.current.k > 1) {
                 // Panning logic: Adjust the zoom translation (transform.x, transform.y)
-                const dx = (event.x - drag_start[0]) / zoom_transform.k;
-                const dy = (event.y - drag_start[1]) / zoom_transform.k;
+                const dx = event.dx / zoom_transform.current.k;
+                const dy = event.dy / zoom_transform.current.k;
 
                 // Update zoom translation (panning)
-                local_zoom_transform = zoom_transform.translate(dx, dy);
+                zoom_transform.current = zoom_transform.current.translate(dx, dy);
             } else {
-                const dx = (event.x - drag_start[0]) / local_zoom_transform.k;
+                const dx = (event.x - drag_start[0]) / zoom_transform.current.k;
                 current_lon = mod(lon_start + dx + 180, 360) - 180;
 
                 const current_rotation = projection.rotate();
@@ -88,14 +84,13 @@ function apply_zoom_and_drag_behaviors(
                 is_drawing = true;
                 requestAnimationFrame(() => {
                     context.clearRect(0, 0, width, height);
-                    draw_map_inner(local_zoom_transform);
+                    draw_map_inner(zoom_transform.current);
                     is_drawing = false;
                 });
             }
         })
         .on("end", event => {
             const displayed_locator = new Maidenhead(center_lat, -current_lon).locator.slice(0, 6);
-            set_zoom_transform(local_zoom_transform);
             set_map_controls(state => {
                 state.location = {
                     displayed_locator: displayed_locator,
@@ -104,7 +99,7 @@ function apply_zoom_and_drag_behaviors(
             });
         });
 
-    zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform);
+    zoom.transform(d3.select(canvas).call(drag).call(zoom), zoom_transform.current);
 }
 
 function random_color() {
@@ -159,7 +154,8 @@ function CanvasMap({
     const [div_ref, { width, height }] = useMeasure();
     const dims = new Dimensions(width, height, 50);
     const [popup_position, set_popup_position] = useState(null);
-    const [zoom_transform, set_zoom_transform] = useState(d3.zoomIdentity);
+
+    const zoom_transform = useRef(d3.zoomIdentity);
 
     const [center_lon, center_lat] = map_controls.location.location;
 
@@ -210,6 +206,7 @@ function CanvasMap({
             draw_map(
                 canvas_storage.map.context,
                 spots,
+                colors,
                 dims,
                 transform,
                 projection,
@@ -229,11 +226,10 @@ function CanvasMap({
             );
         }
 
-        draw_map_inner(zoom_transform);
+        draw_map_inner(zoom_transform.current);
 
         apply_zoom_and_drag_behaviors(canvas_storage.map.context, {
             zoom_transform,
-            set_zoom_transform,
             set_map_controls,
             width,
             height,
@@ -302,7 +298,7 @@ function CanvasMap({
             canvas_storage.shadow.canvas.removeEventListener("click", on_click);
             cancelAnimationFrame(animation_id_ref.current);
         };
-    }, [spots, center_lon, center_lat, zoom_transform, hovered_spot, width, height, map_controls]);
+    }, [spots, center_lon, center_lat, hovered_spot, width, height, map_controls]);
 
     const hovered_spot_data = spots.find(spot => spot.id == hovered_spot.id);
     const hovered_spot_distance =
@@ -311,7 +307,11 @@ function CanvasMap({
             : "";
 
     return (
-        <div ref={div_ref} className="relative h-full w-full">
+        <div
+            ref={div_ref}
+            className="relative h-full w-full"
+            style={{ backgroundColor: colors.theme.background }}
+        >
             <canvas
                 className="absolute top-0 left-0"
                 ref={map_canvas_ref}

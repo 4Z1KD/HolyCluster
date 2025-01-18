@@ -45,7 +45,7 @@ function Spot(
     const { colors } = useColors();
     let row_classes;
     if (spot.is_alerted) {
-        row_classes = "outline-2 outline outline-dashed outline-offset-[-2px]";
+        row_classes = "outline-4 outline outline-dashed outline-offset-[-2px] border-white";
     }
 
     const color = colors.bands[spot.band];
@@ -65,7 +65,8 @@ function Spot(
             ref={ref}
             style={{
                 backgroundColor: background_color,
-                outlineColor: spot.is_alerted ? color : "",
+                outlineColor: spot.is_alerted ? colors.light_bands[spot.band] : "",
+                border: spot.is_alerted ? "3px solid white" : "",
                 color: is_even ? colors.table.even_text : colors.table.odd_text,
             }}
             className={row_classes + " h-7"}
@@ -136,9 +137,9 @@ function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, de
     let direction = " ";
     if (table_sort.column == field && dev_mode) {
         if (table_sort.ascending) {
-            direction = "⬇";
+            direction = "🠯";
         } else {
-            direction = "⬆";
+            direction = "🠭";
         }
     }
     function set_sort() {
