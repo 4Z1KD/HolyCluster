@@ -152,7 +152,7 @@ function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, de
         }
     }
     return (
-        <td className={cell_classes[field]} onClick={set_sort}>
+        <td className={"cursor-pointer " + cell_classes[field]} onClick={set_sort}>
             <span className="font-bold text-lg leading-3">{direction}</span>
             {title}
         </td>
