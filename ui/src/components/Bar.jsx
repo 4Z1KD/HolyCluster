@@ -47,8 +47,8 @@ const Bar = ({
                     style={{
                         height: `100%`,
                         background: reverse_colors
-                            ? `linear-gradient(to top, red ${(100 * (low_mid)) / (max - min)}%, orange ${(100 * (low_mid)) / (max - min)}% ${(100 * (mid_high)) / (max - min)}%, green ${(100 * (mid_high)) / (max - min)}%)`
-                            : `linear-gradient(to top, green ${(100 * (low_mid)) / (max - min)}%, orange ${(100 * (low_mid)) / (max - min)}% ${(100 * (mid_high)) / (max - min)}%, red ${(100 * (mid_high)) / (max - min)}%)`,
+                            ? `linear-gradient(to top, red ${(100 * low_mid) / (max - min)}%, orange ${(100 * low_mid) / (max - min)}% ${(100 * mid_high) / (max - min)}%, green ${(100 * mid_high) / (max - min)}%)`
+                            : `linear-gradient(to top, green ${(100 * low_mid) / (max - min)}%, orange ${(100 * low_mid) / (max - min)}% ${(100 * mid_high) / (max - min)}%, red ${(100 * mid_high) / (max - min)}%)`,
                     }}
                 ></div>
                 <div

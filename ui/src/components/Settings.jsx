@@ -200,7 +200,9 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                                         onChange={event => {
                                             set_temp_settings({
                                                 ...temp_settings,
-                                                propagation_displayed: JSON.parse(event.target.value),
+                                                propagation_displayed: JSON.parse(
+                                                    event.target.value,
+                                                ),
                                             });
                                         }}
                                     >
