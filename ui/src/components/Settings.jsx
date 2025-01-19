@@ -41,6 +41,7 @@ const empty_temp_settings = {
     theme: "",
     callsign: "",
     is_miles: false,
+    propagation_displayed: false,
 };
 
 function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, dev_mode }) {
@@ -143,57 +144,80 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                         </td>
                     </tr>
                     {dev_mode ? (
-                        <tr>
-                            <td>Theme:</td>
-                            <td>
-                                <Select
-                                    value={temp_settings.theme}
-                                    onChange={event => {
-                                        set_temp_settings(state => ({
-                                            ...state,
-                                            theme: event.target.value,
-                                        }));
-                                    }}
-                                >
-                                    {themes_names.map(name => {
-                                        return (
-                                            <option key={name} value={name}>
-                                                {name}
-                                            </option>
-                                        );
-                                    })}
-                                </Select>
-                            </td>
-                        </tr>
-                    ) : (
-                        ""
-                    )}
-                    {dev_mode ? (
-                        <tr>
-                            <td>Distance Units:&nbsp;&nbsp;</td>
-                            <td>
-                                <Select
-                                    value={temp_settings.is_miles}
-                                    onChange={event => {
-                                        set_temp_settings({
-                                            ...temp_settings,
-                                            is_miles: JSON.parse(event.target.value),
-                                        });
-                                    }}
-                                >
-                                    {[
-                                        { key: "km", value: false },
-                                        { key: "miles", value: true },
-                                    ].map(unit => {
-                                        return (
-                                            <option key={unit.key} value={unit.value}>
-                                                {unit.key}
-                                            </option>
-                                        );
-                                    })}
-                                </Select>
-                            </td>
-                        </tr>
+                        <>
+                            <tr>
+                                <td>Theme:</td>
+                                <td>
+                                    <Select
+                                        value={temp_settings.theme}
+                                        onChange={event => {
+                                            set_temp_settings(state => ({
+                                                ...state,
+                                                theme: event.target.value,
+                                            }));
+                                        }}
+                                    >
+                                        {themes_names.map(name => {
+                                            return (
+                                                <option key={name} value={name}>
+                                                    {name}
+                                                </option>
+                                            );
+                                        })}
+                                    </Select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Distance Units:&nbsp;&nbsp;</td>
+                                <td>
+                                    <Select
+                                        value={temp_settings.is_miles}
+                                        onChange={event => {
+                                            set_temp_settings({
+                                                ...temp_settings,
+                                                is_miles: JSON.parse(event.target.value),
+                                            });
+                                        }}
+                                    >
+                                        {[
+                                            { key: "km", value: false },
+                                            { key: "miles", value: true },
+                                        ].map(unit => {
+                                            return (
+                                                <option key={unit.key} value={unit.value}>
+                                                    {unit.key}
+                                                </option>
+                                            );
+                                        })}
+                                    </Select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Propagation display:&nbsp;&nbsp;</td>
+                                <td>
+                                    <Select
+                                        value={temp_settings.propagation_displayed}
+                                        onChange={event => {
+                                            set_temp_settings({
+                                                ...temp_settings,
+                                                propagation_displayed: JSON.parse(event.target.value),
+                                            });
+                                        }}
+                                    >
+                                        {[
+                                            { key: "On", value: true },
+                                            { key: "Off", value: false },
+                                        ].map(unit => {
+                                            return (
+                                                <option key={unit.key} value={unit.value}>
+                                                    {unit.key}
+                                                </option>
+                                            );
+                                        })}
+                                    </Select>
+                                </td>
+                            </tr>
+                        </>
                     ) : (
                         ""
                     )}

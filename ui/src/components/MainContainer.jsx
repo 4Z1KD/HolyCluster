@@ -165,6 +165,7 @@ function MainContainer() {
         theme: "light",
         callsign: "",
         is_miles: false,
+        propagation_displayed: true,
     });
 
     const [table_sort, set_table_sort] = use_object_local_storage("table_sort", {
@@ -360,6 +361,7 @@ function MainContainer() {
                 radio_status={radio_status}
                 default_radius={settings.default_radius}
                 set_radius_in_km={set_radius_in_km}
+                settings={settings}
                 propagation={propagation}
                 dev_mode={dev_mode}
             />
