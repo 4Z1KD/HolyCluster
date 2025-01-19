@@ -43,7 +43,7 @@ function pSBC(p,c0,c1,l) {
 pSBC = pSBC.bind({});
 
 const themes = {
-    light: {
+    Light: {
         bands: {
             4: "#666062",
             6: "#FF61EA",
@@ -107,7 +107,85 @@ const themes = {
             borders: "#000000",
         },
     },
-    shiri: {
+    Dark: {
+        bands: {
+            4: "#666062",
+            6: "#FF61EA",
+            10: "#E87421",
+            12: "#47DFF0",
+            15: "#1515CB",
+            17: "#751F6B",
+            20: "#DC2828",
+            30: "#FAFA00",
+            40: "#18A018",
+            60: "#152F47",
+            80: "#903727",
+            160: "#156184",
+        },
+        bright_text: "white",
+        dark_text: "black",
+        text: {
+            4: "white",
+            6: "black",
+            10: "black",
+            12: "black",
+            15: "white",
+            17: "white",
+            20: "white",
+            30: "black",
+            40: "black",
+            60: "white",
+            80: "white",
+            160: "white",
+        },
+        theme: {
+            background: "#0b141a",
+            columns: "#031421",
+            modals: "#182229",
+            borders: "#202c33",
+            text: "#f4f0f0",
+            input_background: "#2a3942",
+        },
+        buttons: {
+            modes: "#2e7a35",
+            dx_continents: "#2a44a8",
+            spotter_continents: "#7f1f2a",
+            utility: "#f4f0f0",
+            disabled_background: "#f4f0f0",
+            disabled: "#484848",
+        },
+        table: {
+            header: "#404c53",
+            even_row: "#182229",
+            odd_row: "#2a3942",
+            header_text: "#f4f0f0",
+            even_text: "#eae7ec",
+            odd_text: "#f4f0f0",
+        },
+        map: {
+            background: "#FFFFFF",
+            land: "#D7D7D7",
+            land_borders: "#777777",
+            graticule: "#EEEEEE",
+            night: "#000080",
+            borders: "#000000",
+        },
+        light_bands: {
+            4: "#9b9899",
+            6: "#ff99ef",
+            10: "#eea283",
+            12: "#8ee7f4",
+            15: "#8181d9",
+            17: "#a3829e",
+            20: "#e58484",
+            30: "#fbfb80",
+            40: "#81bc81",
+            60: "#81868e",
+            80: "#b28884",
+            160: "#8199ab",
+        },
+    },
+    Blue: {
         bands: {
             4: "#666062",
             6: "#FF61EA",
@@ -185,7 +263,7 @@ const themes = {
             160: "#8199ab",
         },
     },
-    gil: {
+    Gray: {
         bands: {
             4: "#666062",
             6: "#FF61EA",
@@ -268,7 +346,7 @@ const themes = {
 export const themes_names = Object.entries(themes).map(([name, theme]) => name);
 
 export const ColorsProvider = ({ children }) => {
-    const [colors, setColors] = use_object_local_storage("colors", themes.light);
+    const [colors, setColors] = use_object_local_storage("colors", themes.Light);
     colors.light_bands = Object.fromEntries(
         Object.entries(colors.bands).map(([band, color]) => [band, pSBC(0.25, colors.bands[band])]),
     );
