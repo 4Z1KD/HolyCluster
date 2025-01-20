@@ -5,6 +5,7 @@ import Input from "@/components/Input.jsx";
 import Select from "@/components/Select.jsx";
 import Modal from "@/components/Modal.jsx";
 import { useColors, themes_names } from "../hooks/useColors";
+import Toggle from "@/components/Toggle.jsx";
 
 function SettingsIcon({ size }) {
     const { colors } = useColors();
@@ -41,7 +42,7 @@ const empty_temp_settings = {
     theme: "",
     callsign: "",
     is_miles: false,
-    propagation_displayed: false,
+    propagation_displayed: true,
 };
 
 function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, dev_mode }) {
@@ -193,30 +194,17 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                                 </td>
                             </tr>
                             <tr>
-                                <td>Propagation display:&nbsp;&nbsp;</td>
+                                <td>Propagation:&nbsp;&nbsp;</td>
                                 <td>
-                                    <Select
+                                    <Toggle
                                         value={temp_settings.propagation_displayed}
-                                        onChange={event => {
+                                        on_click={() => {
                                             set_temp_settings({
                                                 ...temp_settings,
-                                                propagation_displayed: JSON.parse(
-                                                    event.target.value,
-                                                ),
+                                                propagation_displayed: !temp_settings.propagation_displayed,
                                             });
                                         }}
-                                    >
-                                        {[
-                                            { key: "On", value: true },
-                                            { key: "Off", value: false },
-                                        ].map(unit => {
-                                            return (
-                                                <option key={unit.key} value={unit.value}>
-                                                    {unit.key}
-                                                </option>
-                                            );
-                                        })}
-                                    </Select>
+                                    />
                                 </td>
                             </tr>
                         </>
