@@ -83,7 +83,24 @@ function SubmitSpot({ current_callsign }) {
             >
                 <tbody>
                     <tr>
-                        <td>Callsign:</td>
+                        <td>Spotter callsign:</td>
+                        <td>
+                            <Input
+                                value={current_callsign}
+                                maxLength={11}
+                                className="uppercase"
+                                disabled
+                                onChange={event => {
+                                    set_temp_data({
+                                        ...temp_data,
+                                        callsign: event.target.value.toUpperCase(),
+                                    });
+                                }}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DX callsign:</td>
                         <td>
                             <Input
                                 value={temp_data.callsign}

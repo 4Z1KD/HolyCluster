@@ -13,7 +13,7 @@ const RELEASES = [
             "Add the option to change distance units to miles (In settings menu)",
             "Add sorting the spots table by clicking on a column name",
             "Add the ability to submit a new spot",
-            "Small bug fixes"
+            "Small bug fixes",
         ],
     ],
     ["24/12/2024", ["Initial release"]],

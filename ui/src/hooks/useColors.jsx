@@ -80,6 +80,7 @@ const themes = {
             modals: "#F3F4F6",
             borders: "#F3F4F6",
             text: "#000000",
+            disabled_text: "#62748E",
             input_background: "#FFFFFF",
         },
         buttons: {
@@ -144,6 +145,7 @@ const themes = {
             modals: "#182229",
             borders: "#202c33",
             text: "#f4f0f0",
+            disabled_text: "#62748E",
             input_background: "#2a3942",
         },
         buttons: {
@@ -222,6 +224,7 @@ const themes = {
             modals: "#162950",
             borders: "#a0bafd",
             text: "#f4f0f0",
+            disabled_text: "#62748E",
             input_background: "#3344a5",
         },
         buttons: {
@@ -300,6 +303,7 @@ const themes = {
             modals: "#383838",
             borders: "#474747",
             text: "#e0dcdc",
+            disabled_text: "#c0bfbc",
             input_background: "#6c6a6a",
         },
         buttons: {
