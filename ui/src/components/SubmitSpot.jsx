@@ -24,6 +24,7 @@ function SubmitIcon({ size }) {
 const empty_temp_data = {
     callsign: "",
     freq: 0,
+    comment: "",
 };
 
 function connect_to_submit_spot_endpoint(on_successful_submit) {
@@ -45,9 +46,9 @@ function connect_to_submit_spot_endpoint(on_successful_submit) {
         }
     }, [lastJsonMessage]);
 
-    function submit_spot(spotter_callsign, dx_callsign, freq) {
+    function submit_spot(spotter_callsign, dx_callsign, freq, comment) {
         if (readyState == ReadyState.OPEN) {
-            sendJsonMessage({ spotter_callsign, dx_callsign, freq });
+            sendJsonMessage({ spotter_callsign, dx_callsign, freq, comment });
         }
     }
     return { submit_spot };
@@ -87,7 +88,6 @@ function SubmitSpot({ current_callsign }) {
                         <td>
                             <Input
                                 value={current_callsign}
-                                maxLength={11}
                                 className="uppercase"
                                 disabled
                                 onChange={event => {
@@ -130,12 +130,34 @@ function SubmitSpot({ current_callsign }) {
                             />
                         </td>
                     </tr>
+                    <tr>
+                        <td>Comment:</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">
+                            <Input
+                                value={temp_data.comment}
+                                className="w-18"
+                                onChange={event => {
+                                    set_temp_data({
+                                        ...temp_data,
+                                        comment: event.target.value,
+                                    });
+                                }}
+                            />
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div className="flex justify-center pb-5">
                 <Button
                     on_click={() =>
-                        submit_spot(current_callsign, temp_data.callsign, temp_data.freq)
+                        submit_spot(
+                            current_callsign,
+                            temp_data.callsign,
+                            temp_data.freq,
+                            temp_data.comment,
+                        )
                     }
                 >
                     Submit

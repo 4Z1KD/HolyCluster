@@ -6,8 +6,11 @@ function Input({ className, type = "text", ...props_without_classes }) {
     if (className == null) {
         className = "";
     }
+    if (!className.includes("w-")) {
+        className += " w-24";
+    }
     className +=
-        " shadow appearance-none border rounded-lg w-24 py-2 px-3 leading-tight focus:outline-none focus:shadow-outline";
+        " shadow appearance-none border rounded-lg py-2 px-3 leading-tight focus:outline-none focus:shadow-outline";
 
     const color =
         props_without_classes.disabled != null ? colors.theme.disabled_text : colors.theme.text;
