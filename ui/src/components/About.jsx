@@ -1,4 +1,5 @@
 import Modal from "@/components/Modal.jsx";
+import Tabs from "@/components/Tabs.jsx";
 import { useColors } from "../hooks/useColors";
 
 function Info({ size }) {
@@ -28,42 +29,75 @@ function Info({ size }) {
 function About() {
     const { colors } = useColors();
 
-    return (
-        <Modal
-            title={
-                <h3 className="text-3xl" style={{ color: colors.theme.text }}>
-                    About
-                </h3>
-            }
-            button={<Info size="36"></Info>}
-            on_cancel={() => true}
-            cancel_text="close"
-        >
-            <div className="p-3 text-left" style={{ color: colors.theme.text }}>
-                <p>
-                    The Holy Cluster is being developed by a group of Israeli amateur radio
-                    enthusiasts,
-                    <br />
-                    with the support of the Israeli Association of Radio Communication ({}
-                    <a
-                        className="text-blue-500 underline"
-                        href="https://www.iarc.org/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        IARC
-                    </a>
-                    ).
-                    <br />
-                    <br />
-                    We hope this platform will serve as a valuable tool for radio operators
-                    worldwide,
-                    <br />
-                    fostering collaboration and enhancing the global radio communication experience.
-                    <br />
-                </p>
+    const about = (
+        <div className="p-2">
+            <p>
+                The Holy Cluster is being developed by a group of Israeli amateur radio enthusiasts,
                 <br />
-                Contact us at: <strong>holycluster@iarc.org</strong>
+                with the support of the Israeli Association of Radio Communication ({}
+                <a
+                    className="text-blue-500 underline"
+                    href="https://www.iarc.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    IARC
+                </a>
+                ).
+                <br />
+                <br />
+                We hope this platform will serve as a valuable tool for radio operators worldwide,
+                <br />
+                fostering collaboration and enhancing the global radio communication experience.
+                <br />
+            </p>
+            <br />
+            Contact us at: <strong>holycluster@iarc.org</strong>
+        </div>
+    );
+
+    const releases = [
+        [
+            "30/01/2025",
+            ["Add dark mode, available in settings menu", "Add the ability to submit a new spot"],
+        ],
+        ["24/12/2024", ["Initial release"]],
+    ];
+
+    const release_notes = (
+        <div className="p-2">
+            {releases.map(([date, changes]) => {
+                return (
+                    <p className="pb-4">
+                        <h1 className="text-xl font-bold">{date}</h1>
+                        <ul className="list-disc pl-4">
+                            {changes.map(change => (
+                                <li>{change}</li>
+                            ))}
+                        </ul>
+                    </p>
+                );
+            })}
+        </div>
+    );
+
+    return (
+        <Modal button={<Info size="36"></Info>} on_cancel={() => true} cancel_text="close">
+            <div className="text-left w-full sm:w-[50rem]" style={{ color: colors.theme.text }}>
+                <Tabs
+                    tabs={[
+                        {
+                            label: <h1 className="text-xl">About</h1>,
+                            text_color: colors.theme.text,
+                            content: about,
+                        },
+                        {
+                            label: <h1 className="text-xl">Release Notes</h1>,
+                            text_color: colors.theme.text,
+                            content: release_notes,
+                        },
+                    ]}
+                ></Tabs>
             </div>
         </Modal>
     );

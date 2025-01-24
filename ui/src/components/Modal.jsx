@@ -4,7 +4,7 @@ import Button from "@/components/Button.jsx";
 import { useColors } from "../hooks/useColors";
 
 function Modal({
-    title,
+    title = null,
     button,
     on_open = null,
     on_apply = null,
@@ -54,9 +54,13 @@ function Modal({
                                 borderColor: colors.theme.borders,
                             }}
                         >
-                            <div className="flex items-start items-center p-5 border-b border-solid border-gray-300 rounded-t gap-3">
-                                {title}
-                            </div>
+                            {title != null ? (
+                                <div className="flex items-start items-center p-5 border-b border-solid border-gray-300 rounded-t gap-3">
+                                    {title}
+                                </div>
+                            ) : (
+                                ""
+                            )}
                             <div>{children}</div>
                             {on_cancel != null && on_apply != null ? (
                                 <div className="flex items-center justify-around p-3 border-t border-solid border-blueGray-200 rounded-b">
