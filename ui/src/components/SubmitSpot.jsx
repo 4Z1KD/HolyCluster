@@ -4,6 +4,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import Input from "@/components/Input.jsx";
 import Button from "@/components/Button.jsx";
 import Modal from "@/components/Modal.jsx";
+import Spinner from "@/components/Spinner.jsx";
 import { useColors } from "@/hooks/useColors";
 
 function SubmitIcon({ size }) {
@@ -27,7 +28,7 @@ const empty_temp_data = {
     comment: "",
 };
 
-function connect_to_submit_spot_endpoint(on_successful_submit) {
+function connect_to_submit_spot_endpoint(on_response) {
     const host = window.location.host;
     const protocol = window.location.protocol;
     const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/submit_spot";
@@ -37,11 +38,7 @@ function connect_to_submit_spot_endpoint(on_successful_submit) {
     useEffect(() => {
         if (lastJsonMessage != null) {
             if ("status" in lastJsonMessage) {
-                if (lastJsonMessage.status == "success") {
-                    on_successful_submit(lastJsonMessage);
-                } else {
-                    console.log("Failed to submit spot:", lastJsonMessage);
-                }
+                on_response(lastJsonMessage);
             }
         }
     }, [lastJsonMessage]);
@@ -56,16 +53,36 @@ function connect_to_submit_spot_endpoint(on_successful_submit) {
 
 function SubmitSpot({ current_callsign }) {
     const [temp_data, set_temp_data] = useState(empty_temp_data);
-    const [submit_status, set_submit_status] = useState(null);
+    const [submit_status, set_submit_status] = useState({ status: "pending", reason: "" });
     const { colors, setTheme } = useColors();
 
-    function on_successful_submit(response) {
-        console.log("Success!", response);
+    function on_response(response) {
+        if (response.status == "success") {
+            set_submit_status({ status: "success", reason: "" });
+        } else if (response.status == "failure") {
+            set_submit_status({ status: "failure", reason: response.type });
+            console.log("Submit spot failed:", response);
+        }
     }
-    let { submit_spot } = connect_to_submit_spot_endpoint(on_successful_submit);
+    let { submit_spot } = connect_to_submit_spot_endpoint(on_response);
 
     function reset_temp_data() {
         set_temp_data(empty_temp_data);
+    }
+
+    let formatted_failure;
+    if (submit_status.reason == "InvalidSpotter") {
+        formatted_failure = "The spotter callsign is invalid";
+    } else if (submit_status.reason == "LoginFailed") {
+        formatted_failure = "Login to cluster failed";
+    } else if (submit_status.reason == "SpotNotSubmitted") {
+        formatted_failure = "Unknown";
+    } else if (submit_status.reason == "OtherError") {
+        formatted_failure = "Other unspecified error";
+    } else if (submit_status.reason == "InvalidFrequency") {
+        formatted_failure = "Invalid frequency";
+    } else if (submit_status.reason == "InvalidDXCallsign") {
+        formatted_failure = "Invalid DX callsign";
     }
 
     return (
@@ -79,7 +96,7 @@ function SubmitSpot({ current_callsign }) {
             on_open={() => reset_temp_data()}
         >
             <table
-                className="my-3 mx-2 w-full border-separate border-spacing-y-2"
+                className="mt-3 mx-2 w-full border-separate border-spacing-y-2"
                 style={{ color: colors.theme.text }}
             >
                 <tbody>
@@ -149,18 +166,28 @@ function SubmitSpot({ current_callsign }) {
                     </tr>
                 </tbody>
             </table>
+            {submit_status.status == "failure" ? (
+                <p className="pb-4 px-2 text-red-400">Failed to submit spot: {formatted_failure}</p>
+            ) : (
+                ""
+            )}
             <div className="flex justify-center pb-5">
                 <Button
-                    on_click={() =>
+                    on_click={() => {
+                        set_submit_status({ status: "sending", reason: "" });
                         submit_spot(
                             current_callsign,
                             temp_data.callsign,
                             temp_data.freq,
                             temp_data.comment,
-                        )
-                    }
+                        );
+                    }}
                 >
-                    Submit
+                    {submit_status.status == "sending" ? (
+                        <Spinner size="20" color="lightblue" />
+                    ) : (
+                        "Submit"
+                    )}
                 </Button>
             </div>
         </Modal>
