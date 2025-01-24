@@ -133,9 +133,9 @@ function Spot(
 
 Spot = forwardRef(Spot);
 
-function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, dev_mode }) {
+function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort }) {
     let direction = " ";
-    if (table_sort.column == field && dev_mode) {
+    if (table_sort.column == field) {
         if (table_sort.ascending) {
             direction = "🠯";
         } else {
@@ -143,12 +143,10 @@ function HeaderCell({ title, field, cell_classes, table_sort, set_table_sort, de
         }
     }
     function set_sort() {
-        if (dev_mode) {
-            if (table_sort.column == field) {
-                set_table_sort({ ...table_sort, ascending: !table_sort.ascending });
-            } else {
-                set_table_sort({ column: field, ascending: false });
-            }
+        if (table_sort.column == field) {
+            set_table_sort({ ...table_sort, ascending: !table_sort.ascending });
+        } else {
+            set_table_sort({ column: field, ascending: false });
         }
     }
     return (
@@ -168,7 +166,6 @@ function SpotsTable({
     set_cat_to_spot,
     table_sort,
     set_table_sort,
-    dev_mode,
 }) {
     const row_refs = useRef({});
     const { colors } = useColors();
@@ -208,7 +205,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <td className={cell_classes.flag}></td>
                             <HeaderCell
@@ -217,7 +213,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <HeaderCell
                                 title="Freq"
@@ -225,7 +220,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <HeaderCell
                                 title="Band"
@@ -233,7 +227,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <HeaderCell
                                 title="Spotter"
@@ -241,7 +234,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <HeaderCell
                                 title="Mode"
@@ -249,7 +241,6 @@ function SpotsTable({
                                 cell_classes={cell_classes}
                                 table_sort={table_sort}
                                 set_table_sort={set_table_sort}
-                                dev_mode={dev_mode}
                             />
                             <td className={cell_classes.comment}>Comment</td>
                         </tr>
