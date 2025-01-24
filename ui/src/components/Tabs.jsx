@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function Tabs({ tabs }) {
+function Tabs({ tabs, external_tab = null }) {
     const [active_tab, set_active_tab] = useState(0);
+
+    useEffect(() => {
+        if (external_tab != null) {
+            set_active_tab(external_tab);
+        }
+    }, [external_tab]);
+
     return (
         <div className="h-full w-full">
             <div className="flex border-b">

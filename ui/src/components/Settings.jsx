@@ -201,7 +201,8 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                                         on_click={() => {
                                             set_temp_settings({
                                                 ...temp_settings,
-                                                propagation_displayed: !temp_settings.propagation_displayed,
+                                                propagation_displayed:
+                                                    !temp_settings.propagation_displayed,
                                             });
                                         }}
                                     />

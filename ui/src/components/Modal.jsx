@@ -11,6 +11,7 @@ function Modal({
     on_cancel = null,
     apply_text = "Apply",
     cancel_text = "Cancel",
+    external_open = null,
     children,
 }) {
     const [show_modal, set_show_modal] = useState(false);
@@ -24,6 +25,12 @@ function Modal({
             set_show_modal(false);
         }
     }
+
+    useEffect(() => {
+        if (external_open) {
+            set_show_modal(true);
+        }
+    }, [external_open]);
 
     useEffect(() => {
         document.body.addEventListener("keydown", on_escape);

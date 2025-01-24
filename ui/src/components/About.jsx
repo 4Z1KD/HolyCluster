@@ -1,6 +1,23 @@
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
+
 import Modal from "@/components/Modal.jsx";
 import Tabs from "@/components/Tabs.jsx";
 import { useColors } from "../hooks/useColors";
+
+const RELEASES = [
+    [
+        "30/01/2025",
+        [
+            "Add dark mode (In settings menu)",
+            "Add the option to change distance units to miles (In settings menu)",
+            "Add sorting the spots table by clicking on a column name",
+            "Add the ability to submit a new spot",
+            "Small bug fixes"
+        ],
+    ],
+    ["24/12/2024", ["Initial release"]],
+];
 
 function Info({ size }) {
     const { colors } = useColors();
@@ -56,23 +73,25 @@ function About() {
         </div>
     );
 
-    const releases = [
-        [
-            "30/01/2025",
-            ["Add dark mode, available in settings menu", "Add the ability to submit a new spot"],
-        ],
-        ["24/12/2024", ["Initial release"]],
-    ];
+    const [last_release, set_last_release] = useLocalStorage("last_release", "");
+    const [should_display_release_notes, set_should_display_release_notes] = useState(false);
+
+    useEffect(() => {
+        if (last_release != RELEASES[0][0]) {
+            set_should_display_release_notes(true);
+            set_last_release(RELEASES[0][0]);
+        }
+    }, [last_release]);
 
     const release_notes = (
         <div className="p-2">
-            {releases.map(([date, changes]) => {
+            {RELEASES.map(([date, changes]) => {
                 return (
-                    <p className="pb-4">
+                    <p className="pb-4" key={date}>
                         <h1 className="text-xl font-bold">{date}</h1>
                         <ul className="list-disc pl-4">
-                            {changes.map(change => (
-                                <li>{change}</li>
+                            {changes.map((change, index) => (
+                                <li key={index}>{change}</li>
                             ))}
                         </ul>
                     </p>
@@ -82,7 +101,12 @@ function About() {
     );
 
     return (
-        <Modal button={<Info size="36"></Info>} on_cancel={() => true} cancel_text="close">
+        <Modal
+            button={<Info size="36"></Info>}
+            on_cancel={() => true}
+            cancel_text="close"
+            external_open={should_display_release_notes}
+        >
             <div className="text-left w-full sm:w-[50rem]" style={{ color: colors.theme.text }}>
                 <Tabs
                     tabs={[
@@ -97,6 +121,7 @@ function About() {
                             content: release_notes,
                         },
                     ]}
+                    external_tab={should_display_release_notes ? 1 : null}
                 ></Tabs>
             </div>
         </Modal>
