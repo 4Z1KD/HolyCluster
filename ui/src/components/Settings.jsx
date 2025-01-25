@@ -191,27 +191,20 @@ function Settings({ settings, set_settings, set_map_controls, set_radius_in_km, 
                             </Select>
                         </td>
                     </tr>
-                    {dev_mode ? (
-                        <>
-                            <tr>
-                                <td>Propagation:&nbsp;&nbsp;</td>
-                                <td>
-                                    <Toggle
-                                        value={temp_settings.propagation_displayed}
-                                        on_click={() => {
-                                            set_temp_settings({
-                                                ...temp_settings,
-                                                propagation_displayed:
-                                                    !temp_settings.propagation_displayed,
-                                            });
-                                        }}
-                                    />
-                                </td>
-                            </tr>
-                        </>
-                    ) : (
-                        ""
-                    )}
+                    <tr>
+                        <td>Propagation:&nbsp;&nbsp;</td>
+                        <td>
+                            <Toggle
+                                value={temp_settings.propagation_displayed}
+                                on_click={() => {
+                                    set_temp_settings({
+                                        ...temp_settings,
+                                        propagation_displayed: !temp_settings.propagation_displayed,
+                                    });
+                                }}
+                            />
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </Modal>

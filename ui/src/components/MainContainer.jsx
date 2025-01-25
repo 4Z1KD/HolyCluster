@@ -367,7 +367,6 @@ function MainContainer() {
                 set_radius_in_km={set_radius_in_km}
                 settings={settings}
                 propagation={propagation}
-                dev_mode={dev_mode}
             />
             {canvas ? (
                 <CanvasMap

@@ -18,7 +18,6 @@ function MapControls({
     set_radius_in_km,
     settings,
     propagation,
-    dev_mode,
 }) {
     const { colors } = useColors();
 
@@ -65,7 +64,7 @@ function MapControls({
                     }
                 </div>
             </div>
-            {propagation && is_md_device && dev_mode && settings.propagation_displayed && (
+            {propagation && is_md_device && settings.propagation_displayed && (
                 <div className="absolute bottom-2 z-40 right-5 flex justify-center pt-1 xs:pt-2 gap-1 xs:gap-2">
                     <Bar
                         value={Math.round(propagation.a_index)}
