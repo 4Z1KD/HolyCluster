@@ -11,6 +11,7 @@ import dxcc_map_raw from "@/assets/dxcc_map.json";
 import MapAngles from "@/components/MapAngles.jsx";
 import Spot from "@/components/Spot/index.jsx";
 import SpotPopup from "@/components/SpotPopup.jsx";
+import { km_to_miles } from "@/utils.js";
 import { useColors } from "@/hooks/useColors";
 
 const dxcc_map = geojsonRewind(dxcc_map_raw, true);
@@ -147,7 +148,8 @@ function SvgMap({
                         Center: {map_controls.location.displayed_locator}
                     </text>
                     <text x={text_x} y={text_y + text_height} fill={colors.theme.text}>
-                        Radius: {Math.round(radius_in_km)} KM
+                        Radius: {settings.is_miles ? km_to_miles(radius_in_km) : radius_in_km}{" "}
+                                {settings.is_miles ? "Miles" : "KM"}
                     </text>
                     <text x={text_x} y={text_y + 2 * text_height} fill={colors.theme.text}>
                         Spots: {spots.length}

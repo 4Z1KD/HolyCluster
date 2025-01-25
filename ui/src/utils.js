@@ -57,3 +57,8 @@ export function use_object_local_storage(key, default_value) {
 
     return [merged_value, set_value];
 }
+
+export function km_to_miles(km) {
+    const miles = km * 0.621371;
+    return Math.round(miles);
+}
