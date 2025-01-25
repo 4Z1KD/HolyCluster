@@ -283,35 +283,33 @@ function MainContainer() {
         })
         .slice(0, 100);
 
-    if (dev_mode) {
-        filtered_spots.sort((spot_a, spot_b) => {
-            // Sorting by frequency should be always more accurate
-            const column = table_sort.column == "band" ? "freq" : table_sort.column;
-            const value_a = spot_a[column];
-            const value_b = spot_b[column];
-            if (typeof value_a == "string" && typeof value_b == "string") {
-                if (table_sort.ascending) {
-                    return value_a.localeCompare(value_b);
-                } else {
-                    return value_b.localeCompare(value_a);
-                }
-            } else if (typeof value_b == "number" && typeof value_a == "number") {
-                if (table_sort.ascending) {
-                    return value_a - value_b;
-                } else {
-                    return value_b - value_a;
-                }
+    filtered_spots.sort((spot_a, spot_b) => {
+        // Sorting by frequency should be always more accurate
+        const column = table_sort.column == "band" ? "freq" : table_sort.column;
+        const value_a = spot_a[column];
+        const value_b = spot_b[column];
+        if (typeof value_a == "string" && typeof value_b == "string") {
+            if (table_sort.ascending) {
+                return value_a.localeCompare(value_b);
             } else {
-                console.log(
-                    `Bad values of column ${table_sort.column}`,
-                    value_a,
-                    value_b,
-                    spot_a,
-                    spot_b,
-                );
+                return value_b.localeCompare(value_a);
             }
-        });
-    }
+        } else if (typeof value_b == "number" && typeof value_a == "number") {
+            if (table_sort.ascending) {
+                return value_a - value_b;
+            } else {
+                return value_b - value_a;
+            }
+        } else {
+            console.log(
+                `Bad values of column ${table_sort.column}`,
+                value_a,
+                value_b,
+                spot_a,
+                spot_b,
+            );
+        }
+    });
 
     const spots_per_band_count = Object.fromEntries(
         bands.map(band => [band, filtered_spots.filter(spot => spot.band == band).length]),
