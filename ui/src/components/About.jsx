@@ -7,7 +7,7 @@ import { useColors } from "../hooks/useColors";
 
 const RELEASES = [
     [
-        "30/01/2025",
+        "25/01/2025",
         [
             "Dark mode (In settings menu)",
             "Change distance units to miles (In settings menu)",
