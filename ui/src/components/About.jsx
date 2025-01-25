@@ -9,10 +9,12 @@ const RELEASES = [
     [
         "30/01/2025",
         [
-            "Add dark mode (In settings menu)",
-            "Add the option to change distance units to miles (In settings menu)",
-            "Add sorting the spots table by clicking on a column name",
-            "Add the ability to submit a new spot",
+            "Dark mode (In settings menu)",
+            "Change distance units to miles (In settings menu)",
+            "Sort the spots table by clicking on a column name",
+            "Submit a new spot",
+            "Propagation data",
+            "Map center indicator",
             "Small bug fixes",
         ],
     ],
