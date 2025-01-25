@@ -54,6 +54,24 @@ function Modal({
             {show_modal ? (
                 <div className="flex justify-center pt-24 overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                     <div className="relative min-w-80 my-6 mx-auto max-w-3xl">
+                        <div className="absolute top-0 right-0 p-2 z-50 cursor-pointer">
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 1024 1024"
+                                onClick={() => {
+                                    if (on_cancel != null) {
+                                        on_cancel();
+                                    }
+                                    set_show_modal(false);
+                                }}
+                            >
+                                <path
+                                    fill="#FF0000"
+                                    d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"
+                                />
+                            </svg>
+                        </div>
                         <div
                             className="rounded-lg shadow-xl relative flex flex-col w-full outline-none focus:outline-none border"
                             style={{
