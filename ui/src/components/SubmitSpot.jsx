@@ -137,12 +137,16 @@ function SubmitSpot({ current_callsign }) {
                         <td>
                             <Input
                                 value={temp_data.freq}
-                                type="number"
                                 onChange={event => {
-                                    set_temp_data({
-                                        ...temp_data,
-                                        freq: event.target.value,
-                                    });
+                                    const value = event.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        if (Number.parseFloat(value) <= 75000 || value == "") {
+                                            set_temp_data({
+                                                ...temp_data,
+                                                freq: value,
+                                            });
+                                        }
+                                    }
                                 }}
                             />
                             &nbsp;KHz
