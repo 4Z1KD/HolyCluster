@@ -83,6 +83,8 @@ function SubmitSpot({ current_callsign }) {
         formatted_failure = "Invalid frequency";
     } else if (submit_status.reason == "InvalidDXCallsign") {
         formatted_failure = "Invalid DX callsign";
+    } else if (submit_status.reason == "ClusterConnectionFailed") {
+        formatted_failure = "Couldn't react the remote cluster server";
     }
 
     return (
