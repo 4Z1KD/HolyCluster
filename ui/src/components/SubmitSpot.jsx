@@ -68,6 +68,15 @@ function SubmitSpot({ current_callsign }) {
     }
     let { sendJsonMessage, readyState } = connect_to_submit_spot_endpoint(on_response);
 
+    useEffect(() => {
+        if (readyState == ReadyState.OPEN) {
+            set_submit_status({
+                status: "pending",
+                reason: "",
+            });
+        }
+    }, [readyState]);
+
     function reset_temp_data() {
         set_temp_data(empty_temp_data);
     }
@@ -75,21 +84,25 @@ function SubmitSpot({ current_callsign }) {
     function try_to_submit_spot() {
         if (readyState == ReadyState.OPEN) {
             set_submit_status({ status: "sending", reason: "" });
-            sendJsonMessage({
-                spotter_callsign,
-                dx_callsign,
-                freq,
-                comment,
-            });
-            submit_spot(current_callsign, temp_data.callsign, temp_data.freq, temp_data.comment);
+            const message = {
+                spotter_callsign: current_callsign,
+                dx_callsign: temp_data.callsign,
+                freq: temp_data.freq,
+                comment: temp_data.comment,
+            };
+            console.log("Sending:", message);
+            sendJsonMessage(message);
         }
     }
 
     const not_connected = readyState != ReadyState.OPEN;
 
     let formatted_failure, formatted_state;
-    if (submit_status.status == "failure") {
-        formatted_state = "Failed to submit spot"
+    if (not_connected) {
+        formatted_state = "Connection error";
+        formatted_failure = "Couldn't reach the server";
+    } else if (submit_status.status == "failure") {
+        formatted_state = "Failed to submit spot";
         if (submit_status.reason == "InvalidSpotter") {
             formatted_failure = "The spotter callsign is invalid";
         } else if (submit_status.reason == "LoginFailed") {
@@ -105,9 +118,6 @@ function SubmitSpot({ current_callsign }) {
         } else if (submit_status.reason == "ClusterConnectionFailed") {
             formatted_failure = "Couldn't react the remote cluster server";
         }
-    } else if (not_connected) {
-        formatted_state = "Connection error"
-        formatted_failure = "Couldn't reach the server";
     }
 
     return (
@@ -197,7 +207,9 @@ function SubmitSpot({ current_callsign }) {
                 </tbody>
             </table>
             {submit_status.status == "failure" || not_connected ? (
-                <p className="pb-4 px-2 text-red-400">{formatted_state}: {formatted_failure}</p>
+                <p className="pb-4 px-2 text-red-400">
+                    {formatted_state}: {formatted_failure}
+                </p>
             ) : (
                 ""
             )}
