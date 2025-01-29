@@ -12,6 +12,10 @@ function Button({
     } else {
         classes = className;
     }
+
+    if (other_props.disabled) {
+        color = "gray";
+    }
     const builtin_classes = [
         `text-${text_color}`,
         `bg-${color}-600`,

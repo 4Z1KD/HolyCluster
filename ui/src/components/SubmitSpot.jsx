@@ -33,7 +33,11 @@ function connect_to_submit_spot_endpoint(on_response) {
     const protocol = window.location.protocol;
     const websocket_url = (protocol == "https:" ? "wss:" : "ws:") + "//" + host + "/submit_spot";
 
-    const { sendJsonMessage, readyState, lastJsonMessage } = useWebSocket(websocket_url);
+    const { sendJsonMessage, readyState, lastJsonMessage } = useWebSocket(websocket_url, {
+        shouldReconnect: () => true,
+        reconnectAttempts: 1000,
+        reconnectInterval: 3000,
+    });
 
     useEffect(() => {
         if (lastJsonMessage != null) {
@@ -43,17 +47,15 @@ function connect_to_submit_spot_endpoint(on_response) {
         }
     }, [lastJsonMessage]);
 
-    function submit_spot(spotter_callsign, dx_callsign, freq, comment) {
-        if (readyState == ReadyState.OPEN) {
-            sendJsonMessage({ spotter_callsign, dx_callsign, freq, comment });
-        }
-    }
-    return { submit_spot };
+    return { sendJsonMessage, readyState };
 }
 
 function SubmitSpot({ current_callsign }) {
     const [temp_data, set_temp_data] = useState(empty_temp_data);
-    const [submit_status, set_submit_status] = useState({ status: "pending", reason: "" });
+    const [submit_status, set_submit_status] = useState({
+        status: "pending",
+        reason: "",
+    });
     const { colors, setTheme } = useColors();
 
     function on_response(response) {
@@ -64,27 +66,48 @@ function SubmitSpot({ current_callsign }) {
             console.log("Submit spot failed:", response);
         }
     }
-    let { submit_spot } = connect_to_submit_spot_endpoint(on_response);
+    let { sendJsonMessage, readyState } = connect_to_submit_spot_endpoint(on_response);
 
     function reset_temp_data() {
         set_temp_data(empty_temp_data);
     }
 
-    let formatted_failure;
-    if (submit_status.reason == "InvalidSpotter") {
-        formatted_failure = "The spotter callsign is invalid";
-    } else if (submit_status.reason == "LoginFailed") {
-        formatted_failure = "Login to cluster failed";
-    } else if (submit_status.reason == "SpotNotSubmitted") {
-        formatted_failure = "Unknown";
-    } else if (submit_status.reason == "OtherError") {
-        formatted_failure = "Other unspecified error";
-    } else if (submit_status.reason == "InvalidFrequency") {
-        formatted_failure = "Invalid frequency";
-    } else if (submit_status.reason == "InvalidDXCallsign") {
-        formatted_failure = "Invalid DX callsign";
-    } else if (submit_status.reason == "ClusterConnectionFailed") {
-        formatted_failure = "Couldn't react the remote cluster server";
+    function try_to_submit_spot() {
+        if (readyState == ReadyState.OPEN) {
+            set_submit_status({ status: "sending", reason: "" });
+            sendJsonMessage({
+                spotter_callsign,
+                dx_callsign,
+                freq,
+                comment,
+            });
+            submit_spot(current_callsign, temp_data.callsign, temp_data.freq, temp_data.comment);
+        }
+    }
+
+    const not_connected = readyState != ReadyState.OPEN;
+
+    let formatted_failure, formatted_state;
+    if (submit_status.status == "failure") {
+        formatted_state = "Failed to submit spot"
+        if (submit_status.reason == "InvalidSpotter") {
+            formatted_failure = "The spotter callsign is invalid";
+        } else if (submit_status.reason == "LoginFailed") {
+            formatted_failure = "Login to cluster failed";
+        } else if (submit_status.reason == "SpotNotSubmitted") {
+            formatted_failure = "Unknown";
+        } else if (submit_status.reason == "OtherError") {
+            formatted_failure = "Other unspecified error";
+        } else if (submit_status.reason == "InvalidFrequency") {
+            formatted_failure = "Invalid frequency";
+        } else if (submit_status.reason == "InvalidDXCallsign") {
+            formatted_failure = "Invalid DX callsign";
+        } else if (submit_status.reason == "ClusterConnectionFailed") {
+            formatted_failure = "Couldn't react the remote cluster server";
+        }
+    } else if (not_connected) {
+        formatted_state = "Connection error"
+        formatted_failure = "Couldn't reach the server";
     }
 
     return (
@@ -173,23 +196,13 @@ function SubmitSpot({ current_callsign }) {
                     </tr>
                 </tbody>
             </table>
-            {submit_status.status == "failure" ? (
-                <p className="pb-4 px-2 text-red-400">Failed to submit spot: {formatted_failure}</p>
+            {submit_status.status == "failure" || not_connected ? (
+                <p className="pb-4 px-2 text-red-400">{formatted_state}: {formatted_failure}</p>
             ) : (
                 ""
             )}
             <div className="flex justify-center pb-5">
-                <Button
-                    on_click={() => {
-                        set_submit_status({ status: "sending", reason: "" });
-                        submit_spot(
-                            current_callsign,
-                            temp_data.callsign,
-                            temp_data.freq,
-                            temp_data.comment,
-                        );
-                    }}
-                >
+                <Button on_click={try_to_submit_spot} disabled={readyState !== ReadyState.OPEN}>
                     {submit_status.status == "sending" ? (
                         <Spinner size="20" color="lightblue" />
                     ) : (
