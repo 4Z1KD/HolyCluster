@@ -80,7 +80,7 @@ const themes = {
             modals: "#F3F4F6",
             borders: "#F3F4F6",
             text: "#000000",
-            disabled_text: "#62748E",
+            disabled_text: "#9a9996",
             input_background: "#FFFFFF",
         },
         buttons: {
