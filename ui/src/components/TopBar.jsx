@@ -64,7 +64,7 @@ function TopBar({
                 The Holy Cluster
             </h1>
             <div className={box_container_style}>
-                <SubmitSpot current_callsign={settings.callsign} />
+                <SubmitSpot settings={settings} />
                 <Clock />
 
                 <Select

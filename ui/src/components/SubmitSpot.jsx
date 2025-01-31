@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { ToastContainer, toast } from "react-toastify";
 
 import Input from "@/components/Input.jsx";
 import Button from "@/components/Button.jsx";
@@ -50,7 +51,7 @@ function connect_to_submit_spot_endpoint(on_response) {
     return { sendJsonMessage, readyState };
 }
 
-function SubmitSpot({ current_callsign }) {
+function SubmitSpot({ settings }) {
     const [temp_data, set_temp_data] = useState(empty_temp_data);
     const [submit_status, set_submit_status] = useState({
         status: "pending",
@@ -58,12 +59,21 @@ function SubmitSpot({ current_callsign }) {
     });
     const { colors, setTheme } = useColors();
 
+    const [external_close, set_external_close] = useState(true);
+
     function on_response(response) {
         if (response.status == "success") {
             set_submit_status({ status: "success", reason: "" });
+            set_external_close(false);
+            let theme;
+            if (settings.theme == "Light") {
+                theme = "light";
+            } else {
+                theme = "dark";
+            }
+            toast.success("Spot submitted successfully!", { theme });
         } else if (response.status == "failure") {
             set_submit_status({ status: "failure", reason: response.type });
-            console.log("Submit spot failed:", response);
         }
     }
     let { sendJsonMessage, readyState } = connect_to_submit_spot_endpoint(on_response);
@@ -85,12 +95,11 @@ function SubmitSpot({ current_callsign }) {
         if (readyState == ReadyState.OPEN) {
             set_submit_status({ status: "sending", reason: "" });
             const message = {
-                spotter_callsign: current_callsign,
+                spotter_callsign: settings.callsign,
                 dx_callsign: temp_data.callsign,
                 freq: temp_data.freq,
                 comment: temp_data.comment,
             };
-            console.log("Sending:", message);
             sendJsonMessage(message);
         }
     }
@@ -121,108 +130,115 @@ function SubmitSpot({ current_callsign }) {
     }
 
     return (
-        <Modal
-            title={
-                <h3 className="text-3xl" style={{ color: colors.theme.text }}>
-                    Submit new spot
-                </h3>
-            }
-            button={<SubmitIcon size="32"></SubmitIcon>}
-            on_open={() => reset_temp_data()}
-        >
-            <table
-                className="mt-3 mx-2 w-full border-separate border-spacing-y-2"
-                style={{ color: colors.theme.text }}
+        <>
+            <Modal
+                title={
+                    <h3 className="text-3xl" style={{ color: colors.theme.text }}>
+                        Submit new spot
+                    </h3>
+                }
+                button={<SubmitIcon size="32"></SubmitIcon>}
+                on_open={() => {
+                    set_external_close(true);
+                    reset_temp_data();
+                }}
+                external_close={external_close}
             >
-                <tbody>
-                    <tr>
-                        <td>Spotter callsign:</td>
-                        <td>
-                            <Input
-                                value={current_callsign}
-                                className="uppercase"
-                                disabled
-                                onChange={event => {
-                                    set_temp_data({
-                                        ...temp_data,
-                                        callsign: event.target.value.toUpperCase(),
-                                    });
-                                }}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>DX callsign:</td>
-                        <td>
-                            <Input
-                                value={temp_data.callsign}
-                                maxLength={11}
-                                className="uppercase"
-                                onChange={event => {
-                                    set_temp_data({
-                                        ...temp_data,
-                                        callsign: event.target.value.toUpperCase(),
-                                    });
-                                }}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Frequency:</td>
-                        <td>
-                            <Input
-                                value={temp_data.freq}
-                                onChange={event => {
-                                    const value = event.target.value;
-                                    if (/^\d*$/.test(value)) {
-                                        if (Number.parseFloat(value) <= 75000 || value == "") {
-                                            set_temp_data({
-                                                ...temp_data,
-                                                freq: value,
-                                            });
+                <table
+                    className="mt-3 mx-2 w-full border-separate border-spacing-y-2"
+                    style={{ color: colors.theme.text }}
+                >
+                    <tbody>
+                        <tr>
+                            <td>Spotter callsign:</td>
+                            <td>
+                                <Input
+                                    value={settings.callsign}
+                                    className="uppercase"
+                                    disabled
+                                    onChange={event => {
+                                        set_temp_data({
+                                            ...temp_data,
+                                            callsign: event.target.value.toUpperCase(),
+                                        });
+                                    }}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DX callsign:</td>
+                            <td>
+                                <Input
+                                    value={temp_data.callsign}
+                                    maxLength={11}
+                                    className="uppercase"
+                                    onChange={event => {
+                                        set_temp_data({
+                                            ...temp_data,
+                                            callsign: event.target.value.toUpperCase(),
+                                        });
+                                    }}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Frequency:</td>
+                            <td>
+                                <Input
+                                    value={temp_data.freq}
+                                    onChange={event => {
+                                        const value = event.target.value;
+                                        if (/^\d*$/.test(value)) {
+                                            if (Number.parseFloat(value) <= 75000 || value == "") {
+                                                set_temp_data({
+                                                    ...temp_data,
+                                                    freq: value,
+                                                });
+                                            }
                                         }
-                                    }
-                                }}
-                            />
-                            &nbsp;KHz
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Comment:</td>
-                    </tr>
-                    <tr>
-                        <td colSpan="2">
-                            <Input
-                                value={temp_data.comment}
-                                className="w-18"
-                                onChange={event => {
-                                    set_temp_data({
-                                        ...temp_data,
-                                        comment: event.target.value,
-                                    });
-                                }}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {submit_status.status == "failure" || not_connected ? (
-                <p className="pb-4 px-2 text-red-400">
-                    {formatted_state}: {formatted_failure}
-                </p>
-            ) : (
-                ""
-            )}
-            <div className="flex justify-center pb-5">
-                <Button on_click={try_to_submit_spot} disabled={readyState !== ReadyState.OPEN}>
-                    {submit_status.status == "sending" ? (
-                        <Spinner size="20" color="lightblue" />
-                    ) : (
-                        "Submit"
-                    )}
-                </Button>
-            </div>
-        </Modal>
+                                    }}
+                                />
+                                &nbsp;KHz
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Comment:</td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <Input
+                                    value={temp_data.comment}
+                                    className="w-18"
+                                    onChange={event => {
+                                        set_temp_data({
+                                            ...temp_data,
+                                            comment: event.target.value,
+                                        });
+                                    }}
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {submit_status.status == "failure" || not_connected ? (
+                    <p className="pb-4 px-2 text-red-400">
+                        {formatted_state}: {formatted_failure}
+                    </p>
+                ) : (
+                    ""
+                )}
+                <div className="flex justify-center pb-5">
+                    <Button on_click={try_to_submit_spot} disabled={readyState !== ReadyState.OPEN}>
+                        {submit_status.status == "sending" ? (
+                            <Spinner size="20" color="lightblue" />
+                        ) : (
+                            "Submit"
+                        )}
+                    </Button>
+                </div>
+            </Modal>
+            <ToastContainer />
+        </>
     );
 }
 

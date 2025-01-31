@@ -162,7 +162,7 @@ function MainContainer() {
     const [settings, set_settings] = use_object_local_storage("settings", {
         locator: "JJ00AA",
         default_radius: 20000,
-        theme: "light",
+        theme: "Light",
         callsign: "",
         is_miles: false,
         propagation_displayed: true,
