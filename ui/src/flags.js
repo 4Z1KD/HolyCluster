@@ -47,6 +47,7 @@ const dxcc_to_country_flag = {
     "Vatican City": "Vatican City (Holy See)",
     "Temotu Province": "Solomon Islands",
     Congo: "Republic of the Congo",
+    "Macquarie Island": "Australia",
 };
 
 export function get_flag(dx_country) {
