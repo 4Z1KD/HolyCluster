@@ -1,6 +1,6 @@
 import { useColors } from "@/hooks/useColors";
 
-function Input({ className, type = "text", ...props_without_classes }) {
+function Input({ className, type = "text", disabled_text_color = null, ...props_without_classes }) {
     const { colors } = useColors();
 
     if (className == null) {
@@ -12,8 +12,10 @@ function Input({ className, type = "text", ...props_without_classes }) {
     className +=
         " shadow appearance-none border rounded-lg py-2 px-3 leading-tight focus:outline-none focus:shadow-outline";
 
-    const color =
-        props_without_classes.disabled != null ? colors.theme.disabled_text : colors.theme.text;
+    if (disabled_text_color == null) {
+        disabled_text_color = colors.theme.disabled_text;
+    }
+    const color = props_without_classes.disabled != null ? disabled_text_color : colors.theme.text;
 
     return (
         <input

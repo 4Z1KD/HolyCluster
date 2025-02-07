@@ -1,5 +1,6 @@
 import Alerts from "@/components/Alerts.jsx";
 import CallsignFilters from "@/components/CallsignFilters.jsx";
+import Filters from "@/components/Filters.jsx";
 import { useColors } from "../hooks/useColors";
 
 function CallsignsView({ alerts, set_alerts, toggled_ui }) {
@@ -17,8 +18,7 @@ function CallsignsView({ alerts, set_alerts, toggled_ui }) {
             style={{ backgroundColor: colors.theme.background }}
         >
             <Alerts alerts={alerts} set_alerts={set_alerts} />
-            <CallsignFilters is_show_only={true} />
-            <CallsignFilters is_show_only={false} />
+            <Filters />
         </div>
     );
 }

@@ -2,7 +2,6 @@ import CallsignsList from "@/components/CallsignsList.jsx";
 import { useColors } from "../hooks/useColors";
 
 function Alerts({ alerts, set_alerts }) {
-    const exmaple_pattern_classes = "bg-slate-300 rounded-sm p-0.5";
     const { colors } = useColors();
 
     return (

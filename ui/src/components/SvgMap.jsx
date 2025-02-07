@@ -149,7 +149,7 @@ function SvgMap({
                     </text>
                     <text x={text_x} y={text_y + text_height} fill={colors.theme.text}>
                         Radius: {settings.is_miles ? km_to_miles(radius_in_km) : radius_in_km}{" "}
-                                {settings.is_miles ? "Miles" : "KM"}
+                        {settings.is_miles ? "Miles" : "KM"}
                     </text>
                     <text x={text_x} y={text_y + 2 * text_height} fill={colors.theme.text}>
                         Spots: {spots.length}

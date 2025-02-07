@@ -75,13 +75,15 @@ function Spot(
         >
             <td className={cell_classes.time}>
                 {is_pinned ? (
-                    <X
-                        size="16"
-                        on_click={event => {
-                            event.stopPropagation();
-                            return set_pinned_spot(null);
-                        }}
-                    />
+                    <div className="m-auto w-fit">
+                        <X
+                            size="16"
+                            on_click={event => {
+                                event.stopPropagation();
+                                return set_pinned_spot(null);
+                            }}
+                        />
+                    </div>
                 ) : (
                     formatted_time
                 )}
