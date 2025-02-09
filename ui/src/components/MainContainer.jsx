@@ -433,6 +433,7 @@ function MainContainer() {
                 />
                 {is_md_device ? (
                     <Tabs
+                        local_storage_name="mobile_tab"
                         tabs={[
                             {
                                 label: "Map",

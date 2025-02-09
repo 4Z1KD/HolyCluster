@@ -1,7 +1,14 @@
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 
-function Tabs({ tabs, external_tab = null }) {
-    const [active_tab, set_active_tab] = useState(0);
+function Tabs({ tabs, local_storage_name = null, external_tab = null }) {
+    const [active_tab, set_active_tab] = useLocalStorage(local_storage_name, 0);
+
+    useEffect(() => {
+        if (local_storage_name == null) {
+            set_active_tab(0);
+        }
+    }, []);
 
     useEffect(() => {
         if (external_tab != null) {
