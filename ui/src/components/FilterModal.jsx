@@ -29,8 +29,8 @@ function EditSymbol({ size }) {
 
 const empty_temp_data = {
     type: "prefix",
-    value: 0,
-    dx_or_de: "dx",
+    value: "",
+    spotter_or_dx: "dx",
     action: "",
 };
 
@@ -55,10 +55,12 @@ function FilterModal({}) {
                                         ...temp_data,
                                         type: event.target.value,
                                     };
-                                    if (event.target.value == "entity") {
+                                    if (
+                                        event.target.value == "entity" ||
+                                        temp_data.type == "entity"
+                                    ) {
                                         result.value = "";
                                     }
-                                    console.log(result);
                                     set_temp_data(result);
                                 }}
                             >
