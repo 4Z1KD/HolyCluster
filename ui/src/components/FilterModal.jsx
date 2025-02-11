@@ -105,12 +105,24 @@ function FilterModal({}) {
                             )}
                         </td>
                     </tr>
-                    {temp_data.type != "entity" ? (
+                    {temp_data.type == "entity" ? (
                         ""
                     ) : (
                         <tr>
-                            <td>Callsign:</td>
+                            <td>Selection:</td>
                             <td>
+                                <Select
+                                    value={temp_data.dx_or_de}
+                                    onChange={event => {
+                                        set_temp_data({
+                                            ...temp_data,
+                                            spotter_or_dx: event.target.value,
+                                        });
+                                    }}
+                                >
+                                    <option value="dx">DX</option>
+                                    <option value="spotter">Spotter</option>
+                                </Select>
                             </td>
                         </tr>
                     )}
