@@ -48,6 +48,7 @@ const dxcc_to_country_flag = {
     "Temotu Province": "Solomon Islands",
     Congo: "Republic of the Congo",
     "Macquarie Island": "Australia",
+    "Saint Barthelemy": "France",
 };
 
 export function get_flag(dx_country) {
