@@ -1,8 +1,15 @@
 import Modal from "@/components/Modal.jsx";
 import Select from "@/components/Select.jsx";
 import Input from "@/components/Input.jsx";
-import { useState } from "react";
 import { useColors } from "../hooks/useColors";
+
+import { default as SearchSelect } from "react-select";
+import { useState } from "react";
+
+const dxcc_entities = [
+    { value: "Israel", label: "Israel" },
+    { value: "Italy", label: "Italy" },
+];
 
 function EditSymbol({ size }) {
     const { colors } = useColors();
@@ -74,7 +81,17 @@ function FilterModal({}) {
                         <td>{temp_data.type}:</td>
                         <td>
                             {temp_data.type == "entity" ? (
-                                ""
+                                <SearchSelect
+                                    value={temp_data.value}
+                                    onChange={option => {
+                                        console.log("OPTION:", option);
+                                        set_temp_data({
+                                            ...temp_data,
+                                            value: option,
+                                        });
+                                    }}
+                                    options={dxcc_entities}
+                                />
                             ) : (
                                 <Input
                                     value={temp_data.value}
