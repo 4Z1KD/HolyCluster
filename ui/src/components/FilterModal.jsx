@@ -35,10 +35,10 @@ function EditSymbol({ size }) {
 }
 
 const empty_temp_data = {
+    action: "show_only",
     type: "prefix",
     value: "",
     spotter_or_dx: "dx",
-    action: "",
 };
 
 function FilterModal({}) {
@@ -46,15 +46,20 @@ function FilterModal({}) {
     const { colors } = useColors();
 
     return (
-        <Modal title="filter" button={<EditSymbol size="24"></EditSymbol>}>
+        <Modal
+            title={<h1 className="text-2xl">Filter</h1>}
+            button={<EditSymbol size="24"></EditSymbol>}
+            on_apply={() => true}
+            on_cancel={() => {}}
+        >
             <table
-                className="mt-3 mx-2 w-full border-separate border-spacing-y-2"
+                className="table-fixed w-80 mt-3 mx-2 w-full border-separate border-spacing-y-2"
                 style={{ color: colors.theme.text }}
             >
                 <tbody>
                     <tr>
-                        <td>Type:</td>
-                        <td>
+                        <td className="w-1/3">Type:</td>
+                        <td className="w-2/3">
                             <Select
                                 value={temp_data.type}
                                 onChange={event => {
@@ -78,17 +83,47 @@ function FilterModal({}) {
                         </td>
                     </tr>
                     <tr>
-                        <td>{temp_data.type}:</td>
-                        <td>
+                        <td className="w-1/3">{temp_data.type}:</td>
+                        <td className="w-2/3">
                             {temp_data.type == "entity" ? (
                                 <SearchSelect
                                     value={temp_data.value}
                                     onChange={option => {
-                                        console.log("OPTION:", option);
                                         set_temp_data({
                                             ...temp_data,
                                             value: option,
                                         });
+                                    }}
+                                    styles={{
+                                        control: (base_style, state) => ({
+                                            ...base_style,
+                                            backgroundColor: colors.theme.input_background,
+                                            borderColor: colors.theme.borders,
+                                            color: colors.theme.text,
+                                            width: "12rem",
+                                        }),
+                                        menu: (base_style, state) => ({
+                                            ...base_style,
+                                            backgroundColor: colors.theme.input_background,
+                                            borderColor: colors.theme.borders,
+                                            width: "12rem",
+                                        }),
+                                        option: (base_style, { isFocused }) => ({
+                                            ...base_style,
+                                            backgroundColor: isFocused
+                                                ? colors.theme.disabled_text
+                                                : colors.theme.input_background,
+                                            color: colors.theme.text,
+                                            width: "12rem",
+                                        }),
+                                        input: (base_style, state) => ({
+                                            ...base_style,
+                                            color: colors.theme.text,
+                                        }),
+                                        singleValue: (base_style, state) => ({
+                                            ...base_style,
+                                            color: colors.theme.text,
+                                        }),
                                     }}
                                     options={dxcc_entities}
                                 />
@@ -109,8 +144,8 @@ function FilterModal({}) {
                         ""
                     ) : (
                         <tr>
-                            <td>Selection:</td>
-                            <td>
+                            <td className="w-1/3">Selection:</td>
+                            <td className="w-2/3">
                                 <Select
                                     value={temp_data.dx_or_de}
                                     onChange={event => {
@@ -126,6 +161,24 @@ function FilterModal({}) {
                             </td>
                         </tr>
                     )}
+                    <tr>
+                        <td className="w-1/3">Action:</td>
+                        <td className="w-2/3">
+                            <Select
+                                value={temp_data.action}
+                                onChange={event => {
+                                    set_temp_data({
+                                        ...temp_data,
+                                        action: event.target.value,
+                                    });
+                                }}
+                            >
+                                <option value="show_only">Shoy only</option>
+                                <option value="hide">Hide</option>
+                                <option value="alert">Alert</option>
+                            </Select>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </Modal>
