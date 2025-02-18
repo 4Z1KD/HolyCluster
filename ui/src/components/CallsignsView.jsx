@@ -17,7 +17,6 @@ function CallsignsView({ alerts, set_alerts, toggled_ui }) {
             }
             style={{ backgroundColor: colors.theme.background }}
         >
-            <Alerts alerts={alerts} set_alerts={set_alerts} />
             <Filters />
         </div>
     );

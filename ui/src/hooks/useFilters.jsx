@@ -17,14 +17,20 @@ export const FiltersProvider = ({ children }) => {
         modes: Object.fromEntries(modes.map(mode => [mode, true])),
         dx_continents: Object.fromEntries(continents.map(continent => [continent, true])),
         spotter_continents: Object.fromEntries(continents.map(continent => [continent, true])),
-        is_include_filters_active: true,
-        is_exclude_filters_active: true,
-        include_callsigns: [],
-        exclude_callsigns: [],
         time_limit: 3600,
     };
 
+    const initial_callsign_filters = {
+        is_show_only_filters_active: true,
+        is_hide_filters_active: true,
+        filters: [],
+    };
+
     const [filters, setFilters] = use_object_local_storage("filters", initial_filters);
+    const [callsign_filters, setCallsignFilters] = use_object_local_storage(
+        "callsign_filters",
+        initial_callsign_filters,
+    );
 
     // This function changes all the keys in the filter object.
     // For example: setFilterKeys("bands", true) will enable all bands.
@@ -58,6 +64,8 @@ export const FiltersProvider = ({ children }) => {
                 setFilters,
                 setFilterKeys,
                 setOnlyFilterKeys,
+                callsign_filters,
+                setCallsignFilters,
             }}
         >
             {children}

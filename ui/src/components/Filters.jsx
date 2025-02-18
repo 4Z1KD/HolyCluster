@@ -2,7 +2,9 @@ import Input from "@/components/Input.jsx";
 import Button from "@/components/Button.jsx";
 import X from "@/components/X.jsx";
 import FilterModal from "@/components/FilterModal.jsx";
+
 import { useColors } from "../hooks/useColors";
+import { useFilters } from "../hooks/useFilters";
 
 function Indicator({ text }) {
     return (
@@ -62,13 +64,31 @@ function Filters({}) {
     const { colors } = useColors();
 
     return (
-        <div className="p-2" style={{ color: colors.theme.text }}>
-            <div className="flex pb-2 items-center">
-                <h3 className="text-2xl p-1 w-fit inline">Filters</h3>
-                <Button className="ml-auto h-8 py-0">Add</Button>
+        <div
+            className="p-2 divide-y divide-slate-300 space-y-6"
+            style={{ color: colors.theme.text }}
+        >
+            <div>
+                <div className="flex pb-3 items-center">
+                    <h3 className="text-2xl w-fit inline">Alerts</h3>
+                    <Button className="ml-auto h-8 py-0">Add</Button>
+                </div>
+                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
             </div>
-            <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
-            <FilterLine filtered_field="4Z1KD" filter_type="suffix" spotter_or_dx="spotter" />
+            <div className="pt-2">
+                <div className="pb-3">
+                    <h3 className="text-2xl w-fit inline">Show only</h3>
+                </div>
+                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
+                <FilterLine filtered_field="4Z1KD" filter_type="suffix" spotter_or_dx="spotter" />
+            </div>
+            <div className="pt-2">
+                <div className="pb-3">
+                    <h3 className="text-2xl pb-3 w-fit inline">Hide</h3>
+                </div>
+                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
+                <FilterLine filtered_field="4Z1KD" filter_type="suffix" spotter_or_dx="spotter" />
+            </div>
         </div>
     );
 }

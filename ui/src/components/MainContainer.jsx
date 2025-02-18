@@ -263,11 +263,11 @@ function MainContainer() {
             const are_filters_including =
                 is_matching_list(include_filters_callsigns, spot.dx_callsign) ||
                 are_include_filters_empty ||
-                !filters.is_include_filters_active;
+                !filters.is_show_only_filters_active;
             const are_filters_not_excluding =
                 !is_matching_list(exclude_filters_callsigns, spot.dx_callsign) ||
                 are_exclude_filters_empty ||
-                !filters.is_exclude_filters_active;
+                !filters.is_hide_filters_active;
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];

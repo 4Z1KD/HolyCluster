@@ -7,7 +7,7 @@ import entities from "@/assets/dxcc_entities.json";
 import { default as SearchSelect } from "react-select";
 import { useState } from "react";
 
-const dxcc_entities = entities.map(entity => ({value: entity, label: entity}));
+const dxcc_entities = entities.map(entity => ({ value: entity, label: entity }));
 
 function EditSymbol({ size }) {
     const { colors } = useColors();
@@ -39,7 +39,7 @@ const empty_temp_data = {
     spotter_or_dx: "dx",
 };
 
-function FilterModal({}) {
+function FilterModal({ initial_data = null, on_apply }) {
     const [temp_data, set_temp_data] = useState(empty_temp_data);
     const { colors } = useColors();
 
@@ -47,8 +47,13 @@ function FilterModal({}) {
         <Modal
             title={<h1 className="text-2xl">Filter</h1>}
             button={<EditSymbol size="24"></EditSymbol>}
-            on_apply={() => true}
-            on_cancel={() => {}}
+            on_open={() => {
+                if (initial_data != null) {
+                    set_temp_data(initial_data);
+                }
+            }}
+            on_apply={() => on_apply(temp_data)}
+            on_cancel={() => set_temp_data(empty_temp_data)}
         >
             <table
                 className="table-fixed w-80 mt-3 mx-2 w-full border-separate border-spacing-y-2"
