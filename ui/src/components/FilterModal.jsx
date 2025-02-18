@@ -2,14 +2,12 @@ import Modal from "@/components/Modal.jsx";
 import Select from "@/components/Select.jsx";
 import Input from "@/components/Input.jsx";
 import { useColors } from "../hooks/useColors";
+import entities from "@/assets/dxcc_entities.json";
 
 import { default as SearchSelect } from "react-select";
 import { useState } from "react";
 
-const dxcc_entities = [
-    { value: "Israel", label: "Israel" },
-    { value: "Italy", label: "Italy" },
-];
+const dxcc_entities = entities.map(entity => ({value: entity, label: entity}));
 
 function EditSymbol({ size }) {
     const { colors } = useColors();
