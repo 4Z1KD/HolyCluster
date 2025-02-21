@@ -29,7 +29,11 @@ function FilterModal({ initial_data = null, on_apply, button }) {
                     set_temp_data(initial_data);
                 }
             }}
-            on_apply={() => on_apply(temp_data)}
+            on_apply={() => {
+                on_apply(temp_data);
+                set_temp_data(empty_temp_data);
+                return true;
+            }}
             on_cancel={() => set_temp_data(empty_temp_data)}
         >
             <table

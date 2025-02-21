@@ -83,7 +83,11 @@ function FilterLine({ filter, id }) {
                     setCallsignFilters({ ...callsign_filters, filters: new_filters });
                 }}
             />
-            <X size="24" />
+            <X className="cursor-pointer" size="24" on_click={() => {
+                const new_filters = [...callsign_filters.filters];
+                new_filters.splice(id, 1);
+                setCallsignFilters({ ...callsign_filters, filters: new_filters });
+            }} />
             <br />
         </div>
     );
