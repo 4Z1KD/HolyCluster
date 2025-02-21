@@ -30,9 +30,13 @@ function FilterModal({ initial_data = null, on_apply, button }) {
                 }
             }}
             on_apply={() => {
-                on_apply(temp_data);
-                set_temp_data(empty_temp_data);
-                return true;
+                if (temp_data.value.length > 0) {
+                    on_apply(temp_data);
+                    set_temp_data(empty_temp_data);
+                    return true;
+                } else {
+                    return false;
+                }
             }}
             on_cancel={() => set_temp_data(empty_temp_data)}
         >
