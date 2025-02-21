@@ -40,26 +40,23 @@ function EditSymbol({ size }) {
     );
 }
 
-function FilterLine({
-    filtered_field,
-    filter_type, // pfx, sfx, entity
-    spotter_or_dx,
-}) {
+function FilterLine({ filter, id }) {
     const { colors } = useColors();
+    const { callsign_filters, setCallsignFilters } = useFilters();
 
     let filter_type_label;
-    if (filter_type == "prefix") {
+    if (filter.type == "prefix") {
         filter_type_label = "Pfx";
-    } else if (filter_type == "suffix") {
+    } else if (filter.type == "suffix") {
         filter_type_label = "Sfx";
-    } else if (filter_type == "entity") {
+    } else if (filter.type == "entity") {
         filter_type_label = "Ent";
     }
 
     let spotter_or_dx_label;
-    if (spotter_or_dx == "spotter") {
+    if (filter.spotter_or_dx == "spotter") {
         spotter_or_dx_label = "DE";
-    } else if (spotter_or_dx == "dx") {
+    } else if (filter.spotter_or_dx == "dx") {
         spotter_or_dx_label = "DX";
     }
 
@@ -72,11 +69,20 @@ function FilterLine({
                 className="h-7 text-sm mr-1 w-20"
                 disabled
                 disabled_text_color={colors.theme.text}
-                value={filtered_field}
+                title={filter.value}
+                value={filter.value}
             />
             <Indicator text={filter_type_label} />
             <Indicator text={spotter_or_dx_label} />
-            <FilterModal button={<EditSymbol size="24"></EditSymbol>} />
+            <FilterModal
+                initial_data={filter}
+                button={<EditSymbol size="24"></EditSymbol>}
+                on_apply={new_filter => {
+                    const new_filters = [...callsign_filters.filters];
+                    new_filters[id] = new_filter;
+                    setCallsignFilters({ ...callsign_filters, filters: new_filters });
+                }}
+            />
             <X size="24" />
             <br />
         </div>
@@ -93,7 +99,8 @@ function FilterSection({ title, filters }) {
                 return (
                     <FilterLine
                         key={id}
-                        filtered_field={filter.value}
+                        id={id}
+                        filter={filter}
                         filter_type={filter.type}
                         spotter_or_dx={filter.spotter_or_dx}
                     />
