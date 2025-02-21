@@ -130,17 +130,11 @@ function fetch_propagation() {
 function MainContainer() {
     const [toggled_ui, set_toggled_ui] = useState({ left: true, right: true });
 
-    const { filters } = useFilters();
+    const { filters, callsign_filters } = useFilters();
 
-    const include_filters_callsigns = filters.include_callsigns.filter(
-        ([pattern, _]) => pattern.length > 0,
-    );
-    const exclude_filters_callsigns = filters.exclude_callsigns.filter(
-        ([pattern, _]) => pattern.length > 0,
-    );
-
-    let [alerts, set_alerts] = useLocalStorage("alerts", []);
-    alerts = alerts.filter(([pattern, _]) => pattern.length > 0);
+    let show_only_filters = callsign_filters.filters.filter(filter => filter.action == "show_only");
+    let hide_filters = callsign_filters.filters.filter(filter => filter.action == "hide");
+    let alerts = callsign_filters.filters.filter(filter => filter.action == "alert");
 
     const [map_controls, set_map_controls_inner] = use_object_local_storage("map_controls", {
         night: false,
@@ -230,7 +224,7 @@ function MainContainer() {
     }, []);
 
     for (const spot of spots) {
-        spot.is_alerted = is_matching_list(alerts, spot.dx_callsign);
+        spot.is_alerted = is_matching_list(alerts, spot);
     }
 
     const [filter_missing_flags, set_filter_missing_flags] = useState(false);
@@ -258,16 +252,16 @@ function MainContainer() {
 
             const is_band_and_mode_active = filters.bands[spot.band] && filters.modes[spot.mode];
 
-            const are_include_filters_empty = include_filters_callsigns.length == 0;
-            const are_exclude_filters_empty = exclude_filters_callsigns.length == 0;
+            const are_include_filters_empty = show_only_filters.length == 0;
+            const are_exclude_filters_empty = hide_filters.length == 0;
             const are_filters_including =
-                is_matching_list(include_filters_callsigns, spot.dx_callsign) ||
+                is_matching_list(show_only_filters, spot) ||
                 are_include_filters_empty ||
-                !filters.is_show_only_filters_active;
+                !callsign_filters.is_show_only_filters_active;
             const are_filters_not_excluding =
-                !is_matching_list(exclude_filters_callsigns, spot.dx_callsign) ||
+                !is_matching_list(hide_filters, spot) ||
                 are_exclude_filters_empty ||
-                !filters.is_hide_filters_active;
+                !callsign_filters.is_hide_filters_active;
 
             const is_dx_continent_active = filters.dx_continents[spot.dx_continent];
             const is_spotter_continent_active = filters.spotter_continents[spot.spotter_continent];
@@ -455,7 +449,7 @@ function MainContainer() {
                         {table}
                     </>
                 )}
-                <CallsignsView alerts={alerts} set_alerts={set_alerts} toggled_ui={toggled_ui} />
+                <CallsignsView toggled_ui={toggled_ui} />
                 <Continents toggled_ui={toggled_ui} />
             </div>
         </>

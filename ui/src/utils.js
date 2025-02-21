@@ -7,13 +7,26 @@ export function to_radian(deg) {
 
 export const mod = (n, m) => ((n % m) + m) % m;
 
-export function is_matching_list(list, callsign) {
-    return list.some(([pattern, is_suffix]) => {
-        if (is_suffix) {
-            return callsign.endsWith(pattern);
-        } else {
-            return callsign.startsWith(pattern);
+export function is_matching_list(list, spot) {
+    return list.some(filter => {
+        let matched_value;
+        if (filter.type == "entity") {
+            matched_value = spot.dx_country;
+        } else if (filter.spotter_or_dx == "spotter") {
+            matched_value = spot.spotter_callsign;
+        } else if (filter.spotter_or_dx == "dx") {
+            matched_value = spot.dx_callsign;
+        };
+
+        let is_value_matching;
+        if (filter.type == "prefix") {
+            is_value_matching = matched_value.startsWith(filter.value);
+        } else if (filter.type == "suffix") {
+            is_value_matching = matched_value.endsWith(filter.value);
+        } else if (filter.type == "entity") {
+            is_value_matching = matched_value == filter.value;
         }
+        return is_value_matching;
     });
 }
 

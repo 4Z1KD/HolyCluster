@@ -1,4 +1,4 @@
-import { use_object_local_storage, is_matching_list, km_to_miles } from "@/utils.js";
+import { use_object_local_storage, km_to_miles } from "@/utils.js";
 import { useColors } from "../hooks/useColors";
 
 function SpotPopup({

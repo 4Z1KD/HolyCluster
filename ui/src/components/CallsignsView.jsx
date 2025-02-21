@@ -3,7 +3,7 @@ import CallsignFilters from "@/components/CallsignFilters.jsx";
 import Filters from "@/components/Filters.jsx";
 import { useColors } from "../hooks/useColors";
 
-function CallsignsView({ alerts, set_alerts, toggled_ui }) {
+function CallsignsView({ toggled_ui }) {
     const { colors } = useColors();
 
     const toggled_classes = toggled_ui.right
