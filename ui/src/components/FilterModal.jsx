@@ -118,10 +118,11 @@ function FilterModal({ initial_data = null, on_apply, button }) {
                             ) : (
                                 <Input
                                     value={temp_data.value}
+                                    className="uppercase"
                                     onChange={event => {
                                         set_temp_data({
                                             ...temp_data,
-                                            value: event.target.value,
+                                            value: event.target.value.toUpperCase(),
                                         });
                                     }}
                                 />
