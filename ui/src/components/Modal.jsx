@@ -47,7 +47,8 @@ function Modal({
 
     return (
         <>
-            <button
+            <div
+                className="cursor-pointer"
                 onClick={() => {
                     if (on_open != null) {
                         on_open();
@@ -56,7 +57,7 @@ function Modal({
                 }}
             >
                 {button}
-            </button>
+            </div>
             {show_modal ? (
                 <div className="flex justify-center pt-24 overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                     <div className="relative min-w-80 my-6 mx-auto max-w-3xl">

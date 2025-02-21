@@ -83,36 +83,53 @@ function FilterLine({
     );
 }
 
+function FilterSection({ title, filters }) {
+    return (
+        <div className="pt-2">
+            <div className="pb-3">
+                <h3 className="text-2xl w-fit inline">{title}</h3>
+            </div>
+            {filters.map(([id, filter]) => {
+                return (
+                    <FilterLine
+                        key={id}
+                        filtered_field={filter.value}
+                        filter_type={filter.type}
+                        spotter_or_dx={filter.spotter_or_dx}
+                    />
+                );
+            })}
+        </div>
+    );
+}
+
 function Filters({}) {
     const { colors } = useColors();
+    const { callsign_filters, setCallsignFilters } = useFilters();
+
+    const id_to_filter = callsign_filters.filters.map((filter, index) => [index, filter]);
+
+    let alerts = id_to_filter.filter(([id, filter]) => filter.action == "alert");
+    let show_only = id_to_filter.filter(([id, filter]) => filter.action == "show_only");
+    let hide = id_to_filter.filter(([id, filter]) => filter.action == "hide");
 
     return (
-        <div
-            className="p-2 divide-y divide-slate-300 space-y-6"
-            style={{ color: colors.theme.text }}
-        >
-            <div>
-                <div className="flex pb-3 items-center">
-                    <h3 className="text-2xl w-fit inline">Alerts</h3>
-                    <div className="ml-auto">
-                        <FilterModal button={<Button>Add</Button>} />
-                    </div>
-                </div>
-                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
+        <div className="relative p-2" style={{ color: colors.theme.text }}>
+            <div className="absolute right-0 p-1">
+                <FilterModal
+                    button={<Button>Add</Button>}
+                    on_apply={new_filter => {
+                        setCallsignFilters({
+                            ...callsign_filters,
+                            filters: [...callsign_filters.filters, new_filter],
+                        });
+                    }}
+                />
             </div>
-            <div className="pt-2">
-                <div className="pb-3">
-                    <h3 className="text-2xl w-fit inline">Show only</h3>
-                </div>
-                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
-                <FilterLine filtered_field="4Z1KD" filter_type="suffix" spotter_or_dx="spotter" />
-            </div>
-            <div className="pt-2">
-                <div className="pb-3">
-                    <h3 className="text-2xl pb-3 w-fit inline">Hide</h3>
-                </div>
-                <FilterLine filtered_field="4X1XP" filter_type="entity" spotter_or_dx="dx" />
-                <FilterLine filtered_field="4Z1KD" filter_type="suffix" spotter_or_dx="spotter" />
+            <div className="divide-y divide-slate-300 space-y-6">
+                <FilterSection title="Alert" filters={alerts} />
+                <FilterSection title="Show Only" filters={show_only} />
+                <FilterSection title="Hide" filters={hide} />
             </div>
         </div>
     );
