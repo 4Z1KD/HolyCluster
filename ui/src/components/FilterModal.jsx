@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const dxcc_entities = entities.map(entity => ({ value: entity, label: entity }));
 
-const empty_temp_data = {
+export const empty_filter_data = {
     action: "show_only",
     type: "prefix",
     value: "",
@@ -67,8 +67,8 @@ function SelectionLine({ states, field, temp_data, set_temp_data, build_temp_dat
     );
 }
 
-function FilterModal({ initial_data = null, on_apply, button }) {
-    const [temp_data, set_temp_data] = useState(empty_temp_data);
+function FilterModal({ initial_data = null, on_apply, button, allow_select_action }) {
+    const [temp_data, set_temp_data] = useState(empty_filter_data);
     const { colors } = useColors();
 
     return (
@@ -83,13 +83,13 @@ function FilterModal({ initial_data = null, on_apply, button }) {
             on_apply={() => {
                 if (temp_data.value.length > 0) {
                     on_apply(temp_data);
-                    set_temp_data(empty_temp_data);
+                    set_temp_data(empty_filter_data);
                     return true;
                 } else {
                     return false;
                 }
             }}
-            on_cancel={() => set_temp_data(empty_temp_data)}
+            on_cancel={() => set_temp_data(empty_filter_data)}
         >
             <SelectionLine
                 states={[
@@ -117,16 +117,20 @@ function FilterModal({ initial_data = null, on_apply, button }) {
                 temp_data={temp_data}
                 set_temp_data={set_temp_data}
             />
-            <SelectionLine
-                states={[
-                    { label: "Show Only", value: "show_only" },
-                    { label: "Hide", value: "hide" },
-                    { label: "Alert", value: "alert" },
-                ]}
-                field="action"
-                temp_data={temp_data}
-                set_temp_data={set_temp_data}
-            />
+            {allow_select_action ? (
+                <SelectionLine
+                    states={[
+                        { label: "Show Only", value: "show_only" },
+                        { label: "Hide", value: "hide" },
+                        { label: "Alert", value: "alert" },
+                    ]}
+                    field="action"
+                    temp_data={temp_data}
+                    set_temp_data={set_temp_data}
+                />
+            ) : (
+                ""
+            )}
             <div className="flex justify-around items-center w-full pb-4">
                 <div>{temp_data.type}:</div>
                 <div>
