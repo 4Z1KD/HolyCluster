@@ -8,10 +8,7 @@ import { useFilters } from "../hooks/useFilters";
 
 function Indicator({ text }) {
     return (
-        <div
-            className="flex border border-gray-700 items-center justify-center p-2 w-7 h-7 rounded-md mr-2 text-xs font-bold bg-green-600 text-white"
-            title="Prefix"
-        >
+        <div className="flex border border-gray-700 items-center justify-center p-2 w-7 h-7 rounded-md mr-2 text-xs font-bold bg-green-600 text-white">
             {text}
         </div>
     );
@@ -83,11 +80,15 @@ function FilterLine({ filter, id }) {
                     setCallsignFilters({ ...callsign_filters, filters: new_filters });
                 }}
             />
-            <X className="cursor-pointer" size="24" on_click={() => {
-                const new_filters = [...callsign_filters.filters];
-                new_filters.splice(id, 1);
-                setCallsignFilters({ ...callsign_filters, filters: new_filters });
-            }} />
+            <X
+                className="cursor-pointer"
+                size="24"
+                on_click={() => {
+                    const new_filters = [...callsign_filters.filters];
+                    new_filters.splice(id, 1);
+                    setCallsignFilters({ ...callsign_filters, filters: new_filters });
+                }}
+            />
             <br />
         </div>
     );

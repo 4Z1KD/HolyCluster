@@ -16,7 +16,7 @@ export function is_matching_list(list, spot) {
             matched_value = spot.spotter_callsign;
         } else if (filter.spotter_or_dx == "dx") {
             matched_value = spot.dx_callsign;
-        };
+        }
 
         let is_value_matching;
         if (filter.type == "prefix") {
